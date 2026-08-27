@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b6fbf"/>
+      <stop offset="0.55" stop-color="#0794c9"/>
+      <stop offset="1" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#dbeafe" stop-opacity="0.55"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <g opacity="0.18">
+    <circle cx="160" cy="160" r="120" fill="#fff"/>
+    <circle cx="1030" cy="180" r="180" fill="#fff"/>
+    <circle cx="990" cy="760" r="240" fill="#fff"/>
+  </g>
+  <g transform="translate(120 200)" opacity="0.72">
+    <rect x="0" y="310" width="960" height="70" rx="20" fill="#e0f2fe" opacity="0.5"/>
+    <rect x="70" y="120" width="230" height="280" rx="28" fill="url(#glass)"/>
+    <rect x="105" y="85" width="160" height="55" rx="12" fill="#bfdbfe"/>
+    <rect x="120" y="160" width="130" height="165" rx="18" fill="#ffffff" opacity="0.55"/>
+    <line x1="120" y1="220" x2="250" y2="220" stroke="#0ea5e9" stroke-width="10" opacity="0.55"/>
+    <rect x="390" y="40" width="90" height="250" rx="32" fill="url(#glass)"/>
+    <rect x="405" y="15" width="60" height="45" rx="12" fill="#bae6fd"/>
+    <path d="M390 200 h90 v60 c0 24-20 44-44 44h-2c-24 0-44-20-44-44z" fill="#38bdf8" opacity="0.55"/>
+    <path d="M610 20 h170 v55 l-36 70 v190 c0 35-28 63-63 63h-6c-35 0-63-28-63-63V145l-36-70V20z" fill="url(#glass)"/>
+    <rect x="620" y="235" width="150" height="90" rx="18" fill="#7dd3fc" opacity="0.48"/>
+    <path d="M875 130 c70 80 90 180 35 235 -40 40-118 38-155-2 -40-44-18-122 45-188 24-25 50-44 75-45z" fill="url(#glass)"/>
+    <path d="M805 300 c45 25 92 23 126-12" stroke="#bae6fd" stroke-width="12" fill="none" opacity="0.75"/>
+  </g>
+  <g opacity="0.22" fill="#fff">
+    <rect x="70" y="700" width="260" height="22" rx="11"/>
+    <rect x="70" y="742" width="180" height="18" rx="9"/>
+    <rect x="880" y="590" width="220" height="20" rx="10"/>
+    <rect x="920" y="630" width="140" height="18" rx="9"/>
+  </g>
+</svg>

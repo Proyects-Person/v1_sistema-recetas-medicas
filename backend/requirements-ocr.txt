@@ -1,0 +1,3 @@
+# Opcional: solo para OCR local con EasyOCR.
+# No se necesita para Render si usarás OCR_ENGINE=google_vision.
+easyocr==1.7.2

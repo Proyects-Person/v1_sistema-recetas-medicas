@@ -1,0 +1,52 @@
+backend/.venv/
+backend/*.db
+backend/uploads/*
+!backend/uploads/.gitkeep
+frontend/node_modules/
+frontend/dist/
+.env
+*.env
+backend/.env
+.DS_Store
+__pycache__/
+*.pyc
+
+
+
+
+# Variables de entorno
+.env
+.env.*
+!.env.example
+!.env.production.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Node
+node_modules/
+dist/
+
+# Base de datos local
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos subidos por usuarios
+uploads/
+
+# Credenciales
+*.json
+credentials/
+secrets/
+
+# IDE
+.vscode/
+.idea/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
