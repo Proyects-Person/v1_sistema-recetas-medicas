@@ -2,11 +2,20 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..ocr_dictionary import analyze_ocr_text
-from .regex_extractor import extract_regex_entities
+from ..ocr_dictionary import (
+    analyze_ocr_text,
+    normalize_for_match,
+)
+
+from .regex_extractor import (
+    extract_regex_entities,
+)
 
 
-# Categorías que ya existen en tu pharmaceutical_terms.json
+# ============================================================
+# CATEGORÍAS DEL DICCIONARIO
+# ============================================================
+
 COMPONENT_CATEGORIES = {
     "principio_activo",
     "principio_activo_preparado",
@@ -14,7 +23,7 @@ COMPONENT_CATEGORIES = {
     "base_o_excipiente",
     "base",
 }
-
+ 
 FORM_CATEGORIES = {
     "forma_farmaceutica",
     "forma_base",
@@ -26,36 +35,46 @@ ROUTE_CATEGORIES = {
 }
 
 
+# ============================================================
+# FUNCIONES AUXILIARES
+# ============================================================
+
 def _effective_text(
     original: str,
     dictionary_result: dict[str, Any],
 ) -> str:
-    """
-    Usa el texto corregido por diccionario si existe.
-    Si el diccionario no hizo cambios, conserva el original.
-    """
 
     return (
-        dictionary_result.get("normalized_text")
+        dictionary_result.get(
+            "normalized_text"
+        )
         or original
         or ""
     ).strip()
+
+
+def _terms_by_category(
+    items: list[dict[str, Any]],
+    categories: set[str],
+) -> list[dict[str, Any]]:
+
+    return [
+        item
+        for item in items
+        if item.get("category")
+        in categories
+    ]
 
 
 def _best_term(
     items: list[dict[str, Any]],
     categories: set[str],
 ) -> dict[str, Any] | None:
-    """
-    Obtiene el término reconocido con mayor confianza
-    dentro de determinadas categorías.
-    """
 
-    candidates = [
-        item
-        for item in items
-        if item.get("category") in categories
-    ]
+    candidates = _terms_by_category(
+        items,
+        categories,
+    )
 
     if not candidates:
         return None
@@ -63,64 +82,372 @@ def _best_term(
     return max(
         candidates,
         key=lambda item: float(
-            item.get("confidence") or 0.0
+            item.get("confidence")
+            or 0.0
         ),
     )
 
 
-def _first_normalized(
-    items: list[dict[str, Any]],
-) -> str | None:
+def _find_term_span(
+    text: str,
+    item: dict[str, Any],
+) -> tuple[int, int] | None:
 
-    if not items:
-        return None
+    """
+    Busca la ubicación aproximada de un medicamento
+    o insumo dentro de la línea.
 
-    return str(items[0]["normalized"])
+    Primero intenta buscar el nombre canónico y luego
+    el texto realmente detectado por OCR/diccionario.
+    """
 
+    normalized_text = normalize_for_match(
+        text
+    )
+
+    for candidate in (
+        item.get("term"),
+        item.get("match"),
+    ):
+
+        candidate_norm = normalize_for_match(
+            str(candidate or "")
+        )
+
+        if not candidate_norm:
+            continue
+
+        start = normalized_text.find(
+            candidate_norm
+        )
+
+        if start >= 0:
+
+            return (
+                start,
+                start + len(candidate_norm),
+            )
+
+    return None
+
+
+# ============================================================
+# RELACIÓN INSUMO <-> CONCENTRACIÓN
+# ============================================================
+
+def _pair_components_with_concentrations(
+    line_text: str,
+    component_terms: list[dict[str, Any]],
+    concentrations: list[dict[str, Any]],
+) -> list[
+    tuple[
+        dict[str, Any],
+        dict[str, Any] | None,
+    ]
+]:
+
+    """
+    Relaciona cada medicamento o insumo con su
+    concentración correspondiente.
+
+    Ejemplo:
+
+    Oxido de zinc 8% + Calamina 8% + Mentol 0.5%
+
+    Resultado:
+
+    Óxido de zinc -> 8%
+    Calamina       -> 8%
+    Mentol         -> 0.5%
+    """
+
+    if not component_terms:
+        return []
+
+    available = set(
+        range(len(concentrations))
+    )
+
+    positioned: list[
+        tuple[
+            dict[str, Any],
+            tuple[int, int] | None,
+        ]
+    ] = [
+
+        (
+            term,
+            _find_term_span(
+                line_text,
+                term,
+            ),
+        )
+
+        for term
+        in component_terms
+    ]
+
+    # Ordenar según posición en el texto.
+    positioned.sort(
+        key=lambda item:
+        item[1][0]
+        if item[1]
+        else 10**9
+    )
+
+    result: list[
+        tuple[
+            dict[str, Any],
+            dict[str, Any] | None,
+        ]
+    ] = []
+
+    for term, span in positioned:
+
+        chosen_index: int | None = None
+
+        # -----------------------------------------
+        # Si conocemos posición del medicamento
+        # -----------------------------------------
+
+        if (
+            available
+            and span is not None
+        ):
+
+            _, term_end = span
+
+            # Concentraciones inmediatamente después
+            # del medicamento.
+            following = [
+
+                idx
+
+                for idx in available
+
+                if (
+                    0
+                    <= (
+                        concentrations[idx]["start"]
+                        - term_end
+                    )
+                    <= 18
+                )
+            ]
+
+            if following:
+
+                chosen_index = min(
+                    following,
+                    key=lambda idx:
+                    concentrations[idx]["start"]
+                    - term_end,
+                )
+
+            else:
+
+                # Si no está inmediatamente después,
+                # usamos la concentración más cercana.
+                term_center = (
+                    span[0]
+                    + span[1]
+                ) / 2
+
+                chosen_index = min(
+                    available,
+                    key=lambda idx:
+                    abs(
+                        (
+                            (
+                                concentrations[idx]["start"]
+                                + concentrations[idx]["end"]
+                            )
+                            / 2
+                        )
+                        - term_center
+                    ),
+                )
+
+        # Si solamente queda una concentración disponible,
+        # se puede utilizar.
+        elif len(available) == 1:
+
+            chosen_index = next(
+                iter(available)
+            )
+
+        concentration = None
+
+        if chosen_index is not None:
+
+            concentration = concentrations[
+                chosen_index
+            ]
+
+            available.remove(
+                chosen_index
+            )
+
+        result.append(
+            (
+                term,
+                concentration,
+            )
+        )
+
+    return result
+
+
+# ============================================================
+# ELIMINAR COMPONENTES DUPLICADOS
+# ============================================================
+
+def _deduplicate_components(
+    components: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+
+    """
+    Evita repetir el mismo medicamento o insumo.
+    """
+
+    by_name: dict[
+        str,
+        dict[str, Any],
+    ] = {}
+
+    for component in components:
+
+        key = normalize_for_match(
+            str(
+                component.get("name")
+                or ""
+            )
+        )
+
+        if not key:
+            continue
+
+        current = by_name.get(
+            key
+        )
+
+        if current is None:
+
+            by_name[key] = component
+
+            continue
+
+        current_score = (
+
+            1
+            if current.get(
+                "concentration"
+            )
+            else 0,
+
+            float(
+                current.get(
+                    "dictionary_confidence"
+                )
+                or 0.0
+            ),
+        )
+
+        candidate_score = (
+
+            1
+            if component.get(
+                "concentration"
+            )
+            else 0,
+
+            float(
+                component.get(
+                    "dictionary_confidence"
+                )
+                or 0.0
+            ),
+        )
+
+        if candidate_score > current_score:
+
+            by_name[key] = component
+
+    return list(
+        by_name.values()
+    )
+
+
+# ============================================================
+# PARSER PRINCIPAL
+# ============================================================
 
 def parse_prescription(
     text: str,
     ocr_confidence: float = 0.0,
 ) -> dict[str, Any]:
-    """
-    Convierte el texto de una receta en una estructura
-    farmacéutica preliminar.
 
-    IMPORTANTE:
-    El resultado es una sugerencia para posterior
-    validación del químico farmacéutico.
+    """
+    Convierte el texto OCR de la receta médica
+    en datos farmacoterapéuticos estructurados.
     """
 
-    original_text = (text or "").strip()
+    original_text = (
+        text or ""
+    ).strip()
 
     lines = [
+
         line.strip()
+
         for line in original_text.splitlines()
+
         if line.strip()
     ]
 
-    components: list[dict[str, Any]] = []
+    # ========================================================
+    # CAMPOS A EXTRAER
+    # ========================================================
+
+    components: list[
+        dict[str, Any]
+    ] = []
 
     dosage_form: str | None = None
-    total_quantity: dict[str, Any] | None = None
+
+    total_quantity: dict[
+        str,
+        Any,
+    ] | None = None
+
+    dosage: str | None = None
+
     frequency: str | None = None
+
     duration: str | None = None
+
     administration_route: str | None = None
 
     unparsed_lines: list[str] = []
-    line_analysis: list[dict[str, Any]] = []
+
+    line_analysis: list[
+        dict[str, Any]
+    ] = []
 
     # ========================================================
-    # ANALIZAMOS LA RECETA LÍNEA POR LÍNEA
+    # ANALIZAR CADA LÍNEA
     # ========================================================
 
-    for line_number, original_line in enumerate(
+    for (
+        line_number,
+        original_line,
+    ) in enumerate(
         lines,
         start=1,
     ):
 
         # ----------------------------------------------------
-        # 1. Diccionario farmacéutico
+        # DICCIONARIO FARMACÉUTICO
         # ----------------------------------------------------
 
         dictionary_result = analyze_ocr_text(
@@ -139,11 +466,15 @@ def parse_prescription(
         )
 
         # ----------------------------------------------------
-        # 2. Regex
+        # REGEX
         # ----------------------------------------------------
 
-        regex_result = extract_regex_entities(
+        matching_text = normalize_for_match(
             line_text
+        )
+
+        regex_result = extract_regex_entities(
+            matching_text
         )
 
         concentrations = regex_result[
@@ -154,6 +485,10 @@ def parse_prescription(
             "quantities"
         ]
 
+        dosages = regex_result[
+            "dosages"
+        ]
+
         frequencies = regex_result[
             "frequencies"
         ]
@@ -162,11 +497,15 @@ def parse_prescription(
             "durations"
         ]
 
+        regex_routes = regex_result[
+            "routes"
+        ]
+
         # ----------------------------------------------------
-        # 3. Clasificación usando el diccionario
+        # TÉRMINOS FARMACÉUTICOS
         # ----------------------------------------------------
 
-        component_term = _best_term(
+        component_terms = _terms_by_category(
             recognized,
             COMPONENT_CATEGORIES,
         )
@@ -181,118 +520,213 @@ def parse_prescription(
             ROUTE_CATEGORIES,
         )
 
-        # ----------------------------------------------------
-        # 4. COMPONENTES / INSUMOS
-        # ----------------------------------------------------
+        # ====================================================
+        # MEDICAMENTOS / INSUMOS
+        # ====================================================
 
-        if component_term:
+        pairs = _pair_components_with_concentrations(
+            matching_text,
+            component_terms,
+            concentrations,
+        )
 
-            component = {
-                "name": component_term["term"],
+        for (
+            component_term,
+            concentration,
+        ) in pairs:
 
-                "category": component_term.get(
-                    "category"
-                ),
+            components.append(
+                {
+                    "name":
+                        component_term.get(
+                            "term"
+                        ),
 
-                "concentration": _first_normalized(
-                    concentrations
-                ),
+                    "category":
+                        component_term.get(
+                            "category"
+                        ),
 
-                "quantity": (
-                    quantities[0]
-                    if quantities
-                    else None
-                ),
+                    "concentration":
+                        (
+                            concentration.get(
+                                "normalized"
+                            )
+                            if concentration
+                            else None
+                        ),
 
-                "dictionary_confidence":
-                    component_term.get(
-                        "confidence"
-                    ),
+                    "dictionary_confidence":
+                        component_term.get(
+                            "confidence"
+                        ),
 
-                "source_line": original_line,
+                    "source_line":
+                        original_line,
 
-                "line_number": line_number,
-            }
-
-            components.append(component)
-
-        # ----------------------------------------------------
-        # 5. FORMA FARMACÉUTICA
-        # ----------------------------------------------------
-
-        if form_term and dosage_form is None:
-
-            dosage_form = str(
-                form_term["term"]
+                    "line_number":
+                        line_number,
+                }
             )
 
-        # ----------------------------------------------------
-        # 6. CANTIDAD TOTAL DEL PREPARADO
-        # ----------------------------------------------------
+        # ====================================================
+        # FORMA FARMACÉUTICA
+        # ====================================================
 
         if (
             form_term
-            and quantities
-            and total_quantity is None
+            and dosage_form is None
         ):
 
-            quantity = quantities[0]
-
-            total_quantity = {
-                "value": quantity["value"],
-                "unit": quantity["unit"],
-                "normalized":
-                    quantity["normalized"],
-                "source_line":
-                    original_line,
-            }
-
-        # ----------------------------------------------------
-        # 7. FRECUENCIA
-        # ----------------------------------------------------
-
-        if frequencies and frequency is None:
-
-            frequency = frequencies[0][
-                "normalized"
-            ]
-
-        # ----------------------------------------------------
-        # 8. DURACIÓN
-        # ----------------------------------------------------
-
-        if durations and duration is None:
-
-            duration = durations[0][
-                "normalized"
-            ]
-
-        # ----------------------------------------------------
-        # 9. VÍA DE ADMINISTRACIÓN
-        # ----------------------------------------------------
-
-        if (
-            route_term
-            and administration_route is None
-        ):
-
-            administration_route = str(
-                route_term["term"]
+            dosage_form = (
+                str(
+                    form_term.get(
+                        "term"
+                    )
+                    or ""
+                )
+                .strip()
+                or None
             )
 
-        # ----------------------------------------------------
-        # 10. LÍNEAS QUE TODAVÍA NO ENTENDEMOS
-        # ----------------------------------------------------
+        # ====================================================
+        # CANTIDAD TOTAL
+        # ====================================================
+
+        if (
+            total_quantity is None
+            and quantities
+        ):
+
+            # Una cantidad se considera presentación/cantidad
+            # total principalmente cuando:
+            #
+            # crema 30 g
+            # loción 100 ml
+            #
+            # o cuando aparece aislada en una línea.
+            can_be_total = (
+
+                bool(form_term)
+
+                or (
+
+                    not component_terms
+
+                    and not frequencies
+
+                    and not durations
+
+                    and not dosages
+                )
+            )
+
+            if can_be_total:
+
+                quantity = quantities[0]
+
+                total_quantity = {
+
+                    "value":
+                        quantity.get(
+                            "value"
+                        ),
+
+                    "unit":
+                        quantity.get(
+                            "unit"
+                        ),
+
+                    "normalized":
+                        quantity.get(
+                            "normalized"
+                        ),
+
+                    "source_line":
+                        original_line,
+                }
+
+        # ====================================================
+        # DOSIS
+        # ====================================================
+
+        if (
+            dosages
+            and dosage is None
+        ):
+
+            dosage = dosages[
+                0
+            ]["normalized"]
+
+        # ====================================================
+        # FRECUENCIA
+        # ====================================================
+
+        if (
+            frequencies
+            and frequency is None
+        ):
+
+            frequency = frequencies[
+                0
+            ]["normalized"]
+
+        # ====================================================
+        # DURACIÓN
+        # ====================================================
+
+        if (
+            durations
+            and duration is None
+        ):
+
+            duration = durations[
+                0
+            ]["normalized"]
+
+        # ====================================================
+        # VÍA DE ADMINISTRACIÓN
+        # ====================================================
+
+        if administration_route is None:
+
+            if route_term:
+
+                administration_route = (
+                    str(
+                        route_term.get(
+                            "term"
+                        )
+                        or ""
+                    )
+                    .strip()
+                    or None
+                )
+
+            elif regex_routes:
+
+                administration_route = (
+                    regex_routes[
+                        0
+                    ]["normalized"]
+                )
+
+        # ====================================================
+        # SABER SI LA LÍNEA FUE ENTENDIDA
+        # ====================================================
 
         understood = any(
             [
-                component_term,
+                component_terms,
                 form_term,
                 route_term,
                 concentrations,
                 quantities,
+                dosages,
                 frequencies,
                 durations,
+                regex_routes,
             ]
         )
 
@@ -302,32 +736,121 @@ def parse_prescription(
                 original_line
             )
 
-        # ----------------------------------------------------
-        # Información para auditoría / pruebas
-        # ----------------------------------------------------
-
+        # Guardamos análisis interno.
         line_analysis.append(
             {
-                "line_number": line_number,
-                "original": original_line,
-                "normalized": line_text,
-                "recognized_terms": recognized,
-                "regex": regex_result,
+                "line_number":
+                    line_number,
+
+                "original":
+                    original_line,
+
+                "normalized":
+                    line_text,
+
+                "recognized_terms":
+                    recognized,
+
+                "regex":
+                    regex_result,
             }
         )
 
     # ========================================================
-    # JSON FINAL DEL PARSER
+    # ELIMINAR REPETICIONES
+    # ========================================================
+
+    components = _deduplicate_components(
+        components
+    )
+
+    # ========================================================
+    # CANTIDAD NORMALIZADA
+    # ========================================================
+
+    quantity_normalized = (
+
+        total_quantity.get(
+            "normalized"
+        )
+
+        if total_quantity
+
+        else None
+    )
+
+    # ========================================================
+    # ESTRUCTURA FINAL ESTÁNDAR
+    # ========================================================
+
+    structured_rows = [
+
+        {
+            "medication_or_ingredient":
+                component.get(
+                    "name"
+                ),
+
+            "concentration":
+                component.get(
+                    "concentration"
+                ),
+
+            "pharmaceutical_form":
+                dosage_form,
+
+            "quantity":
+                quantity_normalized,
+
+            "dosage":
+                dosage,
+
+            "frequency":
+                frequency,
+
+            "duration":
+                duration,
+
+            "administration_route":
+                administration_route,
+        }
+
+        for component in components
+    ]
+
+    # ========================================================
+    # RESPUESTA DEL PARSER
     # ========================================================
 
     return {
-        "components": components,
-        "dosage_form": dosage_form,
-        "total_quantity": total_quantity,
-        "frequency": frequency,
-        "duration": duration,
+
+        "components":
+            components,
+
+        "dosage_form":
+            dosage_form,
+
+        "total_quantity":
+            total_quantity,
+
+        "dosage":
+            dosage,
+
+        "frequency":
+            frequency,
+
+        "duration":
+            duration,
+
         "administration_route":
             administration_route,
-        "unparsed_lines": unparsed_lines,
-        "line_analysis": line_analysis,
+
+        "structured_rows":
+            structured_rows,
+
+        "unparsed_lines":
+            unparsed_lines,
+
+        "line_analysis":
+            line_analysis,
     }
