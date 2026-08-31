@@ -55,6 +55,30 @@ def _best_term(
     )
 
 
+def _best_form_term(
+    items: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+    """
+    Prefiere una forma farmacéutica explícita (Gel, Crema, Loción, etc.)
+    frente a una forma_base (gel base, crema base) cuando ambas coinciden.
+    """
+    candidates = [
+        item
+        for item in items
+        if item.get("category") in FORM_CATEGORIES
+    ]
+    if not candidates:
+        return None
+
+    return max(
+        candidates,
+        key=lambda item: (
+            float(item.get("confidence") or 0.0),
+            1 if item.get("category") == "forma_farmaceutica" else 0,
+        ),
+    )
+
+
 def _first_normalized(
     items: list[dict[str, Any]],
 ) -> str | None:
@@ -139,10 +163,7 @@ def parse_prescription(
             recognized,
             COMPONENT_CATEGORIES,
         )
-        form_term = _best_term(
-            recognized,
-            FORM_CATEGORIES,
-        )
+        form_term = _best_form_term(recognized)
         route_term = _best_term(
             recognized,
             ROUTE_CATEGORIES,
@@ -227,13 +248,38 @@ def parse_prescription(
             }
         )
 
+    # ========================================================
+    # SALIDA ESTRUCTURADA PARA API / FRONTEND
+    # ========================================================
+    quantity_normalized = (
+        total_quantity.get("normalized")
+        if total_quantity
+        else None
+    )
+
+    structured_rows = [
+        {
+            "medication_or_ingredient": component.get("name"),
+            "concentration": component.get("concentration"),
+            "pharmaceutical_form": dosage_form,
+            "quantity": quantity_normalized,
+            "dosage": None,
+            "frequency": frequency,
+            "duration": duration,
+            "administration_route": administration_route,
+        }
+        for component in components
+    ]
+
     return {
         "components": components,
         "dosage_form": dosage_form,
         "total_quantity": total_quantity,
+        "dosage": None,
         "frequency": frequency,
         "duration": duration,
         "administration_route": administration_route,
+        "structured_rows": structured_rows,
         "unparsed_lines": unparsed_lines,
         "line_analysis": line_analysis,
     }
