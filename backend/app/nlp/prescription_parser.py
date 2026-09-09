@@ -4,6 +4,7 @@ from typing import Any
 
 from ..ocr_dictionary import analyze_ocr_text
 from .regex_extractor import extract_regex_entities
+from .entity_fusion import fuse_ingredient_entities
 
 
 # Componentes que pueden formar parte de una fórmula magistral.
@@ -249,27 +250,17 @@ def parse_prescription(
         )
 
     # ========================================================
-    # SALIDA ESTRUCTURADA PARA API / FRONTEND
+    # FUSIÓN FINAL: NER + DICCIONARIO + REGEX
     # ========================================================
-    quantity_normalized = (
-        total_quantity.get("normalized")
-        if total_quantity
-        else None
+    # El parser conserva forma, cantidad, frecuencia, duración y vía como
+    # contexto interno. La salida de negocio visible se limita a INSUMO y
+    # CONCENTRACIÓN, con metadatos de auditoría que el frontend no muestra.
+    fusion_result = fuse_ingredient_entities(
+        original_text,
+        ocr_confidence=ocr_confidence,
     )
 
-    structured_rows = [
-        {
-            "medication_or_ingredient": component.get("name"),
-            "concentration": component.get("concentration"),
-            "pharmaceutical_form": dosage_form,
-            "quantity": quantity_normalized,
-            "dosage": None,
-            "frequency": frequency,
-            "duration": duration,
-            "administration_route": administration_route,
-        }
-        for component in components
-    ]
+    structured_rows = fusion_result["ingredients"]
 
     return {
         "components": components,
@@ -280,6 +271,9 @@ def parse_prescription(
         "duration": duration,
         "administration_route": administration_route,
         "structured_rows": structured_rows,
+        "ner_entities": fusion_result["ner_entities"],
+        "ner_status": fusion_result["ner_status"],
+        "rejected_candidates": fusion_result["rejected_candidates"],
         "unparsed_lines": unparsed_lines,
         "line_analysis": line_analysis,
     }

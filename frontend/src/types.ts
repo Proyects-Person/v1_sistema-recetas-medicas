@@ -36,15 +36,23 @@ export interface RecognizedTerm {
   mode?: string | null
 }
 
-export interface StructuredMedicationRow {
-  medication_or_ingredient?: string | null
+
+export interface IngredientExtraction {
+  ingredient: string
   concentration?: string | null
-  pharmaceutical_form?: string | null
-  quantity?: string | null
-  dosage?: string | null
-  frequency?: string | null
-  duration?: string | null
-  administration_route?: string | null
+  confidence?: number | null
+  sources: string[]
+  source_line?: string | null
+  line_number?: number | null
+}
+
+export interface NerEntity {
+  text: string
+  label: string
+  start: number
+  end: number
+  canonical?: string | null
+  source?: string | null
 }
 
 export interface Recipe {
@@ -52,36 +60,27 @@ export interface Recipe {
   code: string
   file_name: string
   status: Status
-
   raw_text?: string | null
   normalized_text?: string | null
-
   dictionary_suggestions: DictionarySuggestion[]
   recognized_terms: RecognizedTerm[]
-
-  structured_data: StructuredMedicationRow[]
-
+  structured_ingredients: IngredientExtraction[]
+  ner_entities: NerEntity[]
   ocr_confidence: number
   ocr_engine?: string | null
   low_confidence_fields: string[]
-
   patient_name?: string | null
   patient_age?: number | null
   patient_phone?: string | null
   service_reason?: string | null
-
   doctor_name?: string | null
   diagnosis?: string | null
-
   composition?: string | null
   administration_route?: string | null
   dosage?: string | null
-
   observations?: string | null
-
   created_at: string
   updated_at: string
-
   validated_at?: string | null
   validator_name?: string | null
   created_by_name?: string | null
@@ -90,26 +89,19 @@ export interface Recipe {
 export interface RecipeListItem {
   id: number
   code: string
-
   file_name?: string | null
   raw_text?: string | null
   normalized_text?: string | null
-
   patient_name?: string | null
   patient_age?: number | null
   patient_phone?: string | null
   service_reason?: string | null
-
   doctor_name?: string | null
   composition?: string | null
-
   status: Status
-
   ocr_confidence: number
   ocr_engine?: string | null
-
   created_at: string
-
   validator_name?: string | null
 }
 

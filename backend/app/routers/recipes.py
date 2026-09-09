@@ -1,95 +1,42 @@
 import json
 import os
-
-from datetime import (
-    datetime,
-    timezone,
-)
-
+import re
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
-
 from io import BytesIO
-
 from xml.sax.saxutils import escape
 
-from fastapi import (
-    APIRouter,
-    Depends,
-    File,
-    Form,
-    HTTPException,
-    Query,
-    UploadFile,
-)
-
-from fastapi.responses import (
-    StreamingResponse,
-)
-
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
+from fastapi.responses import StreamingResponse
 from sqlalchemy import or_
-
 from sqlalchemy.orm import Session
 
 from reportlab.lib import colors
-
 from reportlab.lib.pagesizes import A4
-
-from reportlab.lib.styles import (
-    getSampleStyleSheet,
-    ParagraphStyle,
-)
-
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
-
 from reportlab.platypus import (
     Image as PdfImage,
     Paragraph,
-    Preformatted,
     SimpleDocTemplate,
     Spacer,
     Table,
     TableStyle,
 )
-
-from reportlab.lib.utils import (
-    ImageReader,
-)
+from reportlab.lib.utils import ImageReader
 
 from .. import schemas
-
-from ..auth import (
-    get_current_user,
-)
-
-from ..database import (
-    get_db,
-)
-
-from ..models import (
-    Recipe,
-    User,
-)
-
-from ..ocr_pln import (
-    extract_text_from_bytes,
-    validate_image_file,
-)
-
-from ..ocr_dictionary import (
-    analyze_ocr_text,
-)
-
-from ..nlp.prescription_parser import (
-    parse_prescription,
-)
-
+from ..auth import get_current_user
+from ..database import get_db
+from ..models import Recipe, User
+from ..ocr_pln import extract_text_from_bytes, validate_image_file
+from ..ocr_dictionary import analyze_ocr_text
 from ..utils import (
     add_activity,
     generate_recipe_code,
     recipe_to_list_item,
     recipe_to_out,
 )
-
 from ..storage import (
     delete_file as storage_delete_file,
     file_response,
@@ -97,20 +44,17 @@ from ..storage import (
     save_uploaded_file,
 )
 
+from ..nlp.regex_extractor import extract_regex_entities
+from ..nlp.prescription_parser import parse_prescription
+
 
 router = APIRouter(
     prefix="/recipes",
-    tags=["Recetas"],
+    tags=["Recetas"]
 )
 
-
 MAX_UPLOAD_BYTES = (
-    int(
-        os.getenv(
-            "MAX_UPLOAD_MB",
-            "10",
-        )
-    )
+    int(os.getenv("MAX_UPLOAD_MB", "10"))
     * 1024
     * 1024
 )
@@ -123,212 +67,114 @@ MAX_UPLOAD_BYTES = (
 @router.post(
     "/upload",
     response_model=schemas.RecipeOut,
-    status_code=201,
+    status_code=201
 )
 def upload_recipe(
-
     file: UploadFile = File(...),
-
     patient_name: str = Form(...),
-
     patient_age: int = Form(...),
-
     patient_phone: str = Form(...),
-
     service_reason: str = Form(...),
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-
     if not patient_name.strip():
-
         raise HTTPException(
             status_code=400,
-            detail=(
-                "El nombre del paciente "
-                "es obligatorio."
-            ),
+            detail="El nombre del paciente es obligatorio."
         )
 
-    if (
-        patient_age < 0
-        or patient_age > 130
-    ):
-
+    if patient_age < 0 or patient_age > 130:
         raise HTTPException(
             status_code=400,
-            detail=(
-                "La edad del paciente "
-                "no es válida."
-            ),
+            detail="La edad del paciente no es válida."
         )
 
-    patient_phone_clean = (
-        patient_phone.strip()
-    )
+    patient_phone_clean = patient_phone.strip()
 
     if (
         not patient_phone_clean.isdigit()
-        or len(
-            patient_phone_clean
-        ) != 9
+        or len(patient_phone_clean) != 9
     ):
-
         raise HTTPException(
             status_code=400,
             detail=(
-                "El teléfono del paciente "
-                "debe contener exactamente "
-                "9 dígitos."
-            ),
+                "El teléfono del paciente debe contener "
+                "exactamente 9 dígitos."
+            )
         )
 
     if service_reason not in {
         "analisis_receta",
         "preparacion_magistral",
         "consulta_validacion",
-        "otro",
+        "otro"
     }:
-
         raise HTTPException(
             status_code=400,
-            detail=(
-                "El motivo de evaluación "
-                "no es válido."
-            ),
+            detail="El motivo de evaluación no es válido."
         )
-
-    # --------------------------------------------------------
-    # VALIDAR ARCHIVO
-    # --------------------------------------------------------
 
     try:
-
         validate_image_file(
-            file.filename
-            or "receta.png",
-            file.content_type,
+            file.filename or "receta.png",
+            file.content_type
         )
-
     except ValueError as exc:
-
         raise HTTPException(
             status_code=400,
-            detail=str(exc),
+            detail=str(exc)
         ) from exc
-
-    # --------------------------------------------------------
-    # LEER ARCHIVO
-    # --------------------------------------------------------
 
     content = file.file.read()
 
     if len(content) > MAX_UPLOAD_BYTES:
-
         raise HTTPException(
             status_code=413,
             detail=(
-                "El archivo supera "
-                f"el límite permitido de "
+                "El archivo supera el límite permitido de "
                 f"{MAX_UPLOAD_BYTES // (1024 * 1024)}MB."
-            ),
+            )
         )
-
-    # --------------------------------------------------------
-    # GUARDAR
-    # --------------------------------------------------------
 
     try:
-
         file_ref = save_uploaded_file(
-
-            file.filename
-            or "receta.png",
-
+            file.filename or "receta.png",
             content,
-
             file.content_type,
-
-            folder="recipes",
+            folder="recipes"
         )
-
     except RuntimeError as exc:
-
         raise HTTPException(
             status_code=500,
-            detail=str(exc),
+            detail=str(exc)
         ) from exc
 
-    # --------------------------------------------------------
-    # CREAR REGISTRO
-    # --------------------------------------------------------
-
     recipe = Recipe(
-
-        code=
-            generate_recipe_code(
-                db
-            ),
-
-        file_name=
-            file.filename
-            or "receta.png",
-
-        file_path=
-            file_ref,
-
-        file_mime_type=
-            file.content_type
-            or "image/jpeg",
-
-        status=
-            "pendiente",
-
-        patient_name=
-            patient_name.strip(),
-
-        patient_age=
-            patient_age,
-
-        patient_phone=
-            patient_phone_clean,
-
-        service_reason=
-            service_reason.strip(),
-
-        created_by_id=
-            current_user.id,
+        code=generate_recipe_code(db),
+        file_name=file.filename or "receta.png",
+        file_path=file_ref,
+        file_mime_type=file.content_type or "image/jpeg",
+        status="pendiente",
+        patient_name=patient_name.strip(),
+        patient_age=patient_age,
+        patient_phone=patient_phone_clean,
+        service_reason=service_reason.strip(),
+        created_by_id=current_user.id,
     )
 
-    db.add(
-        recipe
-    )
-
+    db.add(recipe)
     db.commit()
-
-    db.refresh(
-        recipe
-    )
+    db.refresh(recipe)
 
     add_activity(
         db,
         current_user.id,
         "Carga de receta",
-        (
-            f"Se cargó la receta "
-            f"{recipe.code}."
-        ),
+        f"Se cargó la receta {recipe.code}."
     )
 
-    return recipe_to_out(
-        recipe
-    )
+    return recipe_to_out(recipe)
 
 
 # ============================================================
@@ -337,83 +183,38 @@ def upload_recipe(
 
 @router.get(
     "",
-    response_model=list[
-        schemas.RecipeListItem
-    ],
+    response_model=list[schemas.RecipeListItem]
 )
 def list_recipes(
-
-    status: str | None = Query(
-        default=None
-    ),
-
-    search: str | None = Query(
-        default=None
-    ),
-
-    date: str | None = Query(
-        default=None
-    ),
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    status: str | None = Query(default=None),
+    search: str | None = Query(default=None),
+    date: str | None = Query(default=None),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-
-    query = db.query(
-        Recipe
-    )
+    query = db.query(Recipe)
 
     if status:
-
         query = query.filter(
-            Recipe.status
-            == status
+            Recipe.status == status
         )
 
     if search:
-
-        term = (
-            f"%{search.strip()}%"
-        )
+        term = f"%{search.strip()}%"
 
         query = query.filter(
-
             or_(
-                Recipe.code.ilike(
-                    term
-                ),
-
-                Recipe.raw_text.ilike(
-                    term
-                ),
-
-                Recipe.normalized_text.ilike(
-                    term
-                ),
-
-                Recipe.file_name.ilike(
-                    term
-                ),
-
-                Recipe.patient_name.ilike(
-                    term
-                ),
-
-                Recipe.service_reason.ilike(
-                    term
-                ),
+                Recipe.code.ilike(term),
+                Recipe.raw_text.ilike(term),
+                Recipe.normalized_text.ilike(term),
+                Recipe.file_name.ilike(term),
+                Recipe.patient_name.ilike(term),
+                Recipe.service_reason.ilike(term)
             )
         )
 
     if date:
-
         try:
-
             parsed = datetime.fromisoformat(
                 date
             ).date()
@@ -422,7 +223,7 @@ def list_recipes(
                 Recipe.created_at
                 >= datetime.combine(
                     parsed,
-                    datetime.min.time(),
+                    datetime.min.time()
                 )
             )
 
@@ -430,18 +231,16 @@ def list_recipes(
                 Recipe.created_at
                 <= datetime.combine(
                     parsed,
-                    datetime.max.time(),
+                    datetime.max.time()
                 )
             )
 
         except ValueError:
-
             raise HTTPException(
                 status_code=400,
                 detail=(
-                    "La fecha no tiene "
-                    "formato válido."
-                ),
+                    "La fecha no tiene formato válido."
+                )
             )
 
     recipes = (
@@ -453,10 +252,8 @@ def list_recipes(
     )
 
     return [
-        recipe_to_list_item(
-            recipe
-        )
-        for recipe in recipes
+        recipe_to_list_item(r)
+        for r in recipes
     ]
 
 
@@ -466,78 +263,54 @@ def list_recipes(
 
 @router.get(
     "/{recipe_id}",
-    response_model=schemas.RecipeOut,
+    response_model=schemas.RecipeOut
 )
 def get_recipe(
-
     recipe_id: int,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     recipe = db.get(
         Recipe,
-        recipe_id,
+        recipe_id
     )
 
     if not recipe:
-
         raise HTTPException(
             status_code=404,
-            detail=(
-                "Receta no encontrada."
-            ),
+            detail="Receta no encontrada."
         )
 
-    return recipe_to_out(
-        recipe
-    )
+    return recipe_to_out(recipe)
 
 
 # ============================================================
-# ARCHIVO DE RECETA
+# OBTENER ARCHIVO ORIGINAL
 # ============================================================
 
 @router.get(
     "/{recipe_id}/file"
 )
 def get_recipe_file(
-
     recipe_id: int,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     recipe = db.get(
         Recipe,
-        recipe_id,
+        recipe_id
     )
 
     if not recipe:
-
         raise HTTPException(
             status_code=404,
-            detail=(
-                "Receta no encontrada."
-            ),
+            detail="Receta no encontrada."
         )
 
     return file_response(
         recipe.file_path,
         recipe.file_name,
-        recipe.file_mime_type,
+        recipe.file_mime_type
     )
 
 
@@ -549,50 +322,33 @@ def get_recipe_file(
     "/{recipe_id}"
 )
 def delete_recipe(
-
     recipe_id: int,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     recipe = db.get(
         Recipe,
-        recipe_id,
+        recipe_id
     )
 
     if not recipe:
-
         raise HTTPException(
             status_code=404,
-            detail=(
-                "Receta no encontrada."
-            ),
+            detail="Receta no encontrada."
         )
 
     storage_delete_file(
         recipe.file_path
     )
 
-    db.delete(
-        recipe
-    )
-
+    db.delete(recipe)
     db.commit()
 
     add_activity(
         db,
         current_user.id,
         "Eliminación de receta",
-        (
-            f"Se eliminó la receta "
-            f"{recipe.code}."
-        ),
+        f"Se eliminó la receta {recipe.code}."
     )
 
     return {
@@ -602,193 +358,164 @@ def delete_recipe(
 
 
 # ============================================================
-# GENERAR COMPOSITION POR COMPATIBILIDAD
-# ============================================================
-
-def _composition_from_structured_rows(
-    rows: list[dict],
-) -> str | None:
-
-    """
-    Mantiene el campo composition para que las pantallas
-    antiguas del sistema no se rompan.
-
-    Sin embargo, la fuente principal ahora será:
-    structured_data
-    """
-
-    lines: list[str] = []
-
-    for row in rows:
-
-        name = row.get(
-            "medication_or_ingredient"
-        )
-
-        concentration = row.get(
-            "concentration"
-        )
-
-        parts = [
-
-            str(value).strip()
-
-            for value in (
-                name,
-                concentration,
-            )
-
-            if value
-        ]
-
-        if parts:
-
-            lines.append(
-                " ".join(parts)
-            )
-
-    return (
-
-        "\n".join(
-            lines
-        )
-
-        if lines
-
-        else None
-    )
-
-
-# ============================================================
 # PROCESAR RECETA
 # ============================================================
 
 @router.post(
     "/{recipe_id}/process",
-    response_model=schemas.RecipeOut,
+    response_model=schemas.RecipeOut
 )
 def process_recipe(
-
     recipe_id: int,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     recipe = db.get(
         Recipe,
-        recipe_id,
+        recipe_id
     )
 
     if not recipe:
-
         raise HTTPException(
             status_code=404,
-            detail=(
-                "Receta no encontrada."
-            ),
+            detail="Receta no encontrada."
         )
 
-    # --------------------------------------------------------
-    # OBTENER IMAGEN
-    # --------------------------------------------------------
-
     try:
-
         image_bytes = read_file_bytes(
             recipe.file_path
         )
-
     except FileNotFoundError as exc:
-
         raise HTTPException(
             status_code=400,
             detail=(
-                "No existe un archivo "
-                "válido para procesar."
-            ),
+                "No existe un archivo válido "
+                "para procesar."
+            )
         ) from exc
 
-    # --------------------------------------------------------
-    # ESTADO PROCESANDO
-    # --------------------------------------------------------
-
-    recipe.status = (
-        "procesando"
-    )
-
+    recipe.status = "procesando"
     db.commit()
 
-    # --------------------------------------------------------
-    # GOOGLE VISION / OCR
-    # --------------------------------------------------------
-
     try:
-
-        (
-            raw_text,
-            confidence,
-            engine_name,
-        ) = extract_text_from_bytes(
-
-            image_bytes,
-
-            recipe.file_name,
+        raw_text, confidence, engine_name = (
+            extract_text_from_bytes(
+                image_bytes,
+                recipe.file_name
+            )
         )
 
     except RuntimeError as exc:
-
-        recipe.status = (
-            "pendiente"
-        )
-
-        recipe.updated_at = (
-            datetime.utcnow()
-        )
+        recipe.status = "pendiente"
+        recipe.updated_at = datetime.utcnow()
 
         db.commit()
 
         raise HTTPException(
             status_code=422,
-            detail=str(exc),
+            detail=str(exc)
         ) from exc
 
     # ========================================================
-    # 1. DICCIONARIO FARMACÉUTICO
+    # DICCIONARIO FARMACÉUTICO
     # ========================================================
 
     dictionary_result = analyze_ocr_text(
         raw_text,
-        confidence,
+        confidence
     )
 
     # ========================================================
-    # 2. PRESCRIPTION PARSER
+    # REGEX
+    # ========================================================
+
+    regex_result = extract_regex_entities(
+        dictionary_result["normalized_text"]
+    )
+
+    # ========================================================
+    # PARSER HÍBRIDO
     # ========================================================
 
     parser_result = parse_prescription(
         raw_text,
-        ocr_confidence=confidence,
+        ocr_confidence=confidence
     )
 
-    # ESTA ES NUESTRA NUEVA TABLA
-    structured_rows = parser_result.get(
-        "structured_rows",
-        [],
+    components = parser_result.get(
+        "components",
+        []
+    )
+
+    composition_lines = []
+
+    for component in components:
+        name = component.get("name")
+
+        concentration = component.get(
+            "concentration"
+        )
+
+        quantity = component.get(
+            "quantity"
+        )
+
+        parts = []
+
+        if name:
+            parts.append(name)
+
+        if concentration:
+            parts.append(
+                concentration
+            )
+
+        if quantity:
+            normalized_quantity = (
+                quantity.get("normalized")
+            )
+
+            if normalized_quantity:
+                parts.append(
+                    normalized_quantity
+                )
+
+        if parts:
+            composition_lines.append(
+                " ".join(parts)
+            )
+
+    dosage_parts = []
+
+    if parser_result.get(
+        "frequency"
+    ):
+        dosage_parts.append(
+            parser_result[
+                "frequency"
+            ]
+        )
+
+    if parser_result.get(
+        "duration"
+    ):
+        dosage_parts.append(
+            parser_result[
+                "duration"
+            ]
+        )
+
+    dosage_text = (
+        " | ".join(dosage_parts)
+        if dosage_parts
+        else None
     )
 
     # ========================================================
-    # GUARDAR OCR
+    # GUARDAR RESULTADOS OCR + PLN
     # ========================================================
 
-    recipe.raw_text = (
-        raw_text
-    )
+    recipe.raw_text = raw_text
 
     recipe.normalized_text = (
         dictionary_result[
@@ -801,7 +528,7 @@ def process_recipe(
             dictionary_result[
                 "dictionary_suggestions"
             ],
-            ensure_ascii=False,
+            ensure_ascii=False
         )
     )
 
@@ -810,26 +537,19 @@ def process_recipe(
             dictionary_result[
                 "recognized_terms"
             ],
-            ensure_ascii=False,
+            ensure_ascii=False
         )
     )
 
-    # --------------------------------------------------------
-    # CONFIANZA
-    # --------------------------------------------------------
-
     recipe.ocr_confidence = (
-
         round(
             confidence * 100,
-            2,
+            2
         )
-
         if confidence <= 1
-
         else round(
             confidence,
-            2,
+            2
         )
     )
 
@@ -839,40 +559,23 @@ def process_recipe(
 
     recipe.low_confidence_fields = (
         json.dumps(
-            (
-                ["raw_text"]
-                if confidence < 0.70
-                else []
-            ),
-            ensure_ascii=False,
+            ["raw_text"]
+            if confidence < 0.70
+            else [],
+            ensure_ascii=False
         )
     )
 
     # ========================================================
-    # GUARDAR NUEVA DATA ESTRUCTURADA
-    # ========================================================
-
-    recipe.structured_data = (
-        json.dumps(
-            structured_rows,
-            ensure_ascii=False,
-        )
-    )
-
-    # ========================================================
-    # CAMPOS ANTIGUOS
-    # ========================================================
-    #
-    # Los conservamos para evitar romper
-    # otras pantallas del sistema.
-    #
-    # Pero la fuente principal es structured_data.
+    # RECETA ESTRUCTURADA
     # ========================================================
 
     recipe.composition = (
-        _composition_from_structured_rows(
-            structured_rows
+        "\n".join(
+            composition_lines
         )
+        if composition_lines
+        else None
     )
 
     recipe.administration_route = (
@@ -881,199 +584,97 @@ def process_recipe(
         )
     )
 
-    recipe.dosage = (
-        parser_result.get(
-            "dosage"
-        )
-    )
+    recipe.dosage = dosage_text
 
-    # ========================================================
-    # FINALIZAR
-    # ========================================================
-
-    recipe.status = (
-        "procesada"
-    )
-
-    recipe.updated_at = (
-        datetime.utcnow()
-    )
+    recipe.status = "procesada"
+    recipe.updated_at = datetime.utcnow()
 
     db.commit()
-
-    db.refresh(
-        recipe
-    )
+    db.refresh(recipe)
 
     add_activity(
         db,
         current_user.id,
         "Pendiente de validación",
         (
-            f"La receta {recipe.code} "
-            "quedó procesada y pendiente "
-            "de validación farmacéutica."
-        ),
+            f"La receta {recipe.code} quedó "
+            "procesada y pendiente de "
+            "validación farmacéutica."
+        )
     )
 
-    return recipe_to_out(
-        recipe
-    )
+    return recipe_to_out(recipe)
 
 
 # ============================================================
-# ACTUALIZAR DATOS
+# ACTUALIZAR INFORMACIÓN DE RECETA
 # ============================================================
 
 @router.put(
     "/{recipe_id}/data",
-    response_model=schemas.RecipeOut,
+    response_model=schemas.RecipeOut
 )
 def update_recipe_data(
-
     recipe_id: int,
-
     payload: schemas.RecipeUpdate,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
-
     recipe = db.get(
         Recipe,
-        recipe_id,
+        recipe_id
     )
 
     if not recipe:
-
         raise HTTPException(
             status_code=404,
-            detail=(
-                "Receta no encontrada."
-            ),
+            detail="Receta no encontrada."
         )
 
     data = payload.model_dump(
         exclude_unset=True
     )
 
-    structured_data = data.pop(
-        "structured_data",
-        None,
-    )
-
-    # --------------------------------------------------------
-    # CAMPOS NORMALES
-    # --------------------------------------------------------
-
-    for (
-        field,
-        value,
-    ) in data.items():
-
+    for field, value in data.items():
         setattr(
             recipe,
             field,
-            value,
+            value
         )
 
-    # ========================================================
-    # ACTUALIZACIÓN MANUAL DE LA TABLA
-    # ========================================================
-
-    if structured_data is not None:
-
-        recipe.structured_data = (
-            json.dumps(
-                structured_data,
-                ensure_ascii=False,
-            )
-        )
-
-        recipe.composition = (
-            _composition_from_structured_rows(
-                structured_data
-            )
-        )
-
-        if structured_data:
-
-            recipe.administration_route = (
-                structured_data[
-                    0
-                ].get(
-                    "administration_route"
-                )
-            )
-
-            recipe.dosage = (
-                structured_data[
-                    0
-                ].get(
-                    "dosage"
-                )
-            )
-
-    # ========================================================
-    # SI CORRIGEN EL TEXTO OCR MANUALMENTE
-    # ========================================================
-
+    # Si se modifica manualmente el texto OCR,
+    # se recalcula el diccionario.
     if (
         "raw_text" in data
         and data.get(
             "raw_text"
         ) is not None
     ):
-
         confidence_decimal = (
-
             float(
                 recipe.ocr_confidence
                 or 0
             )
             / 100
-
             if float(
                 recipe.ocr_confidence
                 or 0
             ) > 1
-
             else float(
                 recipe.ocr_confidence
                 or 0
             )
         )
 
-        corrected_text = str(
-            data.get(
-                "raw_text"
-            )
-            or ""
-        )
-
         dictionary_result = (
             analyze_ocr_text(
-                corrected_text,
-                confidence_decimal,
-            )
-        )
-
-        parser_result = (
-            parse_prescription(
-                corrected_text,
-                confidence_decimal,
-            )
-        )
-
-        recalculated_rows = (
-            parser_result.get(
-                "structured_rows",
-                [],
+                str(
+                    data.get(
+                        "raw_text"
+                    )
+                    or ""
+                ),
+                confidence_decimal
             )
         )
 
@@ -1088,7 +689,7 @@ def update_recipe_data(
                 dictionary_result[
                     "dictionary_suggestions"
                 ],
-                ensure_ascii=False,
+                ensure_ascii=False
             )
         )
 
@@ -1097,32 +698,7 @@ def update_recipe_data(
                 dictionary_result[
                     "recognized_terms"
                 ],
-                ensure_ascii=False,
-            )
-        )
-
-        recipe.structured_data = (
-            json.dumps(
-                recalculated_rows,
-                ensure_ascii=False,
-            )
-        )
-
-        recipe.composition = (
-            _composition_from_structured_rows(
-                recalculated_rows
-            )
-        )
-
-        recipe.administration_route = (
-            parser_result.get(
-                "administration_route"
-            )
-        )
-
-        recipe.dosage = (
-            parser_result.get(
-                "dosage"
+                ensure_ascii=False
             )
         )
 
@@ -1131,131 +707,90 @@ def update_recipe_data(
     )
 
     db.commit()
-
-    db.refresh(
-        recipe
-    )
+    db.refresh(recipe)
 
     add_activity(
         db,
         current_user.id,
         "Corrección manual",
         (
-            "Se actualizaron los datos "
+            f"Se actualizaron los datos "
             f"de la receta {recipe.code}."
-        ),
+        )
     )
 
-    return recipe_to_out(
-        recipe
-    )
+    return recipe_to_out(recipe)
 
 
 # ============================================================
-# APROBAR
+# APROBAR RECETA
 # ============================================================
 
 @router.post(
     "/{recipe_id}/approve",
-    response_model=schemas.RecipeOut,
+    response_model=schemas.RecipeOut
 )
 def approve_recipe(
-
     recipe_id: int,
-
-    payload: (
-        schemas.ValidationIn
-        | None
-    ) = None,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    payload: schemas.ValidationIn | None = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     return _change_status(
         recipe_id,
         "aprobada",
         "Aprobación de receta",
         payload,
         current_user,
-        db,
+        db
     )
 
 
 # ============================================================
-# OBSERVAR
+# OBSERVAR RECETA
 # ============================================================
 
 @router.post(
     "/{recipe_id}/observe",
-    response_model=schemas.RecipeOut,
+    response_model=schemas.RecipeOut
 )
 def observe_recipe(
-
     recipe_id: int,
-
-    payload: (
-        schemas.ValidationIn
-        | None
-    ) = None,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    payload: schemas.ValidationIn | None = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     return _change_status(
         recipe_id,
         "observada",
         "Receta observada",
         payload,
         current_user,
-        db,
+        db
     )
 
 
 # ============================================================
-# CANCELAR
+# RECHAZAR / CANCELAR RECETA
 # ============================================================
 
 @router.post(
     "/{recipe_id}/cancel",
-    response_model=schemas.RecipeOut,
+    response_model=schemas.RecipeOut
 )
 def cancel_recipe(
-
     recipe_id: int,
-
-    payload: (
-        schemas.ValidationIn
-        | None
-    ) = None,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    payload: schemas.ValidationIn | None = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     return _change_status(
         recipe_id,
         "cancelada",
         "Cancelación de receta",
         payload,
         current_user,
-        db,
+        db
     )
 
 
@@ -1267,30 +802,19 @@ def cancel_recipe(
     "/{recipe_id}/download"
 )
 def download_recipe_summary(
-
     recipe_id: int,
-
-    current_user: User = Depends(
-        get_current_user
-    ),
-
-    db: Session = Depends(
-        get_db
-    ),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
 ):
-
     recipe = db.get(
         Recipe,
-        recipe_id,
+        recipe_id
     )
 
     if not recipe:
-
         raise HTTPException(
             status_code=404,
-            detail=(
-                "Receta no encontrada."
-            ),
+            detail="Receta no encontrada."
         )
 
     pdf = _build_recipe_pdf(
@@ -1306,24 +830,19 @@ def download_recipe_summary(
         media_type="application/pdf",
         headers={
             "Content-Disposition":
-                (
-                    "attachment; "
-                    f"filename={filename}"
-                )
+                f"attachment; filename={filename}"
         },
     )
 
 
 # ============================================================
-# MOTIVO
+# ETIQUETA DEL MOTIVO
 # ============================================================
 
 def _service_reason_label(
-    value: str | None,
+    value: str | None
 ) -> str:
-
     labels = {
-
         "analisis_receta":
             "Análisis de receta",
 
@@ -1339,12 +858,12 @@ def _service_reason_label(
 
     return labels.get(
         value or "",
-        value or "No registrado",
+        value or "No registrado"
     )
 
 
 # ============================================================
-# FECHAS
+# FECHA Y HORA LIMA
 # ============================================================
 
 LIMA_TZ = ZoneInfo(
@@ -1353,24 +872,19 @@ LIMA_TZ = ZoneInfo(
 
 
 def _lima_datetime(
-    value: datetime | None,
+    value: datetime | None
 ) -> str:
-
     if not value:
-
         return "Pendiente"
 
     if value.tzinfo is None:
-
         value = value.replace(
             tzinfo=timezone.utc
         )
 
     return (
         value
-        .astimezone(
-            LIMA_TZ
-        )
+        .astimezone(LIMA_TZ)
         .strftime(
             "%d/%m/%Y %I:%M %p"
         )
@@ -1378,215 +892,358 @@ def _lima_datetime(
 
 
 # ============================================================
+# EXTRAER INSUMO + CONCENTRACIÓN PARA EL PDF
+# ============================================================
+
+_CONCENTRATION_RE = re.compile(
+    r"(?<!\w)(\d+(?:[.,]\d+)?)\s*%",
+    re.IGNORECASE
+)
+
+
+def _structured_recipe_rows(
+    recipe: Recipe
+) -> list[tuple[str, str]]:
+    """
+    Convierte recipe.composition en filas:
+
+    Insumo | Concentración
+
+    El PDF solamente muestra estos dos campos
+    dentro de la receta estructurada.
+    """
+
+    rows: list[
+        tuple[str, str]
+    ] = []
+
+    composition = (
+        recipe.composition
+        or ""
+    )
+
+    for raw_line in (
+        composition.splitlines()
+    ):
+        line = raw_line.strip()
+
+        if not line:
+            continue
+
+        match = (
+            _CONCENTRATION_RE.search(
+                line
+            )
+        )
+
+        if match:
+            ingredient = (
+                line[
+                    :match.start()
+                ]
+                .strip(
+                    " +-,:;"
+                )
+            )
+
+            concentration = (
+                f"{match.group(1).replace(',', '.')}%"
+            )
+
+            rows.append(
+                (
+                    ingredient
+                    or line,
+                    concentration
+                )
+            )
+
+        else:
+            rows.append(
+                (
+                    line,
+                    "No identificada"
+                )
+            )
+
+    return rows
+
+
+# ============================================================
+# CORRECCIONES SUGERIDAS PARA EL PDF
+# ============================================================
+
+def _dictionary_correction_rows(
+    recipe: Recipe
+) -> list[
+    tuple[str, str, str]
+]:
+    """
+    Recupera únicamente las correcciones
+    individuales sugeridas por el diccionario.
+
+    NO muestra en el PDF:
+    - Texto OCR.
+    - Texto normalizado completo.
+    - Sugerencia por diccionario completa.
+    - Motor OCR.
+    """
+
+    raw = getattr(
+        recipe,
+        "dictionary_suggestions",
+        None
+    )
+
+    if not raw:
+        return []
+
+    try:
+        suggestions = (
+            json.loads(raw)
+            if isinstance(raw, str)
+            else raw
+        )
+
+    except (
+        TypeError,
+        json.JSONDecodeError
+    ):
+        return []
+
+    rows: list[
+        tuple[str, str, str]
+    ] = []
+
+    for item in (
+        suggestions or []
+    ):
+        if not isinstance(
+            item,
+            dict
+        ):
+            continue
+
+        original = str(
+            item.get(
+                "original"
+            )
+            or ""
+        ).strip()
+
+        suggestion = str(
+            item.get(
+                "suggestion"
+            )
+            or ""
+        ).strip()
+
+        confidence = (
+            item.get(
+                "confidence"
+            )
+        )
+
+        if (
+            not original
+            and not suggestion
+        ):
+            continue
+
+        confidence_text = ""
+
+        if confidence is not None:
+            try:
+                confidence_value = (
+                    float(
+                        confidence
+                    )
+                )
+
+                if (
+                    confidence_value
+                    <= 1
+                ):
+                    confidence_value *= 100
+
+                confidence_text = (
+                    f"{confidence_value:.0f}%"
+                )
+
+            except (
+                TypeError,
+                ValueError
+            ):
+                confidence_text = ""
+
+        rows.append(
+            (
+                original,
+                suggestion,
+                confidence_text
+            )
+        )
+
+    return rows
+
+
+# ============================================================
 # GENERAR PDF
 # ============================================================
 
 def _build_recipe_pdf(
-    recipe: Recipe,
+    recipe: Recipe
 ) -> BytesIO:
-
     buffer = BytesIO()
 
     doc = SimpleDocTemplate(
-
         buffer,
-
         pagesize=A4,
-
-        rightMargin=
-            1.5 * cm,
-
-        leftMargin=
-            1.5 * cm,
-
-        topMargin=
-            1.4 * cm,
-
-        bottomMargin=
-            1.4 * cm,
+        rightMargin=1.5 * cm,
+        leftMargin=1.5 * cm,
+        topMargin=1.4 * cm,
+        bottomMargin=1.4 * cm
     )
 
     styles = (
         getSampleStyleSheet()
     )
 
+    # ========================================================
+    # ESTILOS DEL PDF
+    # ========================================================
+
     title = ParagraphStyle(
-
         "TitleCustom",
-
-        parent=
-            styles["Heading1"],
-
-        fontSize=
-            18,
-
-        leading=
-            22,
-
-        textColor=
-            colors.HexColor(
-                "#0F172A"
-            ),
-
-        spaceAfter=
-            10,
+        parent=styles[
+            "Heading1"
+        ],
+        fontSize=18,
+        leading=22,
+        textColor=colors.HexColor(
+            "#0F172A"
+        ),
+        spaceAfter=10
     )
 
     subtitle = ParagraphStyle(
-
         "SubtitleCustom",
-
-        parent=
-            styles["Normal"],
-
-        fontSize=
-            9,
-
-        leading=
-            12,
-
-        textColor=
-            colors.HexColor(
-                "#475467"
-            ),
+        parent=styles[
+            "Normal"
+        ],
+        fontSize=9,
+        leading=12,
+        textColor=colors.HexColor(
+            "#475467"
+        )
     )
 
     section = ParagraphStyle(
-
         "SectionCustom",
-
-        parent=
-            styles["Heading2"],
-
-        fontSize=
-            12,
-
-        leading=
-            15,
-
-        textColor=
-            colors.HexColor(
-                "#0F172A"
-            ),
-
-        spaceBefore=
-            12,
-
-        spaceAfter=
-            6,
+        parent=styles[
+            "Heading2"
+        ],
+        fontSize=12,
+        leading=15,
+        textColor=colors.HexColor(
+            "#0F172A"
+        ),
+        spaceBefore=12,
+        spaceAfter=6
     )
 
     body = ParagraphStyle(
-
         "BodyCustom",
-
-        parent=
-            styles["Normal"],
-
-        fontSize=
-            9,
-
-        leading=
-            13,
-
-        textColor=
-            colors.HexColor(
-                "#1F2937"
-            ),
+        parent=styles[
+            "Normal"
+        ],
+        fontSize=9,
+        leading=13,
+        textColor=colors.HexColor(
+            "#1F2937"
+        )
     )
 
-    mono = ParagraphStyle(
-
-        "MonoCustom",
-
-        parent=
-            styles["Code"],
-
-        fontName=
-            "Courier",
-
-        fontSize=
-            8.5,
-
-        leading=
-            11,
-
-        textColor=
-            colors.HexColor(
-                "#111827"
-            ),
+    table_header = ParagraphStyle(
+        "TableHeaderCustom",
+        parent=body,
+        fontName="Helvetica-Bold",
+        textColor=colors.HexColor(
+            "#0F172A"
+        )
     )
 
     story = []
 
+    # ========================================================
+    # FUNCIÓN AUXILIAR PARA CELDAS
+    # ========================================================
+
+    def cell(
+        value: object,
+        style: ParagraphStyle = body
+    ) -> Paragraph:
+        return Paragraph(
+            escape(
+                str(
+                    value
+                    if value is not None
+                    else ""
+                )
+            ),
+            style
+        )
+
+    # ========================================================
+    # ENCABEZADO
+    # ========================================================
+
     story.append(
         Paragraph(
             "Sistema de Recetas Médicas",
-            title,
+            title
         )
     )
 
     story.append(
         Paragraph(
-            (
-                "Reporte de transcripción OCR "
-                "y validación farmacéutica"
-            ),
-            subtitle,
+            "Reporte de validación farmacéutica",
+            subtitle
         )
     )
 
     story.append(
         Spacer(
             1,
-            0.25 * cm,
+            0.25 * cm
         )
     )
 
-    def cell(
-        value: str,
-    ) -> Paragraph:
+    # ========================================================
+    # 1. DATOS DEL PACIENTE
+    # ========================================================
 
-        return Paragraph(
-            escape(
-                str(
-                    value or ""
-                )
-            ),
-            body,
+    story.append(
+        Paragraph(
+            "Datos del paciente",
+            section
         )
+    )
 
-    details = [
-
+    patient_details = [
         [
-            cell("Código"),
-            cell(recipe.code),
-            cell("Estado"),
             cell(
-                recipe.status.capitalize()
+                "Paciente",
+                table_header
             ),
-        ],
-
-        [
-            cell("Fecha de carga"),
-            cell(
-                _lima_datetime(
-                    recipe.created_at
-                )
-            ),
-            cell("Confianza OCR"),
-            cell(
-                f"{float(recipe.ocr_confidence or 0):.2f}%"
-            ),
-        ],
-
-        [
-            cell("Paciente"),
             cell(
                 recipe.patient_name
                 or "No registrado"
             ),
-            cell("Edad"),
+            cell(
+                "Edad",
+                table_header
+            ),
             cell(
                 str(
                     recipe.patient_age
@@ -1596,99 +1253,60 @@ def _build_recipe_pdf(
                 else "No registrada"
             ),
         ],
-
         [
-            cell("Teléfono"),
+            cell(
+                "Teléfono",
+                table_header
+            ),
             cell(
                 getattr(
                     recipe,
                     "patient_phone",
-                    None,
+                    None
                 )
                 or "No registrado"
             ),
-            cell("Validador"),
             cell(
-                recipe.validated_by.full_name
-                if recipe.validated_by
-                else "Pendiente"
+                "Motivo",
+                table_header
             ),
-        ],
-
-        [
-            cell("Motivo"),
             cell(
                 _service_reason_label(
                     recipe.service_reason
                 )
             ),
-            cell("Motor OCR"),
-            cell(
-                recipe.ocr_engine
-                or "No definido"
-            ),
-        ],
-
-        [
-            cell("Archivo"),
-            cell(
-                recipe.file_name
-            ),
-            cell("Reporte"),
-            cell(
-                f"{recipe.code}.pdf"
-            ),
         ],
     ]
 
-    table = Table(
-
-        details,
-
+    patient_table = Table(
+        patient_details,
         colWidths=[
             3.0 * cm,
             6.0 * cm,
             3.0 * cm,
-            6.0 * cm,
-        ],
+            6.0 * cm
+        ]
     )
 
-    table.setStyle(
+    patient_table.setStyle(
         TableStyle(
             [
-
                 (
                     "BACKGROUND",
                     (0, 0),
                     (-1, -1),
                     colors.HexColor(
                         "#F8FAFC"
-                    ),
+                    )
                 ),
-
                 (
                     "TEXTCOLOR",
                     (0, 0),
                     (-1, -1),
                     colors.HexColor(
                         "#111827"
-                    ),
+                    )
                 ),
-
-                (
-                    "FONTNAME",
-                    (0, 0),
-                    (0, -1),
-                    "Helvetica-Bold",
-                ),
-
-                (
-                    "FONTNAME",
-                    (2, 0),
-                    (2, -1),
-                    "Helvetica-Bold",
-                ),
-
                 (
                     "GRID",
                     (0, 0),
@@ -1696,59 +1314,520 @@ def _build_recipe_pdf(
                     0.25,
                     colors.HexColor(
                         "#CBD5E1"
-                    ),
+                    )
                 ),
-
                 (
                     "VALIGN",
                     (0, 0),
                     (-1, -1),
-                    "TOP",
+                    "TOP"
                 ),
-
                 (
                     "LEFTPADDING",
                     (0, 0),
                     (-1, -1),
-                    7,
+                    7
                 ),
-
                 (
                     "RIGHTPADDING",
                     (0, 0),
                     (-1, -1),
-                    7,
+                    7
                 ),
-
                 (
                     "TOPPADDING",
                     (0, 0),
                     (-1, -1),
-                    6,
+                    6
                 ),
-
                 (
                     "BOTTOMPADDING",
                     (0, 0),
                     (-1, -1),
-                    6,
+                    6
                 ),
             ]
         )
     )
 
     story.append(
-        table
+        patient_table
     )
 
-    # --------------------------------------------------------
-    # IMAGEN ORIGINAL
-    # --------------------------------------------------------
+    # ========================================================
+    # 2. RECETA ESTRUCTURADA
+    # ========================================================
+
+    story.append(
+        Paragraph(
+            "Receta estructurada",
+            section
+        )
+    )
+
+    structured_rows = (
+        _structured_recipe_rows(
+            recipe
+        )
+    )
+
+    if structured_rows:
+        structured_data = [
+            [
+                cell(
+                    "Insumo",
+                    table_header
+                ),
+                cell(
+                    "Concentración",
+                    table_header
+                ),
+            ]
+        ]
+
+        for (
+            ingredient,
+            concentration
+        ) in structured_rows:
+            structured_data.append(
+                [
+                    cell(
+                        ingredient
+                    ),
+                    cell(
+                        concentration
+                    ),
+                ]
+            )
+
+        structured_table = Table(
+            structured_data,
+            colWidths=[
+                12.0 * cm,
+                6.0 * cm
+            ],
+            repeatRows=1
+        )
+
+        structured_table.setStyle(
+            TableStyle(
+                [
+                    (
+                        "BACKGROUND",
+                        (0, 0),
+                        (-1, 0),
+                        colors.HexColor(
+                            "#E2E8F0"
+                        )
+                    ),
+                    (
+                        "BACKGROUND",
+                        (0, 1),
+                        (-1, -1),
+                        colors.HexColor(
+                            "#FFFFFF"
+                        )
+                    ),
+                    (
+                        "GRID",
+                        (0, 0),
+                        (-1, -1),
+                        0.35,
+                        colors.HexColor(
+                            "#CBD5E1"
+                        )
+                    ),
+                    (
+                        "VALIGN",
+                        (0, 0),
+                        (-1, -1),
+                        "TOP"
+                    ),
+                    (
+                        "LEFTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        7
+                    ),
+                    (
+                        "RIGHTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        7
+                    ),
+                    (
+                        "TOPPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        6
+                    ),
+                    (
+                        "BOTTOMPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        6
+                    ),
+                ]
+            )
+        )
+
+        story.append(
+            structured_table
+        )
+
+    else:
+        story.append(
+            Paragraph(
+                (
+                    "No se registraron insumos "
+                    "estructurados para esta receta."
+                ),
+                body
+            )
+        )
+
+    # ========================================================
+    # 3. CORRECCIONES SUGERIDAS
+    # ========================================================
+
+    story.append(
+        Paragraph(
+            "Correcciones sugeridas",
+            section
+        )
+    )
+
+    correction_rows = (
+        _dictionary_correction_rows(
+            recipe
+        )
+    )
+
+    if correction_rows:
+        correction_data = [
+            [
+                cell(
+                    "Original",
+                    table_header
+                ),
+                cell(
+                    "Corrección sugerida",
+                    table_header
+                ),
+                cell(
+                    "Confianza",
+                    table_header
+                ),
+            ]
+        ]
+
+        for (
+            original,
+            suggestion,
+            confidence
+        ) in correction_rows:
+            correction_data.append(
+                [
+                    cell(
+                        original
+                    ),
+                    cell(
+                        suggestion
+                    ),
+                    cell(
+                        confidence
+                        or "—"
+                    ),
+                ]
+            )
+
+        correction_table = Table(
+            correction_data,
+            colWidths=[
+                7.5 * cm,
+                7.5 * cm,
+                3.0 * cm
+            ],
+            repeatRows=1
+        )
+
+        correction_table.setStyle(
+            TableStyle(
+                [
+                    (
+                        "BACKGROUND",
+                        (0, 0),
+                        (-1, 0),
+                        colors.HexColor(
+                            "#E2E8F0"
+                        )
+                    ),
+                    (
+                        "BACKGROUND",
+                        (0, 1),
+                        (-1, -1),
+                        colors.HexColor(
+                            "#FFFFFF"
+                        )
+                    ),
+                    (
+                        "GRID",
+                        (0, 0),
+                        (-1, -1),
+                        0.35,
+                        colors.HexColor(
+                            "#CBD5E1"
+                        )
+                    ),
+                    (
+                        "VALIGN",
+                        (0, 0),
+                        (-1, -1),
+                        "TOP"
+                    ),
+                    (
+                        "LEFTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        7
+                    ),
+                    (
+                        "RIGHTPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        7
+                    ),
+                    (
+                        "TOPPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        6
+                    ),
+                    (
+                        "BOTTOMPADDING",
+                        (0, 0),
+                        (-1, -1),
+                        6
+                    ),
+                ]
+            )
+        )
+
+        story.append(
+            correction_table
+        )
+
+    else:
+        story.append(
+            Paragraph(
+                (
+                    "No se registraron "
+                    "correcciones sugeridas."
+                ),
+                body
+            )
+        )
+
+    # ========================================================
+    # 4. OBSERVACIONES DE VALIDACIÓN
+    # ========================================================
+
+    story.append(
+        Paragraph(
+            "Observaciones de validación",
+            section
+        )
+    )
+
+    observations_text = (
+        recipe.observations
+        or "Sin observaciones registradas."
+    )
+
+    story.append(
+        Paragraph(
+            escape(
+                observations_text
+            ).replace(
+                "\n",
+                "<br/>"
+            ),
+            body
+        )
+    )
+
+    # ========================================================
+    # 5. INFORMACIÓN DEL REPORTE
+    # ========================================================
+
+    story.append(
+        Paragraph(
+            "Información del reporte",
+            section
+        )
+    )
+
+    report_details = [
+        [
+            cell(
+                "Código",
+                table_header
+            ),
+            cell(
+                recipe.code
+            ),
+            cell(
+                "Estado",
+                table_header
+            ),
+            cell(
+                recipe.status.capitalize()
+            ),
+        ],
+        [
+            cell(
+                "Fecha de carga",
+                table_header
+            ),
+            cell(
+                _lima_datetime(
+                    recipe.created_at
+                )
+            ),
+            cell(
+                "Confianza OCR",
+                table_header
+            ),
+            cell(
+                (
+                    f"{float(recipe.ocr_confidence or 0):.2f}%"
+                )
+            ),
+        ],
+        [
+            cell(
+                "Validador",
+                table_header
+            ),
+            cell(
+                (
+                    recipe.validated_by.full_name
+                    if recipe.validated_by
+                    else "Pendiente"
+                )
+            ),
+            cell(
+                "Fecha de validación",
+                table_header
+            ),
+            cell(
+                _lima_datetime(
+                    recipe.validated_at
+                )
+            ),
+        ],
+        [
+            cell(
+                "Archivo",
+                table_header
+            ),
+            cell(
+                recipe.file_name
+            ),
+            cell(
+                "Reporte",
+                table_header
+            ),
+            cell(
+                f"{recipe.code}.pdf"
+            ),
+        ],
+    ]
+
+    report_table = Table(
+        report_details,
+        colWidths=[
+            3.0 * cm,
+            6.0 * cm,
+            3.0 * cm,
+            6.0 * cm
+        ]
+    )
+
+    report_table.setStyle(
+        TableStyle(
+            [
+                (
+                    "BACKGROUND",
+                    (0, 0),
+                    (-1, -1),
+                    colors.HexColor(
+                        "#F8FAFC"
+                    )
+                ),
+                (
+                    "GRID",
+                    (0, 0),
+                    (-1, -1),
+                    0.25,
+                    colors.HexColor(
+                        "#CBD5E1"
+                    )
+                ),
+                (
+                    "VALIGN",
+                    (0, 0),
+                    (-1, -1),
+                    "TOP"
+                ),
+                (
+                    "LEFTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    7
+                ),
+                (
+                    "RIGHTPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    7
+                ),
+                (
+                    "TOPPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6
+                ),
+                (
+                    "BOTTOMPADDING",
+                    (0, 0),
+                    (-1, -1),
+                    6
+                ),
+            ]
+        )
+    )
+
+    story.append(
+        report_table
+    )
+
+    # ========================================================
+    # 6. IMAGEN DE LA RECETA
+    # ========================================================
+
+    story.append(
+        Paragraph(
+            "Imagen de la receta",
+            section
+        )
+    )
 
     try:
-
-        image_bytes = read_file_bytes(
-            recipe.file_path
+        image_bytes = (
+            read_file_bytes(
+                recipe.file_path
+            )
         )
 
         image_buffer = BytesIO(
@@ -1761,154 +1840,53 @@ def _build_recipe_pdf(
             )
         ).getSize()
 
-        max_w = (
-            17.5 * cm
-        )
-
-        max_h = (
-            8.5 * cm
-        )
+        max_w = 17.5 * cm
+        max_h = 8.5 * cm
 
         scale = min(
             max_w / iw,
             max_h / ih,
-            1.0,
-        )
-
-        story.append(
-            Paragraph(
-                "Imagen de la receta",
-                section,
-            )
+            1.0
         )
 
         story.append(
             PdfImage(
                 image_buffer,
-                width=
-                    iw * scale,
-                height=
-                    ih * scale,
+                width=iw * scale,
+                height=ih * scale
             )
         )
 
     except Exception:
-
-        story.append(
-            Paragraph(
-                "Imagen de la receta",
-                section,
-            )
-        )
-
         story.append(
             Paragraph(
                 (
                     "No fue posible incorporar "
-                    "la imagen original "
-                    "en el reporte."
+                    "la imagen original en el reporte."
                 ),
-                body,
+                body
             )
         )
 
-    # --------------------------------------------------------
-    # OCR
-    # --------------------------------------------------------
-
-    story.append(
-        Paragraph(
-            "Texto detectado por OCR",
-            section,
-        )
-    )
-
-    story.append(
-        Preformatted(
-            escape(
-                recipe.raw_text
-                or (
-                    "No se registró "
-                    "texto OCR."
-                )
-            ),
-            mono,
-        )
-    )
-
-    # --------------------------------------------------------
-    # TEXTO NORMALIZADO
-    # --------------------------------------------------------
-
-    if (
-        recipe.normalized_text
-        and recipe.normalized_text.strip()
-        != (
-            recipe.raw_text
-            or ""
-        ).strip()
-    ):
-
-        story.append(
-            Paragraph(
-                (
-                    "Sugerencia por "
-                    "diccionario farmacéutico"
-                ),
-                section,
-            )
-        )
-
-        story.append(
-            Preformatted(
-                escape(
-                    recipe.normalized_text
-                ),
-                mono,
-            )
-        )
-
-    # --------------------------------------------------------
-    # OBSERVACIONES
-    # --------------------------------------------------------
-
-    story.append(
-        Paragraph(
-            "Observaciones de validación",
-            section,
-        )
-    )
-
-    story.append(
-        Paragraph(
-            escape(
-                recipe.observations
-                or (
-                    "Sin observaciones "
-                    "registradas."
-                )
-            ),
-            body,
-        )
-    )
+    # ========================================================
+    # PIE DEL PDF
+    # ========================================================
 
     story.append(
         Spacer(
             1,
-            0.4 * cm,
+            0.4 * cm
         )
     )
 
     story.append(
         Paragraph(
             (
-                "Este reporte conserva el texto "
-                "OCR original y las sugerencias "
-                "como apoyo. La decisión final "
-                "corresponde al químico "
-                "farmacéutico validador."
+                "Reporte generado como apoyo "
+                "a la revisión y validación del "
+                "químico farmacéutico."
             ),
-            subtitle,
+            subtitle
         )
     )
 
@@ -1916,59 +1894,41 @@ def _build_recipe_pdf(
         story
     )
 
-    buffer.seek(
-        0
-    )
+    buffer.seek(0)
 
     return buffer
 
 
 # ============================================================
-# CAMBIAR ESTADO
+# CAMBIAR ESTADO DE LA RECETA
 # ============================================================
 
 def _change_status(
-
     recipe_id: int,
-
     status: str,
-
     action: str,
-
-    payload: (
-        schemas.ValidationIn
-        | None
-    ),
-
+    payload: schemas.ValidationIn | None,
     current_user: User,
-
-    db: Session,
+    db: Session
 ):
-
     recipe = db.get(
         Recipe,
-        recipe_id,
+        recipe_id
     )
 
     if not recipe:
-
         raise HTTPException(
             status_code=404,
-            detail=(
-                "Receta no encontrada."
-            ),
+            detail="Receta no encontrada."
         )
 
-    recipe.status = (
-        status
-    )
+    recipe.status = status
 
     if (
         payload
         and payload.observations
         is not None
     ):
-
         recipe.observations = (
             payload.observations
         )
@@ -1986,10 +1946,7 @@ def _change_status(
     )
 
     db.commit()
-
-    db.refresh(
-        recipe
-    )
+    db.refresh(recipe)
 
     add_activity(
         db,
@@ -1998,7 +1955,7 @@ def _change_status(
         (
             f"La receta {recipe.code} "
             f"cambió a estado {status}."
-        ),
+        )
     )
 
     return recipe_to_out(

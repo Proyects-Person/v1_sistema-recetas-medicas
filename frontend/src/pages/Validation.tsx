@@ -1,67 +1,19 @@
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Edit3,
-  FileText,
-  Lightbulb,
-  Lock,
-  Sparkles,
-  XCircle
-} from 'lucide-react'
-
-import {
-  ChangeEvent,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
-
-import {
-  Link,
-  useNavigate,
-  useParams,
-  useSearchParams
-} from 'react-router-dom'
-
+import { AlertTriangle, CheckCircle2, Edit3, FileText, Lock, XCircle } from 'lucide-react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import EmptyState from '../components/EmptyState'
+import IngredientTable from '../components/IngredientTable'
+import { api, fetchBlobUrl } from '../services/api'
+import type { Recipe, RecipeListItem } from '../types'
+import { formatLimaDateTime } from '../utils/date'
 
-import {
-  api,
-  fetchBlobUrl
-} from '../services/api'
-
-import type {
-  Recipe,
-  RecipeListItem
-} from '../types'
-
-import {
-  formatLimaDateTime
-} from '../utils/date'
-
-
-function formatConfidence(
-  value?: number | null
-) {
-  if (
-    value === undefined ||
-    value === null
-  ) {
-    return ''
-  }
-
-  const percent =
-    value <= 1
-      ? value * 100
-      : value
-
+function formatConfidence(value?: number | null) {
+  if (value === undefined || value === null) return ''
+  const percent = value <= 1 ? value * 100 : value
   return `${percent.toFixed(0)}%`
 }
 
-
-function reasonLabel(
-  value?: string | null
-) {
+function reasonLabel(value?: string | null) {
   const labels: Record<string, string> = {
     analisis_receta: 'Análisis de receta',
     preparacion_magistral: 'Preparar producto magistral',
@@ -69,635 +21,210 @@ function reasonLabel(
     otro: 'Otro'
   }
 
-  return (
-    labels[value || ''] ||
-    value ||
-    'Sin motivo registrado'
-  )
+  return labels[value || ''] || value || 'Sin motivo registrado'
 }
-
-
-function structuredValue(
-  value?: string | null
-) {
-  const cleanValue = (
-    value || ''
-  ).trim()
-
-  return cleanValue || '—'
-}
-
 
 export default function Validation() {
-
-  const {
-    id
-  } = useParams()
-
-  const [
-    searchParams
-  ] = useSearchParams()
-
+  const { id } = useParams()
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
 
-  const isViewMode =
-    searchParams.get('mode') === 'view'
+  const isViewMode = searchParams.get('mode') === 'view'
 
+  const [recipe, setRecipe] = useState<Recipe | null>(null)
+  const [queue, setQueue] = useState<RecipeListItem[]>([])
 
-  // ============================================================
-  // ESTADOS
-  // ============================================================
+  const [rawText, setRawText] = useState('')
+  const [patientName, setPatientName] = useState('')
+  const [patientAge, setPatientAge] = useState('')
+  const [patientPhone, setPatientPhone] = useState('')
+  const [serviceReason, setServiceReason] = useState('analisis_receta')
+  const [observations, setObservations] = useState('')
 
-  const [
-    recipe,
-    setRecipe
-  ] = useState<Recipe | null>(
-    null
-  )
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
 
-  const [
-    queue,
-    setQueue
-  ] = useState<RecipeListItem[]>(
-    []
-  )
+  const loadRecipe = async (recipeId: string) => {
+    const data = await api.get<Recipe>(`/recipes/${recipeId}`)
 
-  const [
-    rawText,
-    setRawText
-  ] = useState('')
-
-  const [
-    patientName,
-    setPatientName
-  ] = useState('')
-
-  const [
-    patientAge,
-    setPatientAge
-  ] = useState('')
-
-  const [
-    patientPhone,
-    setPatientPhone
-  ] = useState('')
-
-  const [
-    serviceReason,
-    setServiceReason
-  ] = useState(
-    'analisis_receta'
-  )
-
-  const [
-    observations,
-    setObservations
-  ] = useState('')
-
-  const [
-    message,
-    setMessage
-  ] = useState('')
-
-  const [
-    error,
-    setError
-  ] = useState('')
-
-  const [
-    imageUrl,
-    setImageUrl
-  ] = useState('')
-
-
-  // ============================================================
-  // CARGAR RECETA
-  // ============================================================
-
-  const loadRecipe = async (
-    recipeId: string
-  ) => {
-
-    const data =
-      await api.get<Recipe>(
-        `/recipes/${recipeId}`
-      )
-
-    setRecipe(
-      data
-    )
-
-    setRawText(
-      data.raw_text || ''
-    )
-
-    setPatientName(
-      data.patient_name || ''
-    )
+    setRecipe(data)
+    setRawText(data.raw_text || '')
+    setPatientName(data.patient_name || '')
 
     setPatientAge(
-      data.patient_age !== null &&
-      data.patient_age !== undefined
-        ? String(
-            data.patient_age
-          )
+      data.patient_age !== null && data.patient_age !== undefined
+        ? String(data.patient_age)
         : ''
     )
 
-    setPatientPhone(
-      data.patient_phone || ''
-    )
-
-    setServiceReason(
-      data.service_reason ||
-      'analisis_receta'
-    )
-
-    setObservations(
-      data.observations || ''
-    )
+    setPatientPhone(data.patient_phone || '')
+    setServiceReason(data.service_reason || 'analisis_receta')
+    setObservations(data.observations || '')
   }
 
+  useEffect(() => {
+    setError('')
 
-  // ============================================================
-  // CARGA INICIAL
-  // ============================================================
-
-  useEffect(
-    () => {
-
-      setError('')
-
-      if (id) {
-
-        loadRecipe(
-          id
-        ).catch(
-          err =>
-            setError(
-              err.message
-            )
-        )
-
-      } else {
-
-        api
-          .get<RecipeListItem[]>(
-            '/recipes?status=procesada'
-          )
-          .then(
-            setQueue
-          )
-          .catch(
-            err =>
-              setError(
-                err.message
-              )
-          )
-      }
-
-    },
-    [id]
-  )
-
-
-  // ============================================================
-  // IMAGEN
-  // ============================================================
-
-  useEffect(
-    () => {
-
-      let activeUrl = ''
-
-      if (!recipe) {
-        return undefined
-      }
-
-      fetchBlobUrl(
-        `/recipes/${recipe.id}/file`
-      )
-        .then(
-          url => {
-
-            activeUrl =
-              url
-
-            setImageUrl(
-              url
-            )
-          }
-        )
-        .catch(
-          () =>
-            setImageUrl('')
-        )
-
-      return () => {
-
-        if (activeUrl) {
-          URL.revokeObjectURL(
-            activeUrl
-          )
-        }
-      }
-
-    },
-    [recipe?.id]
-  )
-
-
-  // ============================================================
-  // TEXTO OCR
-  // ============================================================
-
-  const updateText = (
-    event:
-      ChangeEvent<HTMLTextAreaElement>
-  ) => {
-
-    setRawText(
-      event.target.value
-    )
-  }
-
-
-  // ============================================================
-  // DATOS DERIVADOS
-  // ============================================================
-
-  const suggestions =
-    recipe?.dictionary_suggestions ||
-    []
-
-  const recognizedTerms =
-    recipe?.recognized_terms ||
-    []
-
-  const structuredData =
-    recipe?.structured_data ||
-    []
-
-
-  // ============================================================
-  // TEXTO SUGERIDO
-  // ============================================================
-
-  const hasSuggestedText =
-    useMemo(
-      () => {
-
-        const suggested = (
-          recipe?.normalized_text ||
-          ''
-        ).trim()
-
-        return (
-          suggestions.length > 0 &&
-          Boolean(
-            suggested &&
-            suggested !==
-              (
-                rawText ||
-                ''
-              ).trim()
-          )
-        )
-
-      },
-      [
-        recipe?.normalized_text,
-        rawText,
-        suggestions.length
-      ]
-    )
-
-
-  const useSuggestedText =
-    () => {
-
-      if (
-        !recipe?.normalized_text ||
-        isViewMode
-      ) {
-        return
-      }
-
-      setRawText(
-        recipe.normalized_text
-      )
-
-      setMessage(
-        'Se copió el texto sugerido al campo editable. Guarda los cambios para recalcular los datos estructurados.'
-      )
+    if (id) {
+      loadRecipe(id).catch(err => setError(err.message))
+    } else {
+      api
+        .get<RecipeListItem[]>('/recipes?status=procesada')
+        .then(setQueue)
+        .catch(err => setError(err.message))
     }
+  }, [id])
 
+  useEffect(() => {
+    let activeUrl = ''
 
-  // ============================================================
-  // GUARDAR
-  // ============================================================
+    if (!recipe) return undefined
+
+    fetchBlobUrl(`/recipes/${recipe.id}/file`)
+      .then(url => {
+        activeUrl = url
+        setImageUrl(url)
+      })
+      .catch(() => setImageUrl(''))
+
+    return () => {
+      if (activeUrl) URL.revokeObjectURL(activeUrl)
+    }
+  }, [recipe?.id])
+
+  const updateText = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    setRawText(event.target.value)
+  }
+
+  const suggestions = recipe?.dictionary_suggestions || []
+  const recognizedTerms = recipe?.recognized_terms || []
+  const structuredIngredients = recipe?.structured_ingredients || []
 
   const save = async () => {
+    if (!recipe || isViewMode) return
 
-    if (
-      !recipe ||
-      isViewMode
-    ) {
+    if (!patientName.trim()) {
+      setError('El nombre del paciente es obligatorio.')
       return
     }
 
-    setError('')
-    setMessage('')
-
-
-    if (
-      !patientName.trim()
-    ) {
-
-      setError(
-        'El nombre del paciente es obligatorio.'
-      )
-
+    if (!patientAge.trim()) {
+      setError('La edad del paciente es obligatoria.')
       return
     }
 
-
-    if (
-      !patientAge.trim()
-    ) {
-
-      setError(
-        'La edad del paciente es obligatoria.'
-      )
-
+    if (!/^\d{9}$/.test(patientPhone)) {
+      setError('El teléfono del paciente debe contener exactamente 9 dígitos.')
       return
     }
 
+    const updated = await api.put<Recipe>(
+      `/recipes/${recipe.id}/data`,
+      {
+        raw_text: rawText,
+        patient_name: patientName.trim(),
+        patient_age: Number(patientAge),
+        patient_phone: patientPhone,
+        service_reason: serviceReason,
+        observations
+      }
+    )
 
-    if (
-      !/^\d{9}$/.test(
-        patientPhone
-      )
-    ) {
+    setRecipe(updated)
+    setRawText(updated.raw_text || '')
+    setPatientName(updated.patient_name || '')
 
-      setError(
-        'El teléfono del paciente debe contener exactamente 9 dígitos.'
-      )
+    setPatientAge(
+      updated.patient_age !== null && updated.patient_age !== undefined
+        ? String(updated.patient_age)
+        : ''
+    )
 
-      return
-    }
+    setPatientPhone(updated.patient_phone || '')
+    setServiceReason(updated.service_reason || 'analisis_receta')
+    setObservations(updated.observations || '')
 
-
-    try {
-
-      const updated =
-        await api.put<Recipe>(
-          `/recipes/${recipe.id}/data`,
-          {
-            raw_text:
-              rawText,
-
-            patient_name:
-              patientName.trim(),
-
-            patient_age:
-              Number(
-                patientAge
-              ),
-
-            patient_phone:
-              patientPhone,
-
-            service_reason:
-              serviceReason,
-
-            observations:
-              observations
-          }
-        )
-
-
-      setRecipe(
-        updated
-      )
-
-      setRawText(
-        updated.raw_text ||
-        ''
-      )
-
-      setPatientName(
-        updated.patient_name ||
-        ''
-      )
-
-      setPatientAge(
-        updated.patient_age !== null &&
-        updated.patient_age !== undefined
-          ? String(
-              updated.patient_age
-            )
-          : ''
-      )
-
-      setPatientPhone(
-        updated.patient_phone ||
-        ''
-      )
-
-      setServiceReason(
-        updated.service_reason ||
-        'analisis_receta'
-      )
-
-      setObservations(
-        updated.observations ||
-        ''
-      )
-
-
-      setMessage(
-        'Información actualizada correctamente. Los datos estructurados fueron recalculados a partir del texto OCR guardado.'
-      )
-
-    } catch (err) {
-
-      setError(
-        err instanceof Error
-          ? err.message
-          : 'No se pudo guardar la información.'
-      )
-    }
+    setMessage(
+      'Información actualizada correctamente. El diccionario fue recalculado si modificaste el texto OCR.'
+    )
   }
 
+  const changeStatus = async (
+    action: 'approve' | 'observe' | 'cancel'
+  ) => {
+    if (!recipe || isViewMode) return
 
-  // ============================================================
-  // CAMBIAR ESTADO
-  // ============================================================
-
-  const changeStatus =
-    async (
-      action:
-        | 'approve'
-        | 'observe'
-        | 'cancel'
-    ) => {
-
-      if (
-        !recipe ||
-        isViewMode
-      ) {
-        return
-      }
-
-      setError('')
-      setMessage('')
-
-      try {
-
-        const endpoints = {
-          approve:
-            'approve',
-
-          observe:
-            'observe',
-
-          cancel:
-            'cancel'
-        }
-
-
-        const updated =
-          await api.post<Recipe>(
-            `/recipes/${recipe.id}/${endpoints[action]}`,
-            {
-              observations
-            }
-          )
-
-
-        setRecipe(
-          updated
-        )
-
-        setMessage(
-          'Estado actualizado correctamente.'
-        )
-
-      } catch (err) {
-
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'No se pudo actualizar el estado.'
-        )
-      }
+    const endpoints = {
+      approve: 'approve',
+      observe: 'observe',
+      cancel: 'cancel'
     }
 
+    const updated = await api.post<Recipe>(
+      `/recipes/${recipe.id}/${endpoints[action]}`,
+      {
+        observations
+      }
+    )
 
-  // ============================================================
-  // COLA DE VALIDACIÓN
-  // ============================================================
+    setRecipe(updated)
+    setMessage('Estado actualizado correctamente.')
+  }
 
   if (!id) {
-
     return (
-
       <div className="page-stack">
 
         <div className="page-title-row">
-
           <div>
-
-            <h1>
-              Validación Farmacéutica
-            </h1>
-
-            <p>
-              Recetas procesadas pendientes de validación
-            </p>
-
+            <h1>Validación Farmacéutica</h1>
+            <p>Recetas procesadas pendientes de validación</p>
           </div>
-
         </div>
 
-
         {error && (
-
           <div className="error-box">
             {error}
           </div>
-
         )}
-
 
         <section className="card">
 
-          {
-            queue.length === 0
-              ? (
+          {queue.length === 0 ? (
+            <EmptyState
+              title="Sin pendientes"
+              text="No hay recetas procesadas esperando validación."
+            />
+          ) : (
+            queue.map(item => (
+              <Link
+                className="recent-row"
+                to={`/validation/${item.id}?mode=edit`}
+                key={item.id}
+              >
 
-                <EmptyState
-                  title="Sin pendientes"
-                  text="No hay recetas procesadas esperando validación."
-                />
+                <div className="doc-icon">
+                  <FileText size={16} />
+                </div>
 
-              )
-              : (
+                <div>
+                  <strong>{item.code}</strong>
 
-                queue.map(
-                  item => (
+                  <span>
+                    {item.patient_name || 'Paciente no registrado'}
+                    {' · '}
+                    {reasonLabel(item.service_reason)}
+                  </span>
+                </div>
 
-                    <Link
-                      className="recent-row"
-                      to={`/validation/${item.id}?mode=edit`}
-                      key={item.id}
-                    >
+                <span className="badge badge-procesada">
+                  Pendiente
+                </span>
 
-                      <div className="doc-icon">
-
-                        <FileText
-                          size={16}
-                        />
-
-                      </div>
-
-
-                      <div>
-
-                        <strong>
-                          {item.code}
-                        </strong>
-
-                        <span>
-
-                          {
-                            item.patient_name ||
-                            'Paciente no registrado'
-                          }
-
-                          {' · '}
-
-                          {
-                            reasonLabel(
-                              item.service_reason
-                            )
-                          }
-
-                        </span>
-
-                      </div>
-
-
-                      <span className="badge badge-procesada">
-                        Pendiente
-                      </span>
-
-                    </Link>
-                  )
-                )
-              )
-          }
+              </Link>
+            ))
+          )}
 
         </section>
 
@@ -705,16 +232,7 @@ export default function Validation() {
     )
   }
 
-
-  // ============================================================
-  // CARGANDO
-  // ============================================================
-
-  if (
-    error &&
-    !recipe
-  ) {
-
+  if (error) {
     return (
       <div className="error-box">
         {error}
@@ -722,218 +240,115 @@ export default function Validation() {
     )
   }
 
-
   if (!recipe) {
-
-    return (
-      <div>
-        Cargando receta...
-      </div>
-    )
+    return <div>Cargando receta...</div>
   }
 
-
-  const low =
-    new Set(
-      recipe.low_confidence_fields ||
-      []
-    )
-
-
-  // ============================================================
-  // VISTA
-  // ============================================================
+  const low = new Set(recipe.low_confidence_fields || [])
 
   return (
-
     <div className="page-stack validation-page">
 
-
-      {/* ======================================================
-          TÍTULO
-      ====================================================== */}
+      {/* ENCABEZADO */}
 
       <div className="page-title-row">
 
         <div>
 
           <h1>
-
-            {
-              isViewMode
-                ? 'Visualización de Receta'
-                : 'Validación Farmacéutica'
-            }
-
+            {isViewMode
+              ? 'Visualización de Receta'
+              : 'Validación Farmacéutica'}
           </h1>
 
           <p>
-
-            {
-              isViewMode
-                ? 'Consulta de receta sin edición'
-                : 'Revisión de los datos farmacoterapéuticos estructurados y del texto detectado por OCR'
-            }
-
+            {isViewMode
+              ? 'Consulta de receta sin edición'
+              : 'Revisión del texto detectado por OCR y sugerencias del diccionario farmacéutico'}
           </p>
 
         </div>
 
-
         <span className="confidence">
-
-          Confianza OCR:{' '}
-
-          {
-            recipe.ocr_confidence
-          }%
-
+          Confianza OCR: {recipe.ocr_confidence}%
         </span>
 
       </div>
 
+      {isViewMode && (
+        <div className="info-box">
 
-      {/* ======================================================
-          MODO LECTURA
-      ====================================================== */}
+          <Lock size={16} />
 
-      {
-        isViewMode && (
+          Modo visualización: los datos se muestran solo para consulta.
+          Usa el ícono de editar desde Historial para modificar.
 
-          <div className="info-box">
-
-            <Lock
-              size={16}
-            />
-
-            Modo visualización:
-            los datos se muestran
-            solo para consulta.
-            Usa el ícono de editar
-            desde Historial para
-            modificar.
-
-          </div>
-        )
-      }
-
-
-      {/* ======================================================
-          RECETA + DATOS GENERALES
-      ====================================================== */}
+        </div>
+      )}
 
       <div className="two-cols validation-cols">
-
 
         {/* RECETA ORIGINAL */}
 
         <section className="card document-box">
 
-          <h2>
-            Receta Original
-          </h2>
+          <h2>Receta Original</h2>
 
-
-          {
-            imageUrl
-              ? (
-
-                <img
-                  src={imageUrl}
-                  alt={`Receta ${recipe.code}`}
-                />
-
-              )
-              : (
-
-                <div className="doc-placeholder">
-
-                  <FileText
-                    size={45}
-                  />
-
-                </div>
-              )
-          }
-
+          {imageUrl ? (
+            <img src={imageUrl} />
+          ) : (
+            <div className="doc-placeholder">
+              <FileText size={45} />
+            </div>
+          )}
 
           <div className="doc-caption">
 
-            <FileText
-              size={22}
-            />
+            <FileText size={22} />
 
             Imagen cargada
-
             <br />
 
-            {
-              recipe.file_name
-            }
+            {recipe.file_name}
 
           </div>
 
         </section>
 
-
         {/* DATOS DE EVALUACIÓN */}
 
         <section className="card structured-form">
 
-          <h2>
-            Datos de la evaluación
-          </h2>
+          <h2>Datos de la evaluación</h2>
 
+          {/* DATOS DEL PACIENTE */}
 
           <div className="patient-grid patient-grid-4">
 
-
             <div>
 
-              <label>
-                Paciente *
-              </label>
+              <label>Paciente *</label>
 
               <input
-                disabled={
-                  isViewMode
-                }
-                value={
-                  patientName
-                }
-                onChange={
-                  e =>
-                    setPatientName(
-                      e.target.value
-                    )
-                }
+                disabled={isViewMode}
+                value={patientName}
+                onChange={e => setPatientName(e.target.value)}
                 placeholder="Nombre del paciente"
               />
 
             </div>
 
-
             <div>
 
-              <label>
-                Edad *
-              </label>
+              <label>Edad *</label>
 
               <input
-                disabled={
-                  isViewMode
-                }
-                value={
-                  patientAge
-                }
-                onChange={
-                  e =>
-                    setPatientAge(
-                      e.target.value.replace(
-                        /[^0-9]/g,
-                        ''
-                      )
-                    )
+                disabled={isViewMode}
+                value={patientAge}
+                onChange={e =>
+                  setPatientAge(
+                    e.target.value.replace(/[^0-9]/g, '')
+                  )
                 }
                 inputMode="numeric"
                 placeholder="Edad"
@@ -941,33 +356,19 @@ export default function Validation() {
 
             </div>
 
-
             <div>
 
-              <label>
-                Teléfono *
-              </label>
+              <label>Teléfono *</label>
 
               <input
-                disabled={
-                  isViewMode
-                }
-                value={
-                  patientPhone
-                }
-                onChange={
-                  e =>
-                    setPatientPhone(
-                      e.target.value
-                        .replace(
-                          /[^0-9]/g,
-                          ''
-                        )
-                        .slice(
-                          0,
-                          9
-                        )
-                    )
+                disabled={isViewMode}
+                value={patientPhone}
+                onChange={e =>
+                  setPatientPhone(
+                    e.target.value
+                      .replace(/[^0-9]/g, '')
+                      .slice(0, 9)
+                  )
                 }
                 inputMode="numeric"
                 maxLength={9}
@@ -976,26 +377,14 @@ export default function Validation() {
 
             </div>
 
-
             <div>
 
-              <label>
-                Motivo *
-              </label>
+              <label>Motivo *</label>
 
               <select
-                disabled={
-                  isViewMode
-                }
-                value={
-                  serviceReason
-                }
-                onChange={
-                  e =>
-                    setServiceReason(
-                      e.target.value
-                    )
-                }
+                disabled={isViewMode}
+                value={serviceReason}
+                onChange={e => setServiceReason(e.target.value)}
               >
 
                 <option value="analisis_receta">
@@ -1020,90 +409,62 @@ export default function Validation() {
 
           </div>
 
+          {/* =====================================================
+              RECETA ESTRUCTURADA
+              Ahora aparece inmediatamente después de los datos
+              del paciente.
+             ===================================================== */}
 
-          {/* RESUMEN */}
+          <IngredientTable items={structuredIngredients} />
 
-          <div className="processing-summary">
+          {/* =====================================================
+              CORRECCIONES SUGERIDAS
+             ===================================================== */}
 
-            <h3>
-              Resumen del procesamiento
-            </h3>
+          {suggestions.length > 0 && (
+            <div className="suggestions-list">
 
+              <h3>Correcciones sugeridas</h3>
 
-            <div className="engine-row">
+              {suggestions.map((item, index) => (
 
-              <span>
+                <div
+                  className="suggestion-item"
+                  key={`${item.original}-${item.suggestion}-${index}`}
+                >
 
-                Motor OCR:{' '}
+                  <div>
 
-                {
-                  recipe.ocr_engine ||
-                  'no definido'
-                }
-
-              </span>
-
-
-              {
-                structuredData.length > 0 && (
-
-                  <span>
-
-                    {
-                      structuredData.length
-                    } insumo(s)
-                    estructurado(s)
-
-                  </span>
-                )
-              }
-
-
-              {
-                suggestions.length > 0 ||
-                recognizedTerms.length > 0
-                  ? (
+                    <strong>
+                      {item.original}
+                    </strong>
 
                     <span>
-                      Diccionario farmacéutico activo
+                      → {item.suggestion}
                     </span>
 
-                  )
-                  : (
+                  </div>
 
-                    <span>
-                      Sin coincidencias del diccionario
-                    </span>
-
-                  )
-              }
-
-            </div>
-
-
-            {
-              low.has(
-                'raw_text'
-              ) && (
-
-                <div className="field-alert">
-
-                  <AlertTriangle
-                    size={15}
-                  />
-
-                  Baja confianza OCR.
-                  Revisa manualmente
-                  la transcripción.
+                  <small>
+                    {item.category || 'término'}
+                    {' · '}
+                    {formatConfidence(item.confidence)}
+                    {' · '}
+                    {item.reason}
+                  </small>
 
                 </div>
-              )
-            }
 
-          </div>
+              ))}
 
+            </div>
+          )}
 
-          {/* OBSERVACIONES */}
+          {/* =====================================================
+              OBSERVACIONES DE VALIDACIÓN
+              Editable durante la validación.
+              Solo lectura en modo Visualizar.
+             ===================================================== */}
 
           <label>
             Observaciones de validación
@@ -1111,733 +472,194 @@ export default function Validation() {
 
           <textarea
             name="observations"
-            value={
-              observations
-            }
-            onChange={
-              e =>
-                setObservations(
-                  e.target.value
-                )
-            }
-            readOnly={
-              isViewMode
-            }
+            value={observations}
+            onChange={e => setObservations(e.target.value)}
+            readOnly={isViewMode}
             placeholder="Agregar observaciones técnicas si corresponde..."
           />
+
+          {/* =====================================================
+              TEXTO DETECTADO POR OCR
+              Se mantiene tal como estaba.
+             ===================================================== */}
+
+          <h2>Texto detectado por OCR</h2>
+
+          <p className="muted-text">
+            Este campo conserva la transcripción obtenida desde la imagen.
+            El diccionario solo aparece cuando detecta términos iguales o similares.
+          </p>
+
+          <div className="engine-row">
+
+            <span>
+              Motor OCR: {recipe.ocr_engine || 'no definido'}
+            </span>
+
+            {suggestions.length > 0 || recognizedTerms.length > 0 ? (
+              <span>
+                Diccionario farmacéutico activo
+              </span>
+            ) : (
+              <span>
+                Sin coincidencias del diccionario
+              </span>
+            )}
+
+          </div>
+
+          {low.has('raw_text') && (
+            <div className="field-alert">
+
+              <AlertTriangle size={15} />
+
+              Baja confianza OCR. Revisa manualmente la transcripción.
+
+            </div>
+          )}
+
+          <textarea
+            name="raw_text"
+            className="ocr-textarea"
+            value={rawText}
+            onChange={updateText}
+            readOnly={isViewMode}
+            placeholder="Aquí aparecerá todo el texto detectado por OCR..."
+          />
+
+          {/* =====================================================
+              TÉRMINOS RECONOCIDOS
+              Se mantiene tal como estaba.
+             ===================================================== */}
+
+          {recognizedTerms.length > 0 && (
+            <div className="term-tags">
+
+              {recognizedTerms
+                .slice(0, 10)
+                .map((item, index) => (
+
+                  <span key={`${item.term}-${index}`}>
+                    {item.term}
+                  </span>
+
+                ))}
+
+            </div>
+          )}
 
         </section>
 
       </div>
 
+      {/* =========================================================
+          ACCIONES DE VALIDACIÓN
+         ========================================================= */}
 
-      {/* ======================================================
-          DATA ESTRUCTURADA
-      ====================================================== */}
+      {!isViewMode ? (
 
-      <section className="card structured-data-card">
+        <section className="validation-actions">
 
+          <h2>
+            Acciones de Validación
+          </h2>
 
-        <div className="structured-data-heading">
+          <div className="button-grid">
 
-          <div>
+            <button
+              className="outline-btn"
+              onClick={save}
+            >
+              <Edit3 size={16} />
+              Guardar cambios
+            </button>
 
-            <h2>
-              Datos farmacoterapéuticos estructurados
-            </h2>
+            <button
+              className="success-btn"
+              onClick={() => changeStatus('approve')}
+            >
+              <CheckCircle2 size={16} />
+              Aprobar
+            </button>
 
-            <p>
+            <button
+              className="warning-btn"
+              onClick={() => changeStatus('observe')}
+            >
+              <AlertTriangle size={16} />
+              Observar
+            </button>
 
-              Información interpretada
-              por el backend a partir
-              del OCR, reglas Regex y
-              diccionario farmacéutico.
-
-              {' '}
-
-              Los campos no identificados
-              se muestran como “—”.
-
-            </p>
+            <button
+              className="danger-btn"
+              onClick={() => changeStatus('cancel')}
+            >
+              <XCircle size={16} />
+              Rechazar
+            </button>
 
           </div>
 
-
-          <span className="structured-count">
-
-            {
-              structuredData.length
-            } registro(s)
-
-          </span>
-
-        </div>
-
-
-        {
-          structuredData.length > 0
-            ? (
-
-              <div className="structured-table-wrap">
-
-                <table className="structured-data-table">
-
-                  <thead>
-
-                    <tr>
-
-                      <th>
-                        Medicamento o insumo
-                      </th>
-
-                      <th>
-                        Concentración
-                      </th>
-
-                      <th>
-                        Forma farmacéutica
-                      </th>
-
-                      <th>
-                        Cantidad
-                      </th>
-
-                      <th>
-                        Dosis
-                      </th>
-
-                      <th>
-                        Frecuencia
-                      </th>
-
-                      <th>
-                        Duración
-                      </th>
-
-                      <th>
-                        Vía de administración
-                      </th>
-
-                    </tr>
-
-                  </thead>
-
-
-                  <tbody>
-
-                    {
-                      structuredData.map(
-                        (
-                          row,
-                          index
-                        ) => (
-
-                          <tr
-                            key={
-                              `${
-                                row.medication_or_ingredient ||
-                                'insumo'
-                              }-${index}`
-                            }
-                          >
-
-                            <td className="medication-cell">
-
-                              {
-                                structuredValue(
-                                  row.medication_or_ingredient
-                                )
-                              }
-
-                            </td>
-
-
-                            <td>
-
-                              {
-                                structuredValue(
-                                  row.concentration
-                                )
-                              }
-
-                            </td>
-
-
-                            <td>
-
-                              {
-                                structuredValue(
-                                  row.pharmaceutical_form
-                                )
-                              }
-
-                            </td>
-
-
-                            <td>
-
-                              {
-                                structuredValue(
-                                  row.quantity
-                                )
-                              }
-
-                            </td>
-
-
-                            <td>
-
-                              {
-                                structuredValue(
-                                  row.dosage
-                                )
-                              }
-
-                            </td>
-
-
-                            <td>
-
-                              {
-                                structuredValue(
-                                  row.frequency
-                                )
-                              }
-
-                            </td>
-
-
-                            <td>
-
-                              {
-                                structuredValue(
-                                  row.duration
-                                )
-                              }
-
-                            </td>
-
-
-                            <td>
-
-                              {
-                                structuredValue(
-                                  row.administration_route
-                                )
-                              }
-
-                            </td>
-
-                          </tr>
-                        )
-                      )
-                    }
-
-                  </tbody>
-
-                </table>
-
-              </div>
-
-            )
-            : (
-
-              <div className="structured-data-empty">
-
-                <FileText
-                  size={22}
-                />
-
-                <div>
-
-                  <strong>
-                    No se generaron datos farmacoterapéuticos estructurados.
-                  </strong>
-
-                  <span>
-
-                    Revisa el texto OCR
-                    y vuelve a guardar
-                    la receta para ejecutar
-                    nuevamente el parser.
-
-                  </span>
-
-                </div>
-
-              </div>
-            )
-        }
-
-      </section>
-
-
-      {/* ======================================================
-          TEXTO OCR
-      ====================================================== */}
-
-      <section className="card ocr-review-card">
-
-
-        <h2>
-          Texto detectado por OCR
-        </h2>
-
-
-        <p className="muted-text">
-
-          Este texto se conserva
-          como evidencia de la
-          transcripción.
-
-          {' '}
-
-          Si lo corriges y guardas,
-          el backend recalculará
-          nuevamente los datos
-          estructurados.
-
-        </p>
-
-
-        <textarea
-          name="raw_text"
-          className="ocr-textarea"
-          value={
-            rawText
-          }
-          onChange={
-            updateText
-          }
-          readOnly={
-            isViewMode
-          }
-          placeholder="Aquí aparecerá todo el texto detectado por OCR..."
-        />
-
-
-        {/* ==================================================
-            DICCIONARIO
-        ================================================== */}
-
-        {
-          suggestions.length > 0 && (
-
-            <div className="dictionary-panel">
-
-
-              <div className="dictionary-header">
-
-                <div>
-
-                  <h3>
-
-                    <Sparkles
-                      size={16}
-                    />
-
-                    Sugerencia por diccionario
-
-                  </h3>
-
-                  <p>
-                    Úsala solo si coincide
-                    visualmente con la receta.
-                  </p>
-
-                </div>
-
-
-                {
-                  hasSuggestedText &&
-                  !isViewMode && (
-
-                    <button
-                      className="outline-btn"
-                      onClick={
-                        useSuggestedText
-                      }
-                      type="button"
-                    >
-
-                      <Lightbulb
-                        size={15}
-                      />
-
-                      Usar sugerencia
-
-                    </button>
-                  )
-                }
-
-              </div>
-
-
-              {
-                recipe.normalized_text
-                  ? (
-
-                    <pre>
-                      {
-                        recipe.normalized_text
-                      }
-                    </pre>
-
-                  )
-                  : (
-
-                    <span className="muted-text">
-
-                      Se detectaron coincidencias,
-                      pero no se reemplazó el texto
-                      automáticamente.
-
-                    </span>
-                  )
-              }
-
+          {message && (
+            <div className="success-box">
+              {message}
             </div>
-          )
-        }
+          )}
 
-
-        {/* ==================================================
-            CORRECCIONES SUGERIDAS
-        ================================================== */}
-
-        {
-          suggestions.length > 0 && (
-
-            <div className="suggestions-list">
-
-              <h3>
-                Correcciones sugeridas
-              </h3>
-
-
-              {
-                suggestions.map(
-                  (
-                    item,
-                    index
-                  ) => (
-
-                    <div
-                      className="suggestion-item"
-                      key={
-                        `${
-                          item.original
-                        }-${
-                          item.suggestion
-                        }-${index}`
-                      }
-                    >
-
-                      <div>
-
-                        <strong>
-                          {
-                            item.original
-                          }
-                        </strong>
-
-                        <span>
-                          → {
-                            item.suggestion
-                          }
-                        </span>
-
-                      </div>
-
-
-                      <small>
-
-                        {
-                          item.category ||
-                          'término'
-                        }
-
-                        {' · '}
-
-                        {
-                          formatConfidence(
-                            item.confidence
-                          )
-                        }
-
-                        {' · '}
-
-                        {
-                          item.reason
-                        }
-
-                      </small>
-
-                    </div>
-                  )
-                )
-              }
-
+          {error && (
+            <div className="error-box">
+              {error}
             </div>
-          )
-        }
+          )}
 
+          <div className="trace-grid">
 
-        {/* ==================================================
-            TÉRMINOS RECONOCIDOS
-        ================================================== */}
+            <span>
+              Validado por: {recipe.validator_name || 'Pendiente'}
+            </span>
 
-        {
-          recognizedTerms.length > 0 && (
+            <span>
+              Fecha y hora: {formatLimaDateTime(recipe.validated_at)}
+            </span>
 
-            <div className="term-tags">
+            <span>
+              Trazabilidad activa
+            </span>
 
-              {
-                recognizedTerms
-                  .slice(
-                    0,
-                    10
-                  )
-                  .map(
-                    (
-                      item,
-                      index
-                    ) => (
+          </div>
 
-                      <span
-                        key={
-                          `${
-                            item.term
-                          }-${index}`
-                        }
-                      >
+        </section>
 
-                        {
-                          item.term
-                        }
+      ) : (
 
-                      </span>
-                    )
-                  )
-              }
+        <section className="validation-actions readonly-actions">
 
-            </div>
-          )
-        }
+          <button
+            className="outline-btn"
+            onClick={() => navigate('/history')}
+          >
+            Volver al historial
+          </button>
 
-      </section>
+          <div className="trace-grid">
 
+            <span>
+              Validador: {recipe.validator_name || 'Pendiente'}
+            </span>
 
-      {/* ======================================================
-          ACCIONES
-      ====================================================== */}
+            <span>
+              Fecha y hora: {formatLimaDateTime(recipe.validated_at)}
+            </span>
 
-      {
-        !isViewMode
-          ? (
+            <span>
+              Modo consulta
+            </span>
 
-            <section className="validation-actions">
+          </div>
 
+        </section>
 
-              <h2>
-                Acciones de Validación
-              </h2>
-
-
-              <div className="button-grid">
-
-
-                <button
-                  className="outline-btn"
-                  onClick={
-                    save
-                  }
-                >
-
-                  <Edit3
-                    size={16}
-                  />
-
-                  Guardar cambios
-
-                </button>
-
-
-                <button
-                  className="success-btn"
-                  onClick={
-                    () =>
-                      changeStatus(
-                        'approve'
-                      )
-                  }
-                >
-
-                  <CheckCircle2
-                    size={16}
-                  />
-
-                  Aprobar
-
-                </button>
-
-
-                <button
-                  className="warning-btn"
-                  onClick={
-                    () =>
-                      changeStatus(
-                        'observe'
-                      )
-                  }
-                >
-
-                  <AlertTriangle
-                    size={16}
-                  />
-
-                  Observar
-
-                </button>
-
-
-                <button
-                  className="danger-btn"
-                  onClick={
-                    () =>
-                      changeStatus(
-                        'cancel'
-                      )
-                  }
-                >
-
-                  <XCircle
-                    size={16}
-                  />
-
-                  Rechazar
-
-                </button>
-
-              </div>
-
-
-              {
-                message && (
-
-                  <div className="success-box">
-                    {
-                      message
-                    }
-                  </div>
-                )
-              }
-
-
-              {
-                error && (
-
-                  <div className="error-box">
-                    {
-                      error
-                    }
-                  </div>
-                )
-              }
-
-
-              <div className="trace-grid">
-
-                <span>
-
-                  Validado por:{' '}
-
-                  {
-                    recipe.validator_name ||
-                    'Pendiente'
-                  }
-
-                </span>
-
-
-                <span>
-
-                  Fecha y hora:{' '}
-
-                  {
-                    formatLimaDateTime(
-                      recipe.validated_at
-                    )
-                  }
-
-                </span>
-
-
-                <span>
-                  Trazabilidad activa
-                </span>
-
-              </div>
-
-            </section>
-
-          )
-          : (
-
-            <section className="validation-actions readonly-actions">
-
-
-              <button
-                className="outline-btn"
-                onClick={
-                  () =>
-                    navigate(
-                      '/history'
-                    )
-                }
-              >
-
-                Volver al historial
-
-              </button>
-
-
-              <div className="trace-grid">
-
-                <span>
-
-                  Validador:{' '}
-
-                  {
-                    recipe.validator_name ||
-                    'Pendiente'
-                  }
-
-                </span>
-
-
-                <span>
-
-                  Fecha y hora:{' '}
-
-                  {
-                    formatLimaDateTime(
-                      recipe.validated_at
-                    )
-                  }
-
-                </span>
-
-
-                <span>
-                  Modo consulta
-                </span>
-
-              </div>
-
-            </section>
-          )
-      }
+      )}
 
     </div>
   )
