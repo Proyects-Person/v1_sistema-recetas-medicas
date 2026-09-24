@@ -105,7 +105,8 @@ export default function UploadRecipe() {
           </div>
           <hr />
           <h2>Información del proceso</h2>
-          <div className="process-step"><CheckCircle2 size={18} /><div><strong>OCR Cloud</strong><span>Transcripción real del texto visible en la receta</span></div></div>
+          <strong>Procesamiento OCR</strong>
+          <span>Extracción automática de información para identificar insumos y concentraciones</span>
           <div className="process-step"><CheckCircle2 size={18} /><div><strong>Diccionario farmacéutico</strong><span>Sugerencias para términos magistrales y abreviaturas frecuentes</span></div></div>
           <div className="process-step"><ShieldCheck size={18} /><div><strong>Validación farmacéutica</strong><span>Revisión, corrección y aprobación por químico farmacéutico</span></div></div>
           <h3>Recomendaciones</h3>

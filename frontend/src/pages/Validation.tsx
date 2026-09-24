@@ -1,312 +1,1008 @@
-import { AlertTriangle, CheckCircle2, Edit3, FileText, Lock, XCircle } from 'lucide-react'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import EmptyState from '../components/EmptyState'
-import IngredientTable from '../components/IngredientTable'
-import { api, fetchBlobUrl } from '../services/api'
-import type { Recipe, RecipeListItem } from '../types'
-import { formatLimaDateTime } from '../utils/date'
+import {
+  AlertTriangle,
+  CheckCircle2,
+  Edit3,
+  FileText,
+  Lock,
+  XCircle
+} from 'lucide-react'
 
-function formatConfidence(value?: number | null) {
-  if (value === undefined || value === null) return ''
-  const percent = value <= 1 ? value * 100 : value
+import {
+  useEffect,
+  useState
+} from 'react'
+
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams
+} from 'react-router-dom'
+
+import EmptyState from '../components/EmptyState'
+
+import IngredientTable from '../components/IngredientTable'
+
+import {
+  api,
+  fetchBlobUrl
+} from '../services/api'
+
+import type {
+  IngredientExtraction,
+  Recipe,
+  RecipeListItem
+} from '../types'
+
+import {
+  formatLimaDateTime
+} from '../utils/date'
+
+
+function formatConfidence(
+  value?: number | null
+) {
+
+  if (
+    value === undefined
+    || value === null
+  ) {
+    return ''
+  }
+
+  const percent =
+    value <= 1
+      ? value * 100
+      : value
+
   return `${percent.toFixed(0)}%`
 }
 
-function reasonLabel(value?: string | null) {
-  const labels: Record<string, string> = {
-    analisis_receta: 'Análisis de receta',
-    preparacion_magistral: 'Preparar producto magistral',
-    consulta_validacion: 'Consulta/validación farmacéutica',
-    otro: 'Otro'
-  }
 
-  return labels[value || ''] || value || 'Sin motivo registrado'
+function reasonLabel(
+  value?: string | null
+) {
+
+  const labels:
+    Record<string, string> = {
+
+      analisis_receta:
+        'Análisis de receta',
+
+      preparacion_magistral:
+        'Preparar producto magistral',
+
+      consulta_validacion:
+        'Consulta/validación farmacéutica',
+
+      otro:
+        'Otro'
+    }
+
+  return (
+    labels[value || '']
+    || value
+    || 'Sin motivo registrado'
+  )
 }
 
+
+/**
+ * Permite mostrar recetas antiguas que solamente
+ * tengan "composition" y todavía no tengan
+ * structured_ingredients.
+ */
+function structuredFromRecipe(
+  recipe: Recipe
+): IngredientExtraction[] {
+
+  if (
+    recipe.structured_ingredients
+    && recipe.structured_ingredients.length > 0
+  ) {
+
+    return recipe
+      .structured_ingredients
+      .map(
+        item => ({
+          ...item,
+          sources:
+            item.sources || []
+        })
+      )
+  }
+
+
+  const composition =
+    recipe.composition
+    || ''
+
+
+  return composition
+    .split('\n')
+    .map(
+      line => line.trim()
+    )
+    .filter(Boolean)
+    .map(
+      (
+        line,
+        index
+      ) => {
+
+        const match =
+          line.match(
+            /(\d+(?:[.,]\d+)?\s*%)/
+          )
+
+        if (!match) {
+
+          return {
+            ingredient:
+              line,
+
+            concentration:
+              null,
+
+            confidence:
+              null,
+
+            sources: [
+              'legacy'
+            ],
+
+            source_line:
+              null,
+
+            line_number:
+              index + 1
+          }
+        }
+
+
+        const matchIndex =
+          match.index ?? 0
+
+        const ingredient =
+          line
+            .slice(
+              0,
+              matchIndex
+            )
+            .trim()
+            .replace(
+              /[+\-,:;]+$/,
+              ''
+            )
+            .trim()
+
+
+        return {
+          ingredient:
+            ingredient || line,
+
+          concentration:
+            match[1]
+              .replace(
+                ',',
+                '.'
+              ),
+
+          confidence:
+            null,
+
+          sources: [
+            'legacy'
+          ],
+
+          source_line:
+            null,
+
+          line_number:
+            index + 1
+        }
+      }
+    )
+}
+
+
 export default function Validation() {
-  const { id } = useParams()
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
 
-  const isViewMode = searchParams.get('mode') === 'view'
+  const {
+    id
+  } = useParams()
 
-  const [recipe, setRecipe] = useState<Recipe | null>(null)
-  const [queue, setQueue] = useState<RecipeListItem[]>([])
+  const [
+    searchParams
+  ] = useSearchParams()
 
-  const [rawText, setRawText] = useState('')
-  const [patientName, setPatientName] = useState('')
-  const [patientAge, setPatientAge] = useState('')
-  const [patientPhone, setPatientPhone] = useState('')
-  const [serviceReason, setServiceReason] = useState('analisis_receta')
-  const [observations, setObservations] = useState('')
+  const navigate =
+    useNavigate()
 
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
 
-  const loadRecipe = async (recipeId: string) => {
-    const data = await api.get<Recipe>(`/recipes/${recipeId}`)
+  const isViewMode =
+    searchParams.get(
+      'mode'
+    ) === 'view'
 
-    setRecipe(data)
-    setRawText(data.raw_text || '')
-    setPatientName(data.patient_name || '')
+
+  const [
+    recipe,
+    setRecipe
+  ] = useState<Recipe | null>(
+    null
+  )
+
+
+  const [
+    queue,
+    setQueue
+  ] = useState<
+    RecipeListItem[]
+  >([])
+
+
+  const [
+    patientName,
+    setPatientName
+  ] = useState('')
+
+
+  const [
+    patientAge,
+    setPatientAge
+  ] = useState('')
+
+
+  const [
+    patientPhone,
+    setPatientPhone
+  ] = useState('')
+
+
+  const [
+    serviceReason,
+    setServiceReason
+  ] = useState(
+    'analisis_receta'
+  )
+
+
+  const [
+    observations,
+    setObservations
+  ] = useState('')
+
+
+  const [
+    structuredIngredients,
+    setStructuredIngredients
+  ] = useState<
+    IngredientExtraction[]
+  >([])
+
+
+  const [
+    message,
+    setMessage
+  ] = useState('')
+
+
+  const [
+    error,
+    setError
+  ] = useState('')
+
+
+  const [
+    imageUrl,
+    setImageUrl
+  ] = useState('')
+
+
+  const syncRecipe = (
+    data: Recipe
+  ) => {
+
+    setRecipe(
+      data
+    )
+
+    setPatientName(
+      data.patient_name || ''
+    )
 
     setPatientAge(
-      data.patient_age !== null && data.patient_age !== undefined
-        ? String(data.patient_age)
+      data.patient_age !== null
+      && data.patient_age !== undefined
+        ? String(
+            data.patient_age
+          )
         : ''
     )
 
-    setPatientPhone(data.patient_phone || '')
-    setServiceReason(data.service_reason || 'analisis_receta')
-    setObservations(data.observations || '')
+    setPatientPhone(
+      data.patient_phone || ''
+    )
+
+    setServiceReason(
+      data.service_reason
+      || 'analisis_receta'
+    )
+
+    setObservations(
+      data.observations || ''
+    )
+
+    setStructuredIngredients(
+      structuredFromRecipe(
+        data
+      )
+    )
   }
 
-  useEffect(() => {
-    setError('')
 
-    if (id) {
-      loadRecipe(id).catch(err => setError(err.message))
-    } else {
-      api
-        .get<RecipeListItem[]>('/recipes?status=procesada')
-        .then(setQueue)
-        .catch(err => setError(err.message))
-    }
-  }, [id])
+  const loadRecipe = async (
+    recipeId: string
+  ) => {
 
-  useEffect(() => {
-    let activeUrl = ''
+    const data =
+      await api.get<Recipe>(
+        `/recipes/${recipeId}`
+      )
 
-    if (!recipe) return undefined
-
-    fetchBlobUrl(`/recipes/${recipe.id}/file`)
-      .then(url => {
-        activeUrl = url
-        setImageUrl(url)
-      })
-      .catch(() => setImageUrl(''))
-
-    return () => {
-      if (activeUrl) URL.revokeObjectURL(activeUrl)
-    }
-  }, [recipe?.id])
-
-  const updateText = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setRawText(event.target.value)
+    syncRecipe(
+      data
+    )
   }
 
-  const suggestions = recipe?.dictionary_suggestions || []
-  const recognizedTerms = recipe?.recognized_terms || []
-  const structuredIngredients = recipe?.structured_ingredients || []
 
-  const save = async () => {
-    if (!recipe || isViewMode) return
+  useEffect(
+    () => {
+
+      setError('')
+      setMessage('')
+
+      if (id) {
+
+        loadRecipe(
+          id
+        ).catch(
+          err =>
+            setError(
+              err.message
+            )
+        )
+
+      } else {
+
+        api
+          .get<RecipeListItem[]>(
+            '/recipes?status=procesada'
+          )
+          .then(
+            setQueue
+          )
+          .catch(
+            err =>
+              setError(
+                err.message
+              )
+          )
+      }
+
+    },
+    [id]
+  )
+
+
+  useEffect(
+    () => {
+
+      let activeUrl = ''
+
+      if (!recipe) {
+        return undefined
+      }
+
+      fetchBlobUrl(
+        `/recipes/${recipe.id}/file`
+      )
+        .then(
+          url => {
+
+            activeUrl =
+              url
+
+            setImageUrl(
+              url
+            )
+          }
+        )
+        .catch(
+          () =>
+            setImageUrl('')
+        )
+
+
+      return () => {
+
+        if (activeUrl) {
+
+          URL.revokeObjectURL(
+            activeUrl
+          )
+        }
+      }
+
+    },
+    [recipe?.id]
+  )
+
+
+  const suggestions =
+    recipe?.dictionary_suggestions
+    || []
+
+
+  const validateData = () => {
 
     if (!patientName.trim()) {
-      setError('El nombre del paciente es obligatorio.')
-      return
+
+      setError(
+        'El nombre del paciente es obligatorio.'
+      )
+
+      return null
     }
+
 
     if (!patientAge.trim()) {
-      setError('La edad del paciente es obligatoria.')
-      return
+
+      setError(
+        'La edad del paciente es obligatoria.'
+      )
+
+      return null
     }
 
-    if (!/^\d{9}$/.test(patientPhone)) {
-      setError('El teléfono del paciente debe contener exactamente 9 dígitos.')
-      return
+
+    const age =
+      Number(
+        patientAge
+      )
+
+
+    if (
+      !Number.isInteger(
+        age
+      )
+      || age < 0
+      || age > 130
+    ) {
+
+      setError(
+        'La edad del paciente debe ser un número válido entre 0 y 130.'
+      )
+
+      return null
     }
 
-    const updated = await api.put<Recipe>(
-      `/recipes/${recipe.id}/data`,
-      {
-        raw_text: rawText,
-        patient_name: patientName.trim(),
-        patient_age: Number(patientAge),
-        patient_phone: patientPhone,
-        service_reason: serviceReason,
-        observations
-      }
-    )
 
-    setRecipe(updated)
-    setRawText(updated.raw_text || '')
-    setPatientName(updated.patient_name || '')
+    if (
+      !/^9\d{8}$/.test(
+        patientPhone
+      )
+    ) {
 
-    setPatientAge(
-      updated.patient_age !== null && updated.patient_age !== undefined
-        ? String(updated.patient_age)
-        : ''
-    )
+      setError(
+        'El teléfono del paciente debe tener 9 dígitos y comenzar con 9.'
+      )
 
-    setPatientPhone(updated.patient_phone || '')
-    setServiceReason(updated.service_reason || 'analisis_receta')
-    setObservations(updated.observations || '')
+      return null
+    }
 
-    setMessage(
-      'Información actualizada correctamente. El diccionario fue recalculado si modificaste el texto OCR.'
-    )
+
+    const cleanIngredients =
+      structuredIngredients
+        .map(
+          item => ({
+
+            ...item,
+
+            ingredient:
+              (
+                item.ingredient
+                || ''
+              ).trim(),
+
+            concentration:
+              (
+                item.concentration
+                || ''
+              ).trim()
+              || null
+
+          })
+        )
+        .filter(
+          item =>
+            item.ingredient
+            || item.concentration
+        )
+
+
+    const invalidRow =
+      cleanIngredients.find(
+        item =>
+          !item.ingredient
+          && item.concentration
+      )
+
+
+    if (invalidRow) {
+
+      setError(
+        'Cada concentración debe estar asociada a un insumo.'
+      )
+
+      return null
+    }
+
+
+    return {
+      age,
+      cleanIngredients
+    }
   }
+
+
+  const persistChanges =
+    async () => {
+
+      if (
+        !recipe
+        || isViewMode
+      ) {
+        return null
+      }
+
+
+      const validated =
+        validateData()
+
+
+      if (!validated) {
+        return null
+      }
+
+
+      const updated =
+        await api.put<Recipe>(
+          `/recipes/${recipe.id}/data`,
+          {
+            patient_name:
+              patientName.trim(),
+
+            patient_age:
+              validated.age,
+
+            patient_phone:
+              patientPhone.trim(),
+
+            service_reason:
+              serviceReason,
+
+            observations,
+
+            structured_ingredients:
+              validated.cleanIngredients
+          }
+        )
+
+
+      syncRecipe(
+        updated
+      )
+
+
+      return updated
+    }
+
+
+  const save = async () => {
+
+    if (
+      !recipe
+      || isViewMode
+    ) {
+      return
+    }
+
+
+    setError('')
+    setMessage('')
+
+
+    try {
+
+      const updated =
+        await persistChanges()
+
+
+      if (!updated) {
+        return
+      }
+
+
+      setMessage(
+        'Información y receta estructurada actualizadas correctamente.'
+      )
+
+    } catch (err: any) {
+
+      setError(
+        err?.message
+        || 'No se pudieron guardar los cambios.'
+      )
+    }
+  }
+
 
   const changeStatus = async (
-    action: 'approve' | 'observe' | 'cancel'
+    action:
+      | 'approve'
+      | 'observe'
+      | 'cancel'
   ) => {
-    if (!recipe || isViewMode) return
 
-    const endpoints = {
-      approve: 'approve',
-      observe: 'observe',
-      cancel: 'cancel'
+    if (
+      !recipe
+      || isViewMode
+    ) {
+      return
     }
 
-    const updated = await api.post<Recipe>(
-      `/recipes/${recipe.id}/${endpoints[action]}`,
-      {
-        observations
-      }
-    )
 
-    setRecipe(updated)
-    setMessage('Estado actualizado correctamente.')
+    setError('')
+    setMessage('')
+
+
+    try {
+
+      // Primero guarda todos los cambios realizados.
+      const saved =
+        await persistChanges()
+
+
+      if (!saved) {
+        return
+      }
+
+
+      const endpoints = {
+        approve:
+          'approve',
+
+        observe:
+          'observe',
+
+        cancel:
+          'cancel'
+      }
+
+
+      const updated =
+        await api.post<Recipe>(
+          `/recipes/${recipe.id}/${endpoints[action]}`,
+          {
+            observations
+          }
+        )
+
+
+      syncRecipe(
+        updated
+      )
+
+
+      const messages = {
+
+        approve:
+          'Receta aprobada correctamente.',
+
+        observe:
+          'Receta marcada como observada correctamente.',
+
+        cancel:
+          'Receta rechazada correctamente.'
+      }
+
+
+      setMessage(
+        messages[action]
+      )
+
+    } catch (err: any) {
+
+      setError(
+        err?.message
+        || 'No se pudo actualizar el estado de la receta.'
+      )
+    }
   }
 
-  if (!id) {
-    return (
-      <div className="page-stack">
 
-        <div className="page-title-row">
+  // =========================================================
+  // COLA DE VALIDACIÓN
+  // =========================================================
+
+  if (!id) {
+
+    return (
+
+      <div
+        className="page-stack"
+      >
+
+        <div
+          className="page-title-row"
+        >
+
           <div>
-            <h1>Validación Farmacéutica</h1>
-            <p>Recetas procesadas pendientes de validación</p>
+
+            <h1>
+              Validación Farmacéutica
+            </h1>
+
+            <p>
+              Recetas procesadas pendientes de validación
+            </p>
+
           </div>
+
         </div>
 
+
         {error && (
-          <div className="error-box">
+
+          <div
+            className="error-box"
+          >
             {error}
           </div>
+
         )}
 
-        <section className="card">
+
+        <section
+          className="card"
+        >
 
           {queue.length === 0 ? (
+
             <EmptyState
               title="Sin pendientes"
               text="No hay recetas procesadas esperando validación."
             />
+
           ) : (
-            queue.map(item => (
-              <Link
-                className="recent-row"
-                to={`/validation/${item.id}?mode=edit`}
-                key={item.id}
-              >
 
-                <div className="doc-icon">
-                  <FileText size={16} />
-                </div>
+            queue.map(
+              item => (
 
-                <div>
-                  <strong>{item.code}</strong>
+                <Link
+                  className="recent-row"
+                  to={
+                    `/validation/${item.id}?mode=edit`
+                  }
+                  key={item.id}
+                >
 
-                  <span>
-                    {item.patient_name || 'Paciente no registrado'}
-                    {' · '}
-                    {reasonLabel(item.service_reason)}
+                  <div
+                    className="doc-icon"
+                  >
+                    <FileText
+                      size={16}
+                    />
+                  </div>
+
+
+                  <div>
+
+                    <strong>
+                      {item.code}
+                    </strong>
+
+                    <span>
+
+                      {
+                        item.patient_name
+                        || 'Paciente no registrado'
+                      }
+
+                      {' · '}
+
+                      {
+                        reasonLabel(
+                          item.service_reason
+                        )
+                      }
+
+                    </span>
+
+                  </div>
+
+
+                  <span
+                    className="badge badge-procesada"
+                  >
+                    Pendiente
                   </span>
-                </div>
 
-                <span className="badge badge-procesada">
-                  Pendiente
-                </span>
+                </Link>
 
-              </Link>
-            ))
+              )
+            )
+
           )}
 
         </section>
 
       </div>
+
     )
   }
 
-  if (error) {
+
+  if (
+    error
+    && !recipe
+  ) {
+
     return (
-      <div className="error-box">
+
+      <div
+        className="error-box"
+      >
         {error}
+      </div>
+
+    )
+  }
+
+
+  if (!recipe) {
+
+    return (
+      <div>
+        Cargando receta...
       </div>
     )
   }
 
-  if (!recipe) {
-    return <div>Cargando receta...</div>
-  }
 
-  const low = new Set(recipe.low_confidence_fields || [])
+  // =========================================================
+  // RECETA
+  // =========================================================
 
   return (
-    <div className="page-stack validation-page">
+
+    <div
+      className="page-stack validation-page"
+    >
 
       {/* ENCABEZADO */}
 
-      <div className="page-title-row">
+      <div
+        className="page-title-row"
+      >
 
         <div>
 
           <h1>
+
             {isViewMode
               ? 'Visualización de Receta'
-              : 'Validación Farmacéutica'}
+              : 'Validación Farmacéutica'
+            }
+
           </h1>
 
+
           <p>
+
             {isViewMode
               ? 'Consulta de receta sin edición'
-              : 'Revisión del texto detectado por OCR y sugerencias del diccionario farmacéutico'}
+              : 'Revisión y corrección de la receta estructurada'
+            }
+
           </p>
 
         </div>
 
-        <span className="confidence">
-          Confianza OCR: {recipe.ocr_confidence}%
+
+        <span
+          className="confidence"
+        >
+
+          Confianza OCR:
+          {' '}
+          {recipe.ocr_confidence}%
+
         </span>
 
       </div>
 
+
       {isViewMode && (
-        <div className="info-box">
 
-          <Lock size={16} />
+        <div
+          className="info-box"
+        >
 
-          Modo visualización: los datos se muestran solo para consulta.
-          Usa el ícono de editar desde Historial para modificar.
+          <Lock
+            size={16}
+          />
+
+          Modo visualización:
+          los datos se muestran
+          solo para consulta.
+          Usa el ícono de editar
+          desde Historial para modificar.
 
         </div>
+
       )}
 
-      <div className="two-cols validation-cols">
+
+      <div
+        className="two-cols validation-cols"
+      >
 
         {/* RECETA ORIGINAL */}
 
-        <section className="card document-box">
+        <section
+          className="card document-box"
+        >
 
-          <h2>Receta Original</h2>
+          <h2>
+            Receta Original
+          </h2>
+
 
           {imageUrl ? (
-            <img src={imageUrl} />
+
+            <img
+              src={imageUrl}
+              alt={`Receta ${recipe.code}`}
+            />
+
           ) : (
-            <div className="doc-placeholder">
-              <FileText size={45} />
+
+            <div
+              className="doc-placeholder"
+            >
+
+              <FileText
+                size={45}
+              />
+
             </div>
+
           )}
 
-          <div className="doc-caption">
 
-            <FileText size={22} />
+          <div
+            className="doc-caption"
+          >
+
+            <FileText
+              size={22}
+            />
 
             Imagen cargada
+
             <br />
 
             {recipe.file_name}
@@ -315,40 +1011,61 @@ export default function Validation() {
 
         </section>
 
-        {/* DATOS DE EVALUACIÓN */}
 
-        <section className="card structured-form">
+        {/* INFORMACIÓN ESTRUCTURADA */}
 
-          <h2>Datos de la evaluación</h2>
+        <section
+          className="card structured-form"
+        >
 
-          {/* DATOS DEL PACIENTE */}
+          <h2>
+            Datos de la evaluación
+          </h2>
 
-          <div className="patient-grid patient-grid-4">
+
+          <div
+            className="patient-grid patient-grid-4"
+          >
 
             <div>
 
-              <label>Paciente *</label>
+              <label>
+                Paciente *
+              </label>
 
               <input
                 disabled={isViewMode}
                 value={patientName}
-                onChange={e => setPatientName(e.target.value)}
+                onChange={
+                  event =>
+                    setPatientName(
+                      event.target.value
+                    )
+                }
                 placeholder="Nombre del paciente"
               />
 
             </div>
 
+
             <div>
 
-              <label>Edad *</label>
+              <label>
+                Edad *
+              </label>
 
               <input
                 disabled={isViewMode}
                 value={patientAge}
-                onChange={e =>
-                  setPatientAge(
-                    e.target.value.replace(/[^0-9]/g, '')
-                  )
+                onChange={
+                  event =>
+                    setPatientAge(
+                      event.target.value
+                        .replace(
+                          /[^0-9]/g,
+                          ''
+                        )
+                    )
                 }
                 inputMode="numeric"
                 placeholder="Edad"
@@ -356,19 +1073,29 @@ export default function Validation() {
 
             </div>
 
+
             <div>
 
-              <label>Teléfono *</label>
+              <label>
+                Teléfono *
+              </label>
 
               <input
                 disabled={isViewMode}
                 value={patientPhone}
-                onChange={e =>
-                  setPatientPhone(
-                    e.target.value
-                      .replace(/[^0-9]/g, '')
-                      .slice(0, 9)
-                  )
+                onChange={
+                  event =>
+                    setPatientPhone(
+                      event.target.value
+                        .replace(
+                          /[^0-9]/g,
+                          ''
+                        )
+                        .slice(
+                          0,
+                          9
+                        )
+                    )
                 }
                 inputMode="numeric"
                 maxLength={9}
@@ -377,29 +1104,45 @@ export default function Validation() {
 
             </div>
 
+
             <div>
 
-              <label>Motivo *</label>
+              <label>
+                Motivo *
+              </label>
 
               <select
                 disabled={isViewMode}
                 value={serviceReason}
-                onChange={e => setServiceReason(e.target.value)}
+                onChange={
+                  event =>
+                    setServiceReason(
+                      event.target.value
+                    )
+                }
               >
 
-                <option value="analisis_receta">
+                <option
+                  value="analisis_receta"
+                >
                   Análisis de receta
                 </option>
 
-                <option value="preparacion_magistral">
+                <option
+                  value="preparacion_magistral"
+                >
                   Preparar producto magistral
                 </option>
 
-                <option value="consulta_validacion">
+                <option
+                  value="consulta_validacion"
+                >
                   Consulta/validación farmacéutica
                 </option>
 
-                <option value="otro">
+                <option
+                  value="otro"
+                >
                   Otro
                 </option>
 
@@ -409,62 +1152,94 @@ export default function Validation() {
 
           </div>
 
-          {/* =====================================================
-              RECETA ESTRUCTURADA
-              Ahora aparece inmediatamente después de los datos
-              del paciente.
-             ===================================================== */}
 
-          <IngredientTable items={structuredIngredients} />
+          {/* RECETA ESTRUCTURADA */}
 
-          {/* =====================================================
-              CORRECCIONES SUGERIDAS
-             ===================================================== */}
+          <IngredientTable
+            items={
+              structuredIngredients
+            }
+            editable={
+              !isViewMode
+            }
+            onChange={
+              setStructuredIngredients
+            }
+          />
+
+
+          {/* SUGERENCIAS */}
 
           {suggestions.length > 0 && (
-            <div className="suggestions-list">
 
-              <h3>Correcciones sugeridas</h3>
+            <div
+              className="suggestions-list"
+            >
 
-              {suggestions.map((item, index) => (
+              <h3>
+                Correcciones sugeridas
+              </h3>
 
-                <div
-                  className="suggestion-item"
-                  key={`${item.original}-${item.suggestion}-${index}`}
-                >
 
-                  <div>
+              {suggestions.map(
+                (
+                  item,
+                  index
+                ) => (
 
-                    <strong>
-                      {item.original}
-                    </strong>
+                  <div
+                    className="suggestion-item"
+                    key={
+                      `${item.original}-${item.suggestion}-${index}`
+                    }
+                  >
 
-                    <span>
-                      → {item.suggestion}
-                    </span>
+                    <div>
+
+                      <strong>
+                        {item.original}
+                      </strong>
+
+                      <span>
+                        → {item.suggestion}
+                      </span>
+
+                    </div>
+
+
+                    <small>
+
+                      {
+                        item.category
+                        || 'término'
+                      }
+
+                      {' · '}
+
+                      {
+                        formatConfidence(
+                          item.confidence
+                        )
+                      }
+
+                      {item.reason
+                        ? ` · ${item.reason}`
+                        : ''
+                      }
+
+                    </small>
 
                   </div>
 
-                  <small>
-                    {item.category || 'término'}
-                    {' · '}
-                    {formatConfidence(item.confidence)}
-                    {' · '}
-                    {item.reason}
-                  </small>
-
-                </div>
-
-              ))}
+                )
+              )}
 
             </div>
+
           )}
 
-          {/* =====================================================
-              OBSERVACIONES DE VALIDACIÓN
-              Editable durante la validación.
-              Solo lectura en modo Visualizar.
-             ===================================================== */}
+
+          {/* OBSERVACIONES */}
 
           <label>
             Observaciones de validación
@@ -473,154 +1248,161 @@ export default function Validation() {
           <textarea
             name="observations"
             value={observations}
-            onChange={e => setObservations(e.target.value)}
+            onChange={
+              event =>
+                setObservations(
+                  event.target.value
+                )
+            }
             readOnly={isViewMode}
             placeholder="Agregar observaciones técnicas si corresponde..."
           />
-
-          {/* =====================================================
-              TEXTO DETECTADO POR OCR
-              Se mantiene tal como estaba.
-             ===================================================== */}
-
-          <h2>Texto detectado por OCR</h2>
-
-          <p className="muted-text">
-            Este campo conserva la transcripción obtenida desde la imagen.
-            El diccionario solo aparece cuando detecta términos iguales o similares.
-          </p>
-
-          <div className="engine-row">
-
-            <span>
-              Motor OCR: {recipe.ocr_engine || 'no definido'}
-            </span>
-
-            {suggestions.length > 0 || recognizedTerms.length > 0 ? (
-              <span>
-                Diccionario farmacéutico activo
-              </span>
-            ) : (
-              <span>
-                Sin coincidencias del diccionario
-              </span>
-            )}
-
-          </div>
-
-          {low.has('raw_text') && (
-            <div className="field-alert">
-
-              <AlertTriangle size={15} />
-
-              Baja confianza OCR. Revisa manualmente la transcripción.
-
-            </div>
-          )}
-
-          <textarea
-            name="raw_text"
-            className="ocr-textarea"
-            value={rawText}
-            onChange={updateText}
-            readOnly={isViewMode}
-            placeholder="Aquí aparecerá todo el texto detectado por OCR..."
-          />
-
-          {/* =====================================================
-              TÉRMINOS RECONOCIDOS
-              Se mantiene tal como estaba.
-             ===================================================== */}
-
-          {recognizedTerms.length > 0 && (
-            <div className="term-tags">
-
-              {recognizedTerms
-                .slice(0, 10)
-                .map((item, index) => (
-
-                  <span key={`${item.term}-${index}`}>
-                    {item.term}
-                  </span>
-
-                ))}
-
-            </div>
-          )}
 
         </section>
 
       </div>
 
-      {/* =========================================================
-          ACCIONES DE VALIDACIÓN
-         ========================================================= */}
+
+      {/* ACCIONES */}
 
       {!isViewMode ? (
 
-        <section className="validation-actions">
+        <section
+          className="validation-actions"
+        >
 
           <h2>
             Acciones de Validación
           </h2>
 
-          <div className="button-grid">
+
+          <div
+            className="button-grid"
+          >
 
             <button
               className="outline-btn"
               onClick={save}
             >
-              <Edit3 size={16} />
+
+              <Edit3
+                size={16}
+              />
+
               Guardar cambios
+
             </button>
+
 
             <button
               className="success-btn"
-              onClick={() => changeStatus('approve')}
+              onClick={
+                () =>
+                  changeStatus(
+                    'approve'
+                  )
+              }
             >
-              <CheckCircle2 size={16} />
+
+              <CheckCircle2
+                size={16}
+              />
+
               Aprobar
+
             </button>
+
 
             <button
               className="warning-btn"
-              onClick={() => changeStatus('observe')}
+              onClick={
+                () =>
+                  changeStatus(
+                    'observe'
+                  )
+              }
             >
-              <AlertTriangle size={16} />
+
+              <AlertTriangle
+                size={16}
+              />
+
               Observar
+
             </button>
+
 
             <button
               className="danger-btn"
-              onClick={() => changeStatus('cancel')}
+              onClick={
+                () =>
+                  changeStatus(
+                    'cancel'
+                  )
+              }
             >
-              <XCircle size={16} />
+
+              <XCircle
+                size={16}
+              />
+
               Rechazar
+
             </button>
 
           </div>
 
+
           {message && (
-            <div className="success-box">
+
+            <div
+              className="success-box"
+            >
               {message}
             </div>
+
           )}
+
 
           {error && (
-            <div className="error-box">
+
+            <div
+              className="error-box"
+            >
               {error}
             </div>
+
           )}
 
-          <div className="trace-grid">
+
+          <div
+            className="trace-grid"
+          >
 
             <span>
-              Validado por: {recipe.validator_name || 'Pendiente'}
+
+              Validado por:
+              {' '}
+              {
+                recipe.validator_name
+                || 'Pendiente'
+              }
+
             </span>
 
+
             <span>
-              Fecha y hora: {formatLimaDateTime(recipe.validated_at)}
+
+              Fecha y hora:
+              {' '}
+              {
+                formatLimaDateTime(
+                  recipe.validated_at
+                )
+              }
+
             </span>
+
 
             <span>
               Trazabilidad activa
@@ -632,24 +1414,53 @@ export default function Validation() {
 
       ) : (
 
-        <section className="validation-actions readonly-actions">
+        <section
+          className="validation-actions readonly-actions"
+        >
 
           <button
             className="outline-btn"
-            onClick={() => navigate('/history')}
+            onClick={
+              () =>
+                navigate(
+                  '/history'
+                )
+            }
           >
+
             Volver al historial
+
           </button>
 
-          <div className="trace-grid">
+
+          <div
+            className="trace-grid"
+          >
 
             <span>
-              Validador: {recipe.validator_name || 'Pendiente'}
+
+              Validador:
+              {' '}
+              {
+                recipe.validator_name
+                || 'Pendiente'
+              }
+
             </span>
 
+
             <span>
-              Fecha y hora: {formatLimaDateTime(recipe.validated_at)}
+
+              Fecha y hora:
+              {' '}
+              {
+                formatLimaDateTime(
+                  recipe.validated_at
+                )
+              }
+
             </span>
+
 
             <span>
               Modo consulta

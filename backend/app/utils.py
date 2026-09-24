@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+import re
 from zoneinfo import ZoneInfo
 from sqlalchemy.orm import Session
 from .models import Activity, Recipe
@@ -12,8 +13,21 @@ def add_activity(db: Session, user_id: int | None, action: str, description: str
 
 def generate_recipe_code(db: Session) -> str:
     year = datetime.now(ZoneInfo("America/Lima")).year
-    count = db.query(Recipe).count() + 1
-    return f"REC-{year}-{count:04d}"
+
+    last_recipe = (
+        db.query(Recipe)
+        .filter(Recipe.code.like(f"REC-{year}-%"))
+        .order_by(Recipe.id.desc())
+        .first()
+    )
+
+    if not last_recipe:
+        number = 1
+    else:
+        match = re.search(r"-(\d+)$", last_recipe.code)
+        number = int(match.group(1)) + 1 if match else 1
+
+    return f"REC-{year}-{number:04d}"
 
 
 def recipe_to_out(recipe: Recipe) -> dict:

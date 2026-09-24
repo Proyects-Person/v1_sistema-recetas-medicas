@@ -357,3 +357,39 @@ td.action-icons { display: table-cell; }
 :root[data-theme="oscuro"] .ingredient-empty { background: #111827; }
 :root[data-theme="oscuro"] .ingredient-table td:first-child { color: #f8fafc; }
 
+/* ========================================
+   RECUPERACION DE CONTRASEÑA
+======================================== */
+
+.forgot-link {
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+
+.auth-back-link {
+  margin-top: 18px;
+  text-align: center;
+}
+
+
+.auth-back-link a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  color: var(--primary);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+.auth-back-link a:hover {
+  text-decoration: underline;
+}

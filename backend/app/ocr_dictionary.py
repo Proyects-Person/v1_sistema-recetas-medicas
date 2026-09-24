@@ -1,11 +1,17 @@
-"""Postprocesamiento farmacéutico para OCR.
+"""
+Postprocesamiento farmacéutico para OCR.
 
-Este módulo NO entrena ni reemplaza al OCR.
+Este módulo:
 
-Toma el texto crudo devuelto por Google Vision/EasyOCR
-y genera sugerencias utilizando un diccionario farmacéutico.
+1. Conserva el texto original del OCR.
+2. Busca coincidencias exactas.
+3. Busca alias.
+4. Utiliza fuzzy matching únicamente cuando
+   NO existe ya una coincidencia exacta para
+   esa misma porción del texto.
 
-Las sugerencias deben ser validadas por el químico farmacéutico.
+Las sugerencias son apoyo para el químico
+farmacéutico y no sustituyen su validación.
 """
 
 from __future__ import annotations
@@ -15,20 +21,27 @@ import re
 import unicodedata
 
 from dataclasses import dataclass
+
 from difflib import SequenceMatcher
+
 from pathlib import Path
+
 from typing import Any
 
 
 # ============================================================
-# RUTA DEL DICCIONARIO
+# DICCIONARIO
 # ============================================================
 
-BASE_DIR = Path(
-    __file__
-).resolve().parent
+BASE_DIR = (
+    Path(__file__)
+    .resolve()
+    .parent
+)
+
 
 DICTIONARY_PATH = (
+
     BASE_DIR
     / "dictionaries"
     / "pharmaceutical_terms.json"
@@ -36,10 +49,11 @@ DICTIONARY_PATH = (
 
 
 # ============================================================
-# PALABRAS QUE NO DEBEN USARSE PARA FUZZY MATCHING
+# STOPWORDS
 # ============================================================
 
 STOPWORDS = {
+
     "de",
     "del",
     "la",
@@ -65,21 +79,27 @@ STOPWORDS = {
 
 
 # ============================================================
-# CONFUSIONES COMUNES DEL OCR
+# CONFUSIONES OCR
 # ============================================================
 
 OCR_CONFUSIONS = {
+
     "0": "o",
+
     "1": "l",
+
     "5": "s",
+
     "8": "b",
+
     "@": "a",
+
     "€": "e",
 }
 
 
 # ============================================================
-# MODELO DE TÉRMINO FARMACÉUTICO
+# MODELO
 # ============================================================
 
 @dataclass(
@@ -88,14 +108,23 @@ OCR_CONFUSIONS = {
 class DictionaryTerm:
 
     canonical: str
+
     category: str
+
     priority: int
-    aliases: tuple[str, ...]
+
+    aliases: tuple[
+        str,
+        ...
+    ]
 
     @property
     def all_forms(
         self,
-    ) -> tuple[str, ...]:
+    ) -> tuple[
+        str,
+        ...
+    ]:
 
         return (
             self.canonical,
@@ -111,15 +140,20 @@ def _strip_accents(
     value: str,
 ) -> str:
 
-    normalized = unicodedata.normalize(
-        "NFD",
-        value,
+    normalized = (
+        unicodedata.normalize(
+            "NFD",
+            value,
+        )
     )
 
+
     return "".join(
-        ch
-        for ch in normalized
-        if unicodedata.category(ch)
+        character
+        for character in normalized
+        if unicodedata.category(
+            character
+        )
         != "Mn"
     )
 
@@ -128,21 +162,41 @@ def normalize_for_match(
     value: str,
 ) -> str:
 
-    value = _strip_accents(
-        value.lower()
+    value = (
+        _strip_accents(
+            (
+                value
+                or ""
+            ).lower()
+        )
     )
+
 
     value = (
         value
-        .replace("º", "")
-        .replace("°", "")
+        .replace(
+            "º",
+            ""
+        )
+        .replace(
+            "°",
+            ""
+        )
     )
+
 
     value = (
         value
-        .replace("/", " ")
-        .replace("-", " ")
+        .replace(
+            "/",
+            " "
+        )
+        .replace(
+            "-",
+            " "
+        )
     )
+
 
     value = re.sub(
         r"[^a-z0-9%.,\s]",
@@ -150,11 +204,13 @@ def normalize_for_match(
         value,
     )
 
+
     value = re.sub(
         r"\s+",
         " ",
         value,
     ).strip()
+
 
     return value
 
@@ -163,19 +219,29 @@ def normalize_token(
     value: str,
 ) -> str:
 
-    value = normalize_for_match(
-        value
+    value = (
+        normalize_for_match(
+            value
+        )
     )
 
-    if len(value) >= 4:
+
+    if (
+        len(value)
+        >= 4
+    ):
 
         value = "".join(
+
             OCR_CONFUSIONS.get(
-                ch,
-                ch,
+                character,
+                character,
             )
-            for ch in value
+
+            for character
+            in value
         )
+
 
     return value
 
@@ -188,25 +254,12 @@ def split_tokens(
     value: str,
 ) -> list[str]:
 
-    """
-    Separa texto y números.
-
-    Ejemplos:
-
-    Crlamina8%
-        ->
-    ["Crlamina", "8%"]
-
-    100ml
-        ->
-    ["100", "ml"]
-
-    Esto es importante porque Google Vision
-    frecuentemente pega el porcentaje al medicamento.
-    """
-
     return re.findall(
-        r"[a-záéíóúüñA-ZÁÉÍÓÚÜÑ]+|\d+(?:[.,]\d+)?%?",
+
+        r"[a-záéíóúüñA-ZÁÉÍÓÚÜÑ]+"
+        r"|"
+        r"\d+(?:[.,]\d+)?%?",
+
         value,
     )
 
@@ -216,61 +269,76 @@ def split_tokens(
 # ============================================================
 
 def load_dictionary(
-) -> list[DictionaryTerm]:
+) -> list[
+    DictionaryTerm
+]:
 
     data = json.loads(
+
         DICTIONARY_PATH.read_text(
             encoding="utf-8"
         )
     )
 
-    terms: list[
-        DictionaryTerm
-    ] = []
 
-    for item in data.get(
-        "terms",
-        [],
+    terms = []
+
+
+    for item in (
+        data.get(
+            "terms",
+            []
+        )
     ):
 
         terms.append(
+
             DictionaryTerm(
 
                 canonical=str(
-                    item["canonical"]
+                    item[
+                        "canonical"
+                    ]
                 ),
 
                 category=str(
                     item.get(
                         "category",
-                        "termino",
+                        "termino"
                     )
                 ),
 
                 priority=int(
                     item.get(
                         "priority",
-                        50,
+                        50
                     )
                 ),
 
                 aliases=tuple(
-                    str(v)
-                    for v in item.get(
+
+                    str(alias)
+
+                    for alias
+                    in item.get(
                         "aliases",
-                        [],
+                        []
                     )
                 ),
             )
         )
 
-    # Más prioridad primero.
+
     terms.sort(
+
         key=lambda term: (
+
             -term.priority,
+
             term.canonical,
         )
     )
+
 
     return terms
 
@@ -285,14 +353,22 @@ def similarity(
 ) -> float:
 
     return SequenceMatcher(
+
         None,
-        normalize_for_match(a),
-        normalize_for_match(b),
+
+        normalize_for_match(
+            a
+        ),
+
+        normalize_for_match(
+            b
+        ),
+
     ).ratio()
 
 
 # ============================================================
-# VENTANAS DE PALABRAS
+# VENTANAS
 # ============================================================
 
 def _window_candidates(
@@ -307,13 +383,8 @@ def _window_candidates(
     ]
 ]:
 
-    candidates: list[
-        tuple[
-            int,
-            int,
-            str,
-        ]
-    ] = []
+    candidates = []
+
 
     for start in range(
         len(tokens)
@@ -329,13 +400,18 @@ def _window_candidates(
                 + size
             )
 
-            if end <= len(tokens):
+
+            if (
+                end
+                <= len(tokens)
+            ):
 
                 text = " ".join(
                     tokens[
                         start:end
                     ]
                 )
+
 
                 candidates.append(
                     (
@@ -345,27 +421,12 @@ def _window_candidates(
                     )
                 )
 
+
     return candidates
 
 
-def _suggestion_key(
-    suggestion: dict[str, Any],
-) -> tuple[str, str]:
-
-    return (
-        suggestion.get(
-            "original",
-            "",
-        ),
-        suggestion.get(
-            "suggestion",
-            "",
-        ),
-    )
-
-
 # ============================================================
-# FORMATO DE PORCENTAJES
+# FORMATO %
 # ============================================================
 
 def _format_percentage_spacing(
@@ -373,90 +434,122 @@ def _format_percentage_spacing(
 ) -> str:
 
     text = re.sub(
+
         r"(\d+(?:[.,]\d+)?)\s*%",
+
         r"\1%",
+
         text,
     )
 
+
     text = re.sub(
+
         r"\b(\d+)\s+([.,])\s+(\d+)\b",
+
         r"\1\2\3",
+
         text,
     )
+
 
     return text
 
 
 # ============================================================
-# REEMPLAZOS DE ALTA CONFIANZA
+# REEMPLAZOS
 # ============================================================
 
 def _apply_high_confidence_replacements(
     raw_text: str,
-    suggestions: list[dict[str, Any]],
+    suggestions: list[
+        dict[str, Any]
+    ],
 ) -> str:
 
-    """
-    Crea un texto sugerido sin modificar
-    el texto OCR original almacenado.
-    """
+    suggested = (
+        raw_text
+    )
 
-    suggested = raw_text
 
     for item in suggestions:
 
         original = str(
             item.get(
                 "original",
-                "",
+                ""
             )
         ).strip()
+
 
         replacement = str(
             item.get(
                 "suggestion",
-                "",
+                ""
             )
         ).strip()
+
 
         confidence = float(
             item.get(
                 "confidence",
-                0,
+                0
             )
         )
 
-        mode = item.get(
-            "mode",
-            "",
+
+        mode = str(
+            item.get(
+                "mode",
+                ""
+            )
         )
+
 
         if (
             not original
             or not replacement
         ):
+
             continue
+
 
         if (
-            confidence < 0.78
-            and mode != "context_rule"
+            confidence
+            < 0.78
+
+            and mode
+            != "context_rule"
         ):
+
             continue
 
+
         pattern = re.compile(
-            re.escape(original),
+
+            re.escape(
+                original
+            ),
+
             flags=re.IGNORECASE,
         )
 
-        suggested = pattern.sub(
-            replacement,
-            suggested,
-            count=1,
+
+        suggested = (
+            pattern.sub(
+                replacement,
+                suggested,
+                count=1,
+            )
         )
 
-    return _format_percentage_spacing(
-        suggested
-    ).strip()
+
+    return (
+        _format_percentage_spacing(
+            suggested
+        )
+        .strip()
+    )
 
 
 # ============================================================
@@ -465,40 +558,55 @@ def _apply_high_confidence_replacements(
 
 def _context_rules(
     raw_text: str,
-) -> list[dict[str, Any]]:
+) -> list[
+    dict[str, Any]
+]:
 
-    normalized = normalize_for_match(
-        raw_text
+    normalized = (
+        normalize_for_match(
+            raw_text
+        )
     )
 
-    suggestions: list[
-        dict[str, Any]
-    ] = []
 
-    # Caso observado en recetas magistrales:
-    #
-    # Alcohol / Sonicado / 5%
-    #
-    # donde "boricado" puede ser leído incorrectamente.
+    suggestions = []
 
-    if "alcohol" in normalized:
 
-        tokens = normalized.split()
+    # --------------------------------------------------------
+    # ALCOHOL BORICADO
+    # --------------------------------------------------------
+
+    if (
+        "alcohol"
+        in normalized
+    ):
+
+        tokens = (
+            normalized.split()
+        )
+
 
         for token in tokens:
 
             score = max(
+
                 similarity(
                     token,
                     target,
                 )
+
                 for target in [
+
                     "boricado",
+
                     "boricad",
+
                     "borico",
+
                     "sonicado",
                 ]
             )
+
 
             if (
                 token
@@ -506,17 +614,23 @@ def _context_rules(
                     "alcohol",
                     "alc",
                 }
-                and score >= 0.66
+
+                and score
+                >= 0.66
             ):
 
-                percent = re.search(
-                    r"\d+(?:[.,]\d+)?\s*%",
-                    raw_text,
+                percent = (
+                    re.search(
+                        r"\d+(?:[.,]\d+)?\s*%",
+                        raw_text,
+                    )
                 )
+
 
                 replacement = (
                     "Alcohol boricado"
                 )
+
 
                 if percent:
 
@@ -525,21 +639,12 @@ def _context_rules(
                         f"{percent.group(0).replace(' ', '')}"
                     )
 
-                original_text = (
-
-                    raw_text.strip()
-
-                    if len(
-                        raw_text.strip()
-                    ) <= 80
-
-                    else token
-                )
 
                 suggestions.append(
+
                     {
                         "original":
-                            original_text,
+                            raw_text.strip(),
 
                         "suggestion":
                             replacement,
@@ -558,10 +663,8 @@ def _context_rules(
 
                         "reason":
                             (
-                                "Patrón contextual: aparece "
-                                "'alcohol' y una palabra "
-                                "manuscrita muy parecida "
-                                "a 'boricado'."
+                                "Patrón contextual asociado "
+                                "a alcohol boricado."
                             ),
 
                         "mode":
@@ -569,13 +672,15 @@ def _context_rules(
                     }
                 )
 
+
                 break
+
 
     return suggestions
 
 
 # ============================================================
-# ANÁLISIS PRINCIPAL
+# ANALIZAR OCR
 # ============================================================
 
 def analyze_ocr_text(
@@ -583,182 +688,235 @@ def analyze_ocr_text(
     ocr_confidence: float = 0.0,
 ) -> dict[str, Any]:
 
-    """
-    Analiza texto OCR utilizando el
-    diccionario farmacéutico.
+    terms = (
+        load_dictionary()
+    )
 
-    NO reemplaza el OCR original.
-
-    Devuelve:
-
-    normalized_text
-    dictionary_suggestions
-    recognized_terms
-    """
-
-    terms = load_dictionary()
 
     raw_text = (
-        raw_text or ""
+        raw_text
+        or ""
     ).strip()
 
-    normalized_raw = normalize_for_match(
-        raw_text
+
+    normalized_raw = (
+        normalize_for_match(
+            raw_text
+        )
     )
 
-    tokens_original = split_tokens(
-        raw_text
+
+    tokens_original = (
+        split_tokens(
+            raw_text
+        )
     )
 
-    # Se mantiene porque puede utilizarse posteriormente
-    # para mejorar normalización OCR.
-    tokens_norm = [
-        normalize_token(token)
-        for token
-        in tokens_original
-    ]
 
-    suggestions: list[
-        dict[str, Any]
-    ] = []
+    suggestions = []
 
-    recognized: list[
-        dict[str, Any]
-    ] = []
+    recognized = []
+
 
     # ========================================================
-    # 1. COINCIDENCIAS EXACTAS
+    # 1. EXACTOS / ALIAS
     # ========================================================
 
     for term in terms:
 
-        for form in term.all_forms:
+        for form in (
+            term.all_forms
+        ):
 
-            form_norm = normalize_for_match(
-                form
+            form_norm = (
+                normalize_for_match(
+                    form
+                )
             )
+
 
             if (
                 not form_norm
-                or len(form_norm) < 2
+                or len(
+                    form_norm
+                )
+                < 2
             ):
+
                 continue
 
+
             pattern = (
+
                 rf"(?<![a-z0-9])"
+
                 rf"{re.escape(form_norm)}"
+
                 rf"(?![a-z0-9])"
             )
 
-            if re.search(
+
+            if not re.search(
                 pattern,
                 normalized_raw,
             ):
 
-                recognized.append(
+                continue
+
+
+            recognized.append(
+
+                {
+                    "term":
+                        term.canonical,
+
+                    "category":
+                        term.category,
+
+                    "match":
+                        form,
+
+                    "confidence":
+                        1.0,
+
+                    "mode":
+                        "exact",
+                }
+            )
+
+
+            # ------------------------------------------------
+            # SI ERA ALIAS:
+            # PROPONER CANÓNICO.
+            # ------------------------------------------------
+
+            if (
+                form_norm
+                != normalize_for_match(
+                    term.canonical
+                )
+
+                and form
+                not in {
+                    "%",
+                    "g",
+                    "ml",
+                    "mL",
+                }
+            ):
+
+                suggestions.append(
+
                     {
-                        "term":
+                        "original":
+                            form,
+
+                        "suggestion":
                             term.canonical,
 
                         "category":
                             term.category,
 
-                        "match":
-                            form,
-
                         "confidence":
                             1.0,
 
+                        "reason":
+                            (
+                                "Alias reconocido en "
+                                "el diccionario farmacéutico."
+                            ),
+
                         "mode":
-                            "exact",
+                            "alias",
                     }
                 )
 
-                if (
-                    form_norm
-                    != normalize_for_match(
-                        term.canonical
-                    )
-                    and form
-                    not in {
-                        "%",
-                        "g",
-                        "ml",
-                        "mL",
-                    }
-                ):
 
-                    suggestions.append(
-                        {
-                            "original":
-                                form,
+            break
 
-                            "suggestion":
-                                term.canonical,
 
-                            "category":
-                                term.category,
+    # ========================================================
+    # FRASES QUE YA TIENEN COINCIDENCIA EXACTA
+    #
+    # Esta parte corrige tu problema actual.
+    # ========================================================
 
-                            "confidence":
-                                1.0,
+    exact_matches = {
 
-                            "reason":
-                                (
-                                    "Alias reconocido "
-                                    "en el diccionario "
-                                    "farmacéutico."
-                                ),
+        normalize_for_match(
+            str(
+                item.get(
+                    "match",
+                    ""
+                )
+            )
+        )
 
-                            "mode":
-                                "alias",
-                        }
-                    )
+        for item in recognized
 
-                break
+        if (
+            item.get(
+                "mode"
+            )
+            == "exact"
+        )
+    }
+
 
     # ========================================================
     # 2. REGLAS CONTEXTUALES
     # ========================================================
 
     suggestions.extend(
+
         _context_rules(
             raw_text
         )
     )
 
+
     # ========================================================
-    # 3. FUZZY MATCHING
+    # 3. FUZZY
     # ========================================================
 
-    windows = _window_candidates(
-        tokens_original,
-        1,
-        4,
+    windows = (
+        _window_candidates(
+            tokens_original,
+            1,
+            4,
+        )
     )
+
 
     for term in terms:
 
-        canonical_norm = normalize_for_match(
-            term.canonical
+        canonical_norm = (
+            normalize_for_match(
+                term.canonical
+            )
         )
+
 
         canonical_tokens = (
             canonical_norm.split()
         )
 
+
         if (
             not canonical_norm
-            or len(canonical_norm) < 4
+            or len(
+                canonical_norm
+            )
+            < 4
         ):
+
             continue
 
-        best: tuple[
-            float,
-            str,
-        ] = (
-            0.0,
-            "",
-        )
+
+        best_score = 0.0
+
+        best_candidate = ""
+
 
         for (
             _,
@@ -766,22 +924,59 @@ def analyze_ocr_text(
             candidate,
         ) in windows:
 
-            candidate_norm = normalize_for_match(
-                candidate
+            candidate_norm = (
+                normalize_for_match(
+                    candidate
+                )
             )
+
 
             if (
                 not candidate_norm
                 or candidate_norm
                 in STOPWORDS
             ):
+
                 continue
 
+
+            # ------------------------------------------------
+            # SI ESA FRASE YA FUE IDENTIFICADA EXACTAMENTE,
+            # NO BUSCAR OTRA INTERPRETACIÓN FUZZY.
+            #
+            # Ejemplo:
+            #
+            # ACIDO SALICILICO
+            #
+            # ya es:
+            # Ácido salicílico
+            #
+            # por lo tanto NO debe sugerir:
+            # Ácido Acetil salicílico
+            # ------------------------------------------------
+
             if (
-                len(candidate_norm) <= 3
-                and len(canonical_norm) > 5
+                candidate_norm
+                in exact_matches
             ):
+
                 continue
+
+
+            if (
+                len(
+                    candidate_norm
+                )
+                <= 3
+
+                and len(
+                    canonical_norm
+                )
+                > 5
+            ):
+
+                continue
+
 
             if (
                 abs(
@@ -794,121 +989,208 @@ def analyze_ocr_text(
                 )
                 > 1
             ):
+
                 continue
 
-            score = similarity(
-                candidate_norm,
-                canonical_norm,
+
+            score = (
+                similarity(
+                    candidate_norm,
+                    canonical_norm,
+                )
             )
 
-            if score > best[0]:
 
-                best = (
-                    score,
-                    candidate,
+            if (
+                score
+                > best_score
+            ):
+
+                best_score = (
+                    score
                 )
 
+                best_candidate = (
+                    candidate
+                )
+
+
         threshold = (
+
             0.83
-            if len(
-                canonical_tokens
-            ) == 1
+
+            if (
+                len(
+                    canonical_tokens
+                )
+                == 1
+            )
+
             else 0.76
         )
 
-        if term.category in {
-            "unidad",
-            "frecuencia",
-            "indicacion",
-        }:
-
-            threshold = 0.90
 
         if (
-            best[0] >= threshold
-            and normalize_for_match(
-                best[1]
-            )
-            != canonical_norm
+            term.category
+            in {
+                "unidad",
+                "frecuencia",
+                "indicacion",
+            }
         ):
 
-            suggestions.append(
-                {
-                    "original":
-                        best[1],
-
-                    "suggestion":
-                        term.canonical,
-
-                    "category":
-                        term.category,
-
-                    "confidence":
-                        round(
-                            best[0],
-                            2,
-                        ),
-
-                    "reason":
-                        (
-                            "Coincidencia aproximada "
-                            "con el diccionario farmacéutico."
-                        ),
-
-                    "mode":
-                        "fuzzy",
-                }
+            threshold = (
+                0.90
             )
 
-            recognized.append(
-                {
-                    "term":
-                        term.canonical,
 
-                    "category":
-                        term.category,
+        if (
+            best_score
+            < threshold
+        ):
 
-                    "match":
-                        best[1],
+            continue
 
-                    "confidence":
-                        round(
-                            best[0],
-                            2,
-                        ),
 
-                    "mode":
-                        "fuzzy",
-                }
+        if (
+            not best_candidate
+        ):
+
+            continue
+
+
+        candidate_norm = (
+            normalize_for_match(
+                best_candidate
             )
-
-    # ========================================================
-    # 4. ELIMINAR SUGERENCIAS DUPLICADAS
-    # ========================================================
-
-    unique: dict[
-        tuple[str, str],
-        dict[str, Any],
-    ] = {}
-
-    for suggestion in suggestions:
-
-        key = _suggestion_key(
-            suggestion
         )
+
+
+        # ----------------------------------------------------
+        # SEGUNDA PROTECCIÓN CONTRA EXACTOS
+        # ----------------------------------------------------
+
+        if (
+            candidate_norm
+            in exact_matches
+        ):
+
+            continue
+
+
+        if (
+            candidate_norm
+            == canonical_norm
+        ):
+
+            continue
+
+
+        suggestions.append(
+
+            {
+                "original":
+                    best_candidate,
+
+                "suggestion":
+                    term.canonical,
+
+                "category":
+                    term.category,
+
+                "confidence":
+                    round(
+                        best_score,
+                        2,
+                    ),
+
+                "reason":
+                    (
+                        "Coincidencia aproximada "
+                        "con el diccionario farmacéutico."
+                    ),
+
+                "mode":
+                    "fuzzy",
+            }
+        )
+
+
+        recognized.append(
+
+            {
+                "term":
+                    term.canonical,
+
+                "category":
+                    term.category,
+
+                "match":
+                    best_candidate,
+
+                "confidence":
+                    round(
+                        best_score,
+                        2,
+                    ),
+
+                "mode":
+                    "fuzzy",
+            }
+        )
+
+
+    # ========================================================
+    # 4. SUGERENCIAS ÚNICAS
+    # ========================================================
+
+    suggestions_unique = {}
+
+
+    for suggestion in (
+        suggestions
+    ):
+
+        key = (
+
+            normalize_for_match(
+                str(
+                    suggestion.get(
+                        "original",
+                        ""
+                    )
+                )
+            ),
+
+            normalize_for_match(
+                str(
+                    suggestion.get(
+                        "suggestion",
+                        ""
+                    )
+                )
+            ),
+        )
+
 
         if (
             not key[0]
             or not key[1]
         ):
+
             continue
 
-        current = unique.get(
-            key
+
+        current = (
+            suggestions_unique.get(
+                key
+            )
         )
 
+
         if (
-            not current
+            current is None
+
             or float(
                 suggestion.get(
                     "confidence",
@@ -923,47 +1205,61 @@ def analyze_ocr_text(
             )
         ):
 
-            unique[key] = suggestion
+            suggestions_unique[
+                key
+            ] = suggestion
+
 
     suggestions_out = sorted(
-        unique.values(),
+
+        suggestions_unique.values(),
+
         key=lambda item:
+
             float(
                 item.get(
                     "confidence",
                     0,
                 )
             ),
+
         reverse=True,
     )[:12]
 
+
     # ========================================================
-    # 5. ELIMINAR TÉRMINOS RECONOCIDOS DUPLICADOS
+    # 5. RECONOCIDOS ÚNICOS
     # ========================================================
 
-    recognized_unique: dict[
-        str,
-        dict[str, Any],
-    ] = {}
+    recognized_unique = {}
 
-    for item in recognized:
+
+    for item in (
+        recognized
+    ):
 
         term = str(
             item.get(
                 "term",
-                "",
+                ""
             )
         )
+
 
         if not term:
             continue
 
-        current = recognized_unique.get(
-            term
+
+        current = (
+            recognized_unique.get(
+                term
+            )
         )
 
+
         if (
-            not current
+            current is None
+
             or float(
                 item.get(
                     "confidence",
@@ -982,19 +1278,25 @@ def analyze_ocr_text(
                 term
             ] = item
 
+
     recognized_out = sorted(
+
         recognized_unique.values(),
+
         key=lambda item: (
+
             item.get(
                 "category",
-                "",
+                ""
             ),
+
             item.get(
                 "term",
-                "",
+                ""
             ),
         ),
     )
+
 
     # ========================================================
     # 6. TEXTO NORMALIZADO
@@ -1012,13 +1314,13 @@ def analyze_ocr_text(
         else ""
     )
 
+
     normalized_text = (
 
         suggested_text
 
         if (
-            suggestions_out
-            and suggested_text
+            suggested_text
             and suggested_text.strip()
             != raw_text.strip()
         )
@@ -1026,9 +1328,18 @@ def analyze_ocr_text(
         else None
     )
 
+
     # ========================================================
     # RESULTADO
     # ========================================================
+
+    dictionary_data = json.loads(
+
+        DICTIONARY_PATH.read_text(
+            encoding="utf-8"
+        )
+    )
+
 
     return {
 
@@ -1042,18 +1353,14 @@ def analyze_ocr_text(
             recognized_out,
 
         "dictionary_version":
-            json.loads(
-                DICTIONARY_PATH.read_text(
-                    encoding="utf-8"
-                )
-            ).get(
+            dictionary_data.get(
                 "version"
             ),
 
         "warning":
             (
-                "Las sugerencias son apoyo "
-                "de validación; no reemplazan "
-                "el criterio del químico farmacéutico."
+                "Las sugerencias son apoyo de validación "
+                "y no reemplazan el criterio del "
+                "químico farmacéutico."
             ),
     }

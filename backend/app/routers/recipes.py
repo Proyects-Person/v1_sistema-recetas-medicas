@@ -161,7 +161,7 @@ def upload_recipe(
         patient_phone=patient_phone_clean,
         service_reason=service_reason.strip(),
         created_by_id=current_user.id,
-    )
+    ) 
 
     db.add(recipe)
     db.commit()
@@ -180,6 +180,7 @@ def upload_recipe(
 # ============================================================
 # LISTAR RECETAS
 # ============================================================
+
 
 @router.get(
     "",
@@ -205,11 +206,10 @@ def list_recipes(
         query = query.filter(
             or_(
                 Recipe.code.ilike(term),
-                Recipe.raw_text.ilike(term),
-                Recipe.normalized_text.ilike(term),
                 Recipe.file_name.ilike(term),
                 Recipe.patient_name.ilike(term),
-                Recipe.service_reason.ilike(term)
+                Recipe.service_reason.ilike(term),
+                Recipe.composition.ilike(term),
             )
         )
 
@@ -252,8 +252,8 @@ def list_recipes(
     )
 
     return [
-        recipe_to_list_item(r)
-        for r in recipes
+        recipe_to_list_item(recipe)
+        for recipe in recipes
     ]
 
 
@@ -361,6 +361,7 @@ def delete_recipe(
 # PROCESAR RECETA
 # ============================================================
 
+
 @router.post(
     "/{recipe_id}/process",
     response_model=schemas.RecipeOut
@@ -385,6 +386,7 @@ def process_recipe(
         image_bytes = read_file_bytes(
             recipe.file_path
         )
+
     except FileNotFoundError as exc:
         raise HTTPException(
             status_code=400,
@@ -395,7 +397,12 @@ def process_recipe(
         ) from exc
 
     recipe.status = "procesando"
+
     db.commit()
+
+    # ========================================================
+    # OCR
+    # ========================================================
 
     try:
         raw_text, confidence, engine_name = (
@@ -418,6 +425,9 @@ def process_recipe(
 
     # ========================================================
     # DICCIONARIO FARMACÉUTICO
+    #
+    # El texto OCR seguirá usándose internamente.
+    # Ya no será mostrado al usuario.
     # ========================================================
 
     dictionary_result = analyze_ocr_text(
@@ -426,15 +436,8 @@ def process_recipe(
     )
 
     # ========================================================
-    # REGEX
-    # ========================================================
-
-    regex_result = extract_regex_entities(
-        dictionary_result["normalized_text"]
-    )
-
-    # ========================================================
-    # PARSER HÍBRIDO
+    # PIPELINE HÍBRIDO
+    # OCR + DICCIONARIO + REGEX + NER
     # ========================================================
 
     parser_result = parse_prescription(
@@ -442,48 +445,25 @@ def process_recipe(
         ocr_confidence=confidence
     )
 
-    components = parser_result.get(
-        "components",
-        []
+    structured_rows = (
+        parser_result.get(
+            "structured_rows",
+            []
+        )
+        or []
     )
 
-    composition_lines = []
-
-    for component in components:
-        name = component.get("name")
-
-        concentration = component.get(
-            "concentration"
+    ner_entities = (
+        parser_result.get(
+            "ner_entities",
+            []
         )
+        or []
+    )
 
-        quantity = component.get(
-            "quantity"
-        )
-
-        parts = []
-
-        if name:
-            parts.append(name)
-
-        if concentration:
-            parts.append(
-                concentration
-            )
-
-        if quantity:
-            normalized_quantity = (
-                quantity.get("normalized")
-            )
-
-            if normalized_quantity:
-                parts.append(
-                    normalized_quantity
-                )
-
-        if parts:
-            composition_lines.append(
-                " ".join(parts)
-            )
+    # ========================================================
+    # DOSIS / CONTEXTO INTERNO
+    # ========================================================
 
     dosage_parts = []
 
@@ -506,13 +486,19 @@ def process_recipe(
         )
 
     dosage_text = (
-        " | ".join(dosage_parts)
+        " | ".join(
+            dosage_parts
+        )
         if dosage_parts
         else None
     )
 
     # ========================================================
-    # GUARDAR RESULTADOS OCR + PLN
+    # GUARDAR OCR INTERNAMENTE
+    #
+    # IMPORTANTE:
+    # Esto NO significa que se mostrará en frontend.
+    # Se mantiene para el funcionamiento del modelo.
     # ========================================================
 
     recipe.raw_text = raw_text
@@ -541,6 +527,76 @@ def process_recipe(
         )
     )
 
+    # ========================================================
+    # GUARDAR RECETA ESTRUCTURADA
+    # ========================================================
+
+    recipe.structured_ingredients = (
+        json.dumps(
+            structured_rows,
+            ensure_ascii=False
+        )
+    )
+
+    recipe.ner_entities = (
+        json.dumps(
+            ner_entities,
+            ensure_ascii=False
+        )
+    )
+
+    # composition será la representación persistente
+    # de la receta estructurada.
+    #
+    # Ejemplo:
+    #
+    # Adapaleno 0.1%
+    # Peróxido de benzoilo 2.5%
+
+    composition_lines = []
+
+    for item in structured_rows:
+
+        ingredient = str(
+            item.get(
+                "ingredient"
+            )
+            or ""
+        ).strip()
+
+        concentration = str(
+            item.get(
+                "concentration"
+            )
+            or ""
+        ).strip()
+
+        if not ingredient:
+            continue
+
+        line = ingredient
+
+        if concentration:
+            line += (
+                f" {concentration}"
+            )
+
+        composition_lines.append(
+            line.strip()
+        )
+
+    recipe.composition = (
+        "\n".join(
+            composition_lines
+        )
+        if composition_lines
+        else None
+    )
+
+    # ========================================================
+    # INFORMACIÓN OCR GENERAL
+    # ========================================================
+
     recipe.ocr_confidence = (
         round(
             confidence * 100,
@@ -567,16 +623,8 @@ def process_recipe(
     )
 
     # ========================================================
-    # RECETA ESTRUCTURADA
+    # INFORMACIÓN ADICIONAL INTERNA
     # ========================================================
-
-    recipe.composition = (
-        "\n".join(
-            composition_lines
-        )
-        if composition_lines
-        else None
-    )
 
     recipe.administration_route = (
         parser_result.get(
@@ -586,11 +634,21 @@ def process_recipe(
 
     recipe.dosage = dosage_text
 
+    # ========================================================
+    # FINALIZAR
+    # ========================================================
+
     recipe.status = "procesada"
-    recipe.updated_at = datetime.utcnow()
+
+    recipe.updated_at = (
+        datetime.utcnow()
+    )
 
     db.commit()
-    db.refresh(recipe)
+
+    db.refresh(
+        recipe
+    )
 
     add_activity(
         db,
@@ -603,8 +661,9 @@ def process_recipe(
         )
     )
 
-    return recipe_to_out(recipe)
-
+    return recipe_to_out(
+        recipe
+    )
 
 # ============================================================
 # ACTUALIZAR INFORMACIÓN DE RECETA
@@ -635,6 +694,24 @@ def update_recipe_data(
         exclude_unset=True
     )
 
+    # ========================================================
+    # EXTRAER RECETA ESTRUCTURADA
+    #
+    # No podemos guardar directamente una lista Python
+    # en una columna TEXT.
+    # ========================================================
+
+    structured_ingredients = (
+        data.pop(
+            "structured_ingredients",
+            None
+        )
+    )
+
+    # ========================================================
+    # ACTUALIZAR DATOS GENERALES
+    # ========================================================
+
     for field, value in data.items():
         setattr(
             recipe,
@@ -642,72 +719,166 @@ def update_recipe_data(
             value
         )
 
-    # Si se modifica manualmente el texto OCR,
-    # se recalcula el diccionario.
-    if (
-        "raw_text" in data
-        and data.get(
-            "raw_text"
-        ) is not None
-    ):
-        confidence_decimal = (
-            float(
-                recipe.ocr_confidence
-                or 0
-            )
-            / 100
-            if float(
-                recipe.ocr_confidence
-                or 0
-            ) > 1
-            else float(
-                recipe.ocr_confidence
-                or 0
-            )
-        )
+    # ========================================================
+    # ACTUALIZAR RECETA ESTRUCTURADA
+    # ========================================================
 
-        dictionary_result = (
-            analyze_ocr_text(
+    if structured_ingredients is not None:
+
+        clean_rows = []
+
+        for index, item in enumerate(
+            structured_ingredients,
+            start=1
+        ):
+
+            ingredient = str(
+                item.get(
+                    "ingredient"
+                )
+                or ""
+            ).strip()
+
+            concentration_value = (
+                item.get(
+                    "concentration"
+                )
+            )
+
+            concentration = (
                 str(
-                    data.get(
-                        "raw_text"
+                    concentration_value
+                ).strip()
+                if concentration_value
+                is not None
+                else ""
+            )
+
+            # Ignorar filas completamente vacías.
+            if (
+                not ingredient
+                and not concentration
+            ):
+                continue
+
+            # No permitimos concentración sin insumo.
+            if not ingredient:
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        "Cada fila de la receta "
+                        "estructurada debe tener un insumo."
                     )
-                    or ""
-                ),
-                confidence_decimal
-            )
-        )
+                )
 
-        recipe.normalized_text = (
-            dictionary_result[
-                "normalized_text"
+            previous_sources = (
+                item.get(
+                    "sources"
+                )
+                or []
+            )
+
+            sources = [
+                str(source)
+                for source in previous_sources
+                if str(source).strip()
             ]
-        )
 
-        recipe.dictionary_suggestions = (
+            # Registrar que hubo revisión manual.
+            if "manual" not in sources:
+                sources.append(
+                    "manual"
+                )
+
+            clean_rows.append(
+                {
+                    "ingredient":
+                        ingredient,
+
+                    "concentration":
+                        concentration
+                        or None,
+
+                    "confidence":
+                        item.get(
+                            "confidence"
+                        ),
+
+                    "sources":
+                        sources,
+
+                    "source_line":
+                        item.get(
+                            "source_line"
+                        ),
+
+                    "line_number":
+                        index,
+                }
+            )
+
+        # ====================================================
+        # JSON PARA LA API
+        # ====================================================
+
+        recipe.structured_ingredients = (
             json.dumps(
-                dictionary_result[
-                    "dictionary_suggestions"
-                ],
+                clean_rows,
                 ensure_ascii=False
             )
         )
 
-        recipe.recognized_terms = (
-            json.dumps(
-                dictionary_result[
-                    "recognized_terms"
-                ],
-                ensure_ascii=False
+        # ====================================================
+        # COMPOSITION PARA PDF / EXPORTACIÓN / BÚSQUEDA
+        # ====================================================
+
+        composition_lines = []
+
+        for item in clean_rows:
+
+            ingredient = item[
+                "ingredient"
+            ]
+
+            concentration = (
+                item.get(
+                    "concentration"
+                )
+                or ""
             )
+
+            line = ingredient
+
+            if concentration:
+                line += (
+                    f" {concentration}"
+                )
+
+            composition_lines.append(
+                line.strip()
+            )
+
+        recipe.composition = (
+            "\n".join(
+                composition_lines
+            )
+            if composition_lines
+            else None
         )
+
+    # ========================================================
+    # FECHA DE ACTUALIZACIÓN
+    # ========================================================
 
     recipe.updated_at = (
         datetime.utcnow()
     )
 
     db.commit()
-    db.refresh(recipe)
+
+    db.refresh(
+        recipe
+    )
 
     add_activity(
         db,
@@ -715,13 +886,14 @@ def update_recipe_data(
         "Corrección manual",
         (
             f"Se actualizaron los datos "
-            f"de la receta {recipe.code}."
+            f"de la receta {recipe.code}, "
+            "incluyendo la receta estructurada."
         )
     )
 
-    return recipe_to_out(recipe)
-
-
+    return recipe_to_out(
+        recipe
+    )
 # ============================================================
 # APROBAR RECETA
 # ============================================================
@@ -905,17 +1077,95 @@ def _structured_recipe_rows(
     recipe: Recipe
 ) -> list[tuple[str, str]]:
     """
-    Convierte recipe.composition en filas:
+    Devuelve la versión final de la receta estructurada.
 
-    Insumo | Concentración
+    Prioridad:
 
-    El PDF solamente muestra estos dos campos
-    dentro de la receta estructurada.
+    1. structured_ingredients:
+       versión generada/corregida por el usuario.
+
+    2. composition:
+       compatibilidad con recetas antiguas.
+
+    El texto OCR nunca se utiliza directamente
+    para construir el PDF.
     """
 
     rows: list[
         tuple[str, str]
     ] = []
+
+    # ========================================================
+    # 1. structured_ingredients
+    # ========================================================
+
+    raw_structured = getattr(
+        recipe,
+        "structured_ingredients",
+        None
+    )
+
+    if raw_structured:
+
+        try:
+            items = (
+                json.loads(
+                    raw_structured
+                )
+                if isinstance(
+                    raw_structured,
+                    str
+                )
+                else raw_structured
+            )
+
+        except (
+            TypeError,
+            json.JSONDecodeError
+        ):
+            items = []
+
+        for item in (
+            items or []
+        ):
+
+            if not isinstance(
+                item,
+                dict
+            ):
+                continue
+
+            ingredient = str(
+                item.get(
+                    "ingredient"
+                )
+                or ""
+            ).strip()
+
+            concentration = str(
+                item.get(
+                    "concentration"
+                )
+                or ""
+            ).strip()
+
+            if not ingredient:
+                continue
+
+            rows.append(
+                (
+                    ingredient,
+                    concentration
+                    or "No identificada"
+                )
+            )
+
+        if rows:
+            return rows
+
+    # ========================================================
+    # 2. COMPATIBILIDAD CON RECETAS ANTIGUAS
+    # ========================================================
 
     composition = (
         recipe.composition
@@ -925,6 +1175,7 @@ def _structured_recipe_rows(
     for raw_line in (
         composition.splitlines()
     ):
+
         line = raw_line.strip()
 
         if not line:
@@ -937,6 +1188,7 @@ def _structured_recipe_rows(
         )
 
         if match:
+
             ingredient = (
                 line[
                     :match.start()
@@ -959,6 +1211,7 @@ def _structured_recipe_rows(
             )
 
         else:
+
             rows.append(
                 (
                     line,
@@ -967,7 +1220,6 @@ def _structured_recipe_rows(
             )
 
     return rows
-
 
 # ============================================================
 # CORRECCIONES SUGERIDAS PARA EL PDF

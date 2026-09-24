@@ -46,14 +46,38 @@ export default function Settings() {
   }
 
   const changePassword = async () => {
-    setMessage(''); setError('')
+    setMessage('')
+    setError('')
+
     try {
       await api.post('/auth/change-password', password)
-      setPassword({ current_password: '', new_password: '' })
-      setMessage(config.language === 'en' ? 'Password updated successfully.' : 'Contraseña actualizada correctamente.')
-    } catch (err: any) { setError(err.message) }
-  }
 
+      setPassword({
+        current_password: '',
+        new_password: ''
+      })
+
+      setMessage(
+        config.language === 'en'
+          ? 'Password updated successfully.'
+          : 'Contraseña actualizada correctamente.'
+      )
+
+    } catch (err: any) {
+      const detail = err.response?.data?.detail
+
+      if (Array.isArray(detail)) {
+        setError(
+          detail[0]?.msg?.replace('Value error, ', '') ||
+          'Los datos ingresados no son válidos.'
+        )
+      } else if (typeof detail === 'string') {
+        setError(detail)
+      } else {
+        setError('Ocurrió un error al cambiar la contraseña.')
+      }
+    }
+  }
   const uploadPhoto = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
