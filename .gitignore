@@ -1,52 +1,89 @@
-backend/.venv/
-backend/*.db
-backend/uploads/*
-!backend/uploads/.gitkeep
-frontend/node_modules/
-frontend/dist/
-.env
-*.env
-backend/.env
-.DS_Store
-__pycache__/
-*.pyc
+# ============================================================
+# VARIABLES DE ENTORNO
+# ============================================================
 
-
-
-
-# Variables de entorno
 .env
 .env.*
+backend/.env
+frontend/.env
+
+# Permitir plantillas de variables de entorno
 !.env.example
 !.env.production.example
+!backend/.env.example
+!backend/.env.production.example
+!frontend/.env.example
+!frontend/.env.production.example
 
-# Python
+
+# ============================================================
+# PYTHON
+# ============================================================
+
 .venv/
 venv/
+backend/.venv/
+
 __pycache__/
 *.py[cod]
 
-# Node
-node_modules/
-dist/
 
-# Base de datos local
+# ============================================================
+# NODE / REACT / VITE
+# ============================================================
+
+node_modules/
+frontend/node_modules/
+
+dist/
+frontend/dist/
+
+
+# ============================================================
+# BASE DE DATOS LOCAL
+# ============================================================
+
 *.db
 *.sqlite
 *.sqlite3
 
-# Archivos subidos por usuarios
-uploads/
+backend/*.db
 
-# Credenciales
-*.json
+
+# ============================================================
+# ARCHIVOS SUBIDOS LOCALMENTE
+# ============================================================
+
+uploads/
+backend/uploads/*
+
+# Permitir mantener la carpeta uploads vacía en Git
+!backend/uploads/.gitkeep
+
+
+# ============================================================
+# CREDENCIALES PRIVADAS
+# ============================================================
+
+# Credencial de Google Cloud Vision
+backend/disco-abacus-506705-f5-fd4dc02c1f6a.json
+
+# Carpetas destinadas a secretos
 credentials/
 secrets/
 
+
+# ============================================================
 # IDE
+# ============================================================
+
 .vscode/
 .idea/
 
-# Sistema operativo
+
+# ============================================================
+# SISTEMA OPERATIVO
+# ============================================================
+
 .DS_Store
 Thumbs.db

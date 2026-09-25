@@ -1,0 +1,3773 @@
+[
+  {
+    "text": "Permetrina 5%\nTriamcinolona 0.025%",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Permetrina",
+        "normalized": "Permetrina"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 14,
+        "end": 27,
+        "label": "INSUMO",
+        "text": "Triamcinolona",
+        "normalized": "Triamcinolona"
+      },
+      {
+        "start": 28,
+        "end": 33,
+        "label": "CONCENTRACION",
+        "text": "0.025",
+        "normalized": "0.025"
+      },
+      {
+        "start": 33,
+        "end": 34,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      }
+    ],
+    "recipe_id": "R01",
+    "formula_id": "R01-F01",
+    "fold_cv": 1
+  },
+  {
+    "text": "Permetrina 5%\nHidrocortisona 1%\nCrema 100 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Permetrina",
+        "normalized": "Permetrina"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 14,
+        "end": 28,
+        "label": "INSUMO",
+        "text": "Hidrocortisona",
+        "normalized": "Hidrocortisona"
+      },
+      {
+        "start": 29,
+        "end": 30,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 30,
+        "end": 31,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 32,
+        "end": 37,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 38,
+        "end": 41,
+        "label": "CANTIDAD",
+        "text": "100",
+        "normalized": "100"
+      },
+      {
+        "start": 42,
+        "end": 43,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R02",
+    "formula_id": "R02-F01",
+    "fold_cv": 2
+  },
+  {
+    "text": "Calamina 2%\nClobetasol 0.05%\nUrea 5%\nCrema 60 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 8,
+        "label": "INSUMO",
+        "text": "Calamina",
+        "normalized": "Calamina"
+      },
+      {
+        "start": 9,
+        "end": 10,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 10,
+        "end": 11,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 12,
+        "end": 22,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 23,
+        "end": 27,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 27,
+        "end": 28,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 29,
+        "end": 33,
+        "label": "INSUMO",
+        "text": "Urea",
+        "normalized": "Urea"
+      },
+      {
+        "start": 34,
+        "end": 35,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 35,
+        "end": 36,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 37,
+        "end": 42,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 43,
+        "end": 45,
+        "label": "CANTIDAD",
+        "text": "60",
+        "normalized": "60"
+      },
+      {
+        "start": 46,
+        "end": 47,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R02",
+    "formula_id": "R02-F02",
+    "fold_cv": 2
+  },
+  {
+    "text": "Metronidazol 0.75%\nAlfa bisabolol 1%\nExtracto de manzanilla 4%\nEritromicina 4%\nGel 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 12,
+        "label": "INSUMO",
+        "text": "Metronidazol",
+        "normalized": "Metronidazol"
+      },
+      {
+        "start": 13,
+        "end": 17,
+        "label": "CONCENTRACION",
+        "text": "0.75",
+        "normalized": "0.75"
+      },
+      {
+        "start": 17,
+        "end": 18,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 19,
+        "end": 33,
+        "label": "INSUMO",
+        "text": "Alfa bisabolol",
+        "normalized": "Alfa Bisabolol"
+      },
+      {
+        "start": 34,
+        "end": 35,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 35,
+        "end": 36,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 37,
+        "end": 59,
+        "label": "INSUMO",
+        "text": "Extracto de manzanilla",
+        "normalized": "Extracto de manzanilla"
+      },
+      {
+        "start": 60,
+        "end": 61,
+        "label": "CONCENTRACION",
+        "text": "4",
+        "normalized": "4"
+      },
+      {
+        "start": 61,
+        "end": 62,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 63,
+        "end": 75,
+        "label": "INSUMO",
+        "text": "Eritromicina",
+        "normalized": "Eritromicina"
+      },
+      {
+        "start": 76,
+        "end": 77,
+        "label": "CONCENTRACION",
+        "text": "4",
+        "normalized": "4"
+      },
+      {
+        "start": 77,
+        "end": 78,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 79,
+        "end": 82,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Gel",
+        "normalized": "Gel"
+      },
+      {
+        "start": 83,
+        "end": 85,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 86,
+        "end": 87,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R03",
+    "formula_id": "R03-F01",
+    "fold_cv": 3
+  },
+  {
+    "text": "Urea 20%\nClobetasol 0.05%\nCrema 60 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 4,
+        "label": "INSUMO",
+        "text": "Urea",
+        "normalized": "Urea"
+      },
+      {
+        "start": 5,
+        "end": 7,
+        "label": "CONCENTRACION",
+        "text": "20",
+        "normalized": "20"
+      },
+      {
+        "start": 7,
+        "end": 8,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 9,
+        "end": 19,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 20,
+        "end": 24,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 26,
+        "end": 31,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 32,
+        "end": 34,
+        "label": "CANTIDAD",
+        "text": "60",
+        "normalized": "60"
+      },
+      {
+        "start": 35,
+        "end": 36,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R04",
+    "formula_id": "R04-F01",
+    "fold_cv": 4
+  },
+  {
+    "text": "Clobetasol 0.1%\nSalicílico 3%\nSolución 60 cc",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 11,
+        "end": 14,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 16,
+        "end": 26,
+        "label": "INSUMO",
+        "text": "Salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 27,
+        "end": 28,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 30,
+        "end": 38,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Solución",
+        "normalized": "Solución"
+      },
+      {
+        "start": 39,
+        "end": 41,
+        "label": "CANTIDAD",
+        "text": "60",
+        "normalized": "60"
+      },
+      {
+        "start": 42,
+        "end": 44,
+        "label": "UNIDAD",
+        "text": "cc",
+        "normalized": "cc"
+      }
+    ],
+    "recipe_id": "R04",
+    "formula_id": "R04-F02",
+    "fold_cv": 4
+  },
+  {
+    "text": "Mupirocina 3%\nÓxido de zinc 4%\nCeramida 2%\nExtracto de caléndula 3%",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Mupirocina",
+        "normalized": "Mupirocina"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 14,
+        "end": 27,
+        "label": "INSUMO",
+        "text": "Óxido de zinc",
+        "normalized": "Óxido de zinc"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "CONCENTRACION",
+        "text": "4",
+        "normalized": "4"
+      },
+      {
+        "start": 29,
+        "end": 30,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 31,
+        "end": 39,
+        "label": "INSUMO",
+        "text": "Ceramida",
+        "normalized": "Ceramida"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 41,
+        "end": 42,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 43,
+        "end": 64,
+        "label": "INSUMO",
+        "text": "Extracto de caléndula",
+        "normalized": "Extracto de caléndula"
+      },
+      {
+        "start": 65,
+        "end": 66,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 66,
+        "end": 67,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      }
+    ],
+    "recipe_id": "R05",
+    "formula_id": "R05-F01",
+    "fold_cv": 5
+  },
+  {
+    "text": "Peróxido de benzoilo 2.5%\nClindamicina 1%\nGel 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 20,
+        "label": "INSUMO",
+        "text": "Peróxido de benzoilo",
+        "normalized": "Peróxido de benzoilo"
+      },
+      {
+        "start": 21,
+        "end": 24,
+        "label": "CONCENTRACION",
+        "text": "2.5",
+        "normalized": "2.5"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 26,
+        "end": 38,
+        "label": "INSUMO",
+        "text": "Clindamicina",
+        "normalized": "Clindamicina"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 42,
+        "end": 45,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Gel",
+        "normalized": "Gel"
+      },
+      {
+        "start": 46,
+        "end": 48,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 49,
+        "end": 50,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R06",
+    "formula_id": "R06-F01",
+    "fold_cv": 1
+  },
+  {
+    "text": "Piritionato de zinc 1%\nÁcido salicílico 2%\nTriamcinolona 0.025%\nShampoo 150 cc",
+    "entities": [
+      {
+        "start": 0,
+        "end": 19,
+        "label": "INSUMO",
+        "text": "Piritionato de zinc",
+        "normalized": "Piritionato de zinc"
+      },
+      {
+        "start": 20,
+        "end": 21,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 21,
+        "end": 22,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 23,
+        "end": 39,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 41,
+        "end": 42,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 43,
+        "end": 56,
+        "label": "INSUMO",
+        "text": "Triamcinolona",
+        "normalized": "Triamcinolona"
+      },
+      {
+        "start": 57,
+        "end": 62,
+        "label": "CONCENTRACION",
+        "text": "0.025",
+        "normalized": "0.025"
+      },
+      {
+        "start": 62,
+        "end": 63,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 64,
+        "end": 71,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Shampoo",
+        "normalized": "Shampoo"
+      },
+      {
+        "start": 72,
+        "end": 75,
+        "label": "CANTIDAD",
+        "text": "150",
+        "normalized": "150"
+      },
+      {
+        "start": 76,
+        "end": 78,
+        "label": "UNIDAD",
+        "text": "cc",
+        "normalized": "cc"
+      }
+    ],
+    "recipe_id": "R07",
+    "formula_id": "R07-F01",
+    "fold_cv": 2
+  },
+  {
+    "text": "Hidrocortisona 1%\nEconazol 1%\nCrema 60 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 14,
+        "label": "INSUMO",
+        "text": "Hidrocortisona",
+        "normalized": "Hidrocortisona"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 16,
+        "end": 17,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 18,
+        "end": 26,
+        "label": "INSUMO",
+        "text": "Econazol",
+        "normalized": "Econazol"
+      },
+      {
+        "start": 27,
+        "end": 28,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 30,
+        "end": 35,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 36,
+        "end": 38,
+        "label": "CANTIDAD",
+        "text": "60",
+        "normalized": "60"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R08",
+    "formula_id": "R08-F01",
+    "fold_cv": 3
+  },
+  {
+    "text": "Peróxido de benzoilo 2.5%\nClindamicina 1%\nExtracto de manzanilla 2%\nGel 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 20,
+        "label": "INSUMO",
+        "text": "Peróxido de benzoilo",
+        "normalized": "Peróxido de benzoilo"
+      },
+      {
+        "start": 21,
+        "end": 24,
+        "label": "CONCENTRACION",
+        "text": "2.5",
+        "normalized": "2.5"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 26,
+        "end": 38,
+        "label": "INSUMO",
+        "text": "Clindamicina",
+        "normalized": "Clindamicina"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 42,
+        "end": 64,
+        "label": "INSUMO",
+        "text": "Extracto de manzanilla",
+        "normalized": "Extracto de manzanilla"
+      },
+      {
+        "start": 65,
+        "end": 66,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 66,
+        "end": 67,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 68,
+        "end": 71,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Gel",
+        "normalized": "Gel"
+      },
+      {
+        "start": 72,
+        "end": 74,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 75,
+        "end": 76,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R09",
+    "formula_id": "R09-F01",
+    "fold_cv": 4
+  },
+  {
+    "text": "Peróxido de benzoilo 3%\nClindamicina 1%\nGel 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 20,
+        "label": "INSUMO",
+        "text": "Peróxido de benzoilo",
+        "normalized": "Peróxido de benzoilo"
+      },
+      {
+        "start": 21,
+        "end": 22,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 22,
+        "end": 23,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 24,
+        "end": 36,
+        "label": "INSUMO",
+        "text": "Clindamicina",
+        "normalized": "Clindamicina"
+      },
+      {
+        "start": 37,
+        "end": 38,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 38,
+        "end": 39,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 40,
+        "end": 43,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Gel",
+        "normalized": "Gel"
+      },
+      {
+        "start": 44,
+        "end": 46,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 47,
+        "end": 48,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R10",
+    "formula_id": "R10-F01",
+    "fold_cv": 5
+  },
+  {
+    "text": "Mometasona 0.1%\nIsoconazol 1%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Mometasona",
+        "normalized": "Mometasona"
+      },
+      {
+        "start": 11,
+        "end": 14,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 16,
+        "end": 26,
+        "label": "INSUMO",
+        "text": "Isoconazol",
+        "normalized": "Isoconazol"
+      },
+      {
+        "start": 27,
+        "end": 28,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 30,
+        "end": 35,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 36,
+        "end": 38,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R11",
+    "formula_id": "R11-F01",
+    "fold_cv": 1
+  },
+  {
+    "text": "Urea 2%\nKetoconazol 1%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 4,
+        "label": "INSUMO",
+        "text": "Urea",
+        "normalized": "Urea"
+      },
+      {
+        "start": 5,
+        "end": 6,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 6,
+        "end": 7,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 8,
+        "end": 19,
+        "label": "INSUMO",
+        "text": "Ketoconazol",
+        "normalized": "Ketoconazol"
+      },
+      {
+        "start": 20,
+        "end": 21,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 21,
+        "end": 22,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 23,
+        "end": 28,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 29,
+        "end": 31,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 32,
+        "end": 33,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R12",
+    "formula_id": "R12-F01",
+    "fold_cv": 2
+  },
+  {
+    "text": "Urea 20%\nBifonazol 2%\nÁcido salicílico 5%\nGotas 15 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 4,
+        "label": "INSUMO",
+        "text": "Urea",
+        "normalized": "Urea"
+      },
+      {
+        "start": 5,
+        "end": 7,
+        "label": "CONCENTRACION",
+        "text": "20",
+        "normalized": "20"
+      },
+      {
+        "start": 7,
+        "end": 8,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 9,
+        "end": 18,
+        "label": "INSUMO",
+        "text": "Bifonazol",
+        "normalized": "Bifonazol"
+      },
+      {
+        "start": 19,
+        "end": 20,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 20,
+        "end": 21,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 22,
+        "end": 38,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 42,
+        "end": 47,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Gotas",
+        "normalized": "Gotas"
+      },
+      {
+        "start": 48,
+        "end": 50,
+        "label": "CANTIDAD",
+        "text": "15",
+        "normalized": "15"
+      },
+      {
+        "start": 51,
+        "end": 53,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R13",
+    "formula_id": "R13-F01",
+    "fold_cv": 3
+  },
+  {
+    "text": "Ciclopirox 8%\nÁcido salicílico 2%\nEsmalte o colodión 15 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Ciclopirox",
+        "normalized": "Ciclopirox"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "CONCENTRACION",
+        "text": "8",
+        "normalized": "8"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 14,
+        "end": 30,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 31,
+        "end": 32,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 32,
+        "end": 33,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 34,
+        "end": 52,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Esmalte o colodión",
+        "normalized": "Esmalte o colodión"
+      },
+      {
+        "start": 53,
+        "end": 55,
+        "label": "CANTIDAD",
+        "text": "15",
+        "normalized": "15"
+      },
+      {
+        "start": 56,
+        "end": 58,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R13",
+    "formula_id": "R13-F02",
+    "fold_cv": 3
+  },
+  {
+    "text": "Ketoconazol 2%\nÁcido salicílico 2%\nPiritionato de zinc 2%\nShampoo 120 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 11,
+        "label": "INSUMO",
+        "text": "Ketoconazol",
+        "normalized": "Ketoconazol"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 13,
+        "end": 14,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 15,
+        "end": 31,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 32,
+        "end": 33,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 33,
+        "end": 34,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 35,
+        "end": 54,
+        "label": "INSUMO",
+        "text": "Piritionato de zinc",
+        "normalized": "Piritionato de zinc"
+      },
+      {
+        "start": 55,
+        "end": 56,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 56,
+        "end": 57,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 58,
+        "end": 65,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Shampoo",
+        "normalized": "Shampoo"
+      },
+      {
+        "start": 66,
+        "end": 69,
+        "label": "CANTIDAD",
+        "text": "120",
+        "normalized": "120"
+      },
+      {
+        "start": 70,
+        "end": 72,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R13",
+    "formula_id": "R13-F03",
+    "fold_cv": 3
+  },
+  {
+    "text": "Permetrina 5%\nTriamcinolona 0.025%\nCrema 50 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Permetrina",
+        "normalized": "Permetrina"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 14,
+        "end": 27,
+        "label": "INSUMO",
+        "text": "Triamcinolona",
+        "normalized": "Triamcinolona"
+      },
+      {
+        "start": 28,
+        "end": 33,
+        "label": "CONCENTRACION",
+        "text": "0.025",
+        "normalized": "0.025"
+      },
+      {
+        "start": 33,
+        "end": 34,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 35,
+        "end": 40,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 41,
+        "end": 43,
+        "label": "CANTIDAD",
+        "text": "50",
+        "normalized": "50"
+      },
+      {
+        "start": 44,
+        "end": 45,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R14",
+    "formula_id": "R14-F01",
+    "fold_cv": 4
+  },
+  {
+    "text": "Hidrocortisona 1%\nEconazol 1%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 14,
+        "label": "INSUMO",
+        "text": "Hidrocortisona",
+        "normalized": "Hidrocortisona"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 16,
+        "end": 17,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 18,
+        "end": 26,
+        "label": "INSUMO",
+        "text": "Econazol",
+        "normalized": "Econazol"
+      },
+      {
+        "start": 27,
+        "end": 28,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 30,
+        "end": 35,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 36,
+        "end": 38,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R15",
+    "formula_id": "R15-F01",
+    "fold_cv": 5
+  },
+  {
+    "text": "Clobetasol 0.05%\nManteca de karité 3%\nExtracto de aloe vera 3%\nDexpantenol 3%\nExtracto de manzanilla 3%\nCrema 60 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 11,
+        "end": 15,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 17,
+        "end": 34,
+        "label": "INSUMO",
+        "text": "Manteca de karité",
+        "normalized": "Manteca de karité"
+      },
+      {
+        "start": 35,
+        "end": 36,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 36,
+        "end": 37,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 38,
+        "end": 59,
+        "label": "INSUMO",
+        "text": "Extracto de aloe vera",
+        "normalized": "Extracto de aloe vera"
+      },
+      {
+        "start": 60,
+        "end": 61,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 61,
+        "end": 62,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 63,
+        "end": 74,
+        "label": "INSUMO",
+        "text": "Dexpantenol",
+        "normalized": "Pantenol"
+      },
+      {
+        "start": 75,
+        "end": 76,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 76,
+        "end": 77,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 78,
+        "end": 100,
+        "label": "INSUMO",
+        "text": "Extracto de manzanilla",
+        "normalized": "Extracto de manzanilla"
+      },
+      {
+        "start": 101,
+        "end": 102,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 102,
+        "end": 103,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 104,
+        "end": 109,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 110,
+        "end": 112,
+        "label": "CANTIDAD",
+        "text": "60",
+        "normalized": "60"
+      },
+      {
+        "start": 113,
+        "end": 114,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R16",
+    "formula_id": "R16-F01",
+    "fold_cv": 1
+  },
+  {
+    "text": "Clobetasol 0.05%\nÁcido salicílico 1%\nDexpantenol 2%\nCrema 100 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 11,
+        "end": 15,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 17,
+        "end": 33,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 34,
+        "end": 35,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 35,
+        "end": 36,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 37,
+        "end": 48,
+        "label": "INSUMO",
+        "text": "Dexpantenol",
+        "normalized": "Pantenol"
+      },
+      {
+        "start": 49,
+        "end": 50,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 50,
+        "end": 51,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 52,
+        "end": 57,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 58,
+        "end": 61,
+        "label": "CANTIDAD",
+        "text": "100",
+        "normalized": "100"
+      },
+      {
+        "start": 62,
+        "end": 63,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R17",
+    "formula_id": "R17-F01",
+    "fold_cv": 2
+  },
+  {
+    "text": "Metilprednisolona 0.1%\nManteca de karité 3%\nExtracto de aloe vera 3%\nExtracto de manzanilla 3%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 17,
+        "label": "INSUMO",
+        "text": "Metilprednisolona",
+        "normalized": "Metilprednisolona"
+      },
+      {
+        "start": 18,
+        "end": 21,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 21,
+        "end": 22,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 23,
+        "end": 40,
+        "label": "INSUMO",
+        "text": "Manteca de karité",
+        "normalized": "Manteca de karité"
+      },
+      {
+        "start": 41,
+        "end": 42,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 42,
+        "end": 43,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 44,
+        "end": 65,
+        "label": "INSUMO",
+        "text": "Extracto de aloe vera",
+        "normalized": "Extracto de aloe vera"
+      },
+      {
+        "start": 66,
+        "end": 67,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 67,
+        "end": 68,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 69,
+        "end": 91,
+        "label": "INSUMO",
+        "text": "Extracto de manzanilla",
+        "normalized": "Extracto de manzanilla"
+      },
+      {
+        "start": 92,
+        "end": 93,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 93,
+        "end": 94,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 95,
+        "end": 100,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 101,
+        "end": 103,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 104,
+        "end": 105,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R17",
+    "formula_id": "R17-F02",
+    "fold_cv": 2
+  },
+  {
+    "text": "Extracto de caléndula 2%\nExtracto de aloe vera 2%\nExtracto de manzanilla 2%\nAlfa bisabolol 2%\nExtracto de avena 2%\nJabón 120",
+    "entities": [
+      {
+        "start": 0,
+        "end": 21,
+        "label": "INSUMO",
+        "text": "Extracto de caléndula",
+        "normalized": "Extracto de caléndula"
+      },
+      {
+        "start": 22,
+        "end": 23,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 23,
+        "end": 24,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 25,
+        "end": 46,
+        "label": "INSUMO",
+        "text": "Extracto de aloe vera",
+        "normalized": "Extracto de aloe vera"
+      },
+      {
+        "start": 47,
+        "end": 48,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 48,
+        "end": 49,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 50,
+        "end": 72,
+        "label": "INSUMO",
+        "text": "Extracto de manzanilla",
+        "normalized": "Extracto de manzanilla"
+      },
+      {
+        "start": 73,
+        "end": 74,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 74,
+        "end": 75,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 76,
+        "end": 90,
+        "label": "INSUMO",
+        "text": "Alfa bisabolol",
+        "normalized": "Alfa Bisabolol"
+      },
+      {
+        "start": 91,
+        "end": 92,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 92,
+        "end": 93,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 94,
+        "end": 111,
+        "label": "INSUMO",
+        "text": "Extracto de avena",
+        "normalized": "Extracto de avena"
+      },
+      {
+        "start": 112,
+        "end": 113,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 113,
+        "end": 114,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 115,
+        "end": 120,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Jabón",
+        "normalized": "Jabón"
+      },
+      {
+        "start": 121,
+        "end": 124,
+        "label": "CANTIDAD",
+        "text": "120",
+        "normalized": "120"
+      }
+    ],
+    "recipe_id": "R18",
+    "formula_id": "R18-F01",
+    "fold_cv": 3
+  },
+  {
+    "text": "Óxido de zinc 8%\nCalamina 8%\nMentol 0.5%\nLoción 100 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 13,
+        "label": "INSUMO",
+        "text": "Óxido de zinc",
+        "normalized": "Óxido de zinc"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "label": "CONCENTRACION",
+        "text": "8",
+        "normalized": "8"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 17,
+        "end": 25,
+        "label": "INSUMO",
+        "text": "Calamina",
+        "normalized": "Calamina"
+      },
+      {
+        "start": 26,
+        "end": 27,
+        "label": "CONCENTRACION",
+        "text": "8",
+        "normalized": "8"
+      },
+      {
+        "start": 27,
+        "end": 28,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 29,
+        "end": 35,
+        "label": "INSUMO",
+        "text": "Mentol",
+        "normalized": "Mentol"
+      },
+      {
+        "start": 36,
+        "end": 39,
+        "label": "CONCENTRACION",
+        "text": "0.5",
+        "normalized": "0.5"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 41,
+        "end": 47,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Loción",
+        "normalized": "Loción"
+      },
+      {
+        "start": 48,
+        "end": 51,
+        "label": "CANTIDAD",
+        "text": "100",
+        "normalized": "100"
+      },
+      {
+        "start": 52,
+        "end": 54,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R19",
+    "formula_id": "R19-F01",
+    "fold_cv": 4
+  },
+  {
+    "text": "Minoxidil 5%\nClobetasol 0.05%\nLoción 100 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 9,
+        "label": "INSUMO",
+        "text": "Minoxidil",
+        "normalized": "Minoxidil"
+      },
+      {
+        "start": 10,
+        "end": 11,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 13,
+        "end": 23,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 24,
+        "end": 28,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 30,
+        "end": 36,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Loción",
+        "normalized": "Loción"
+      },
+      {
+        "start": 37,
+        "end": 40,
+        "label": "CANTIDAD",
+        "text": "100",
+        "normalized": "100"
+      },
+      {
+        "start": 41,
+        "end": 43,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R20",
+    "formula_id": "R20-F01",
+    "fold_cv": 5
+  },
+  {
+    "text": "Urea 20%\nÁcido salicílico 2%\nMometasona 0.1%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 4,
+        "label": "INSUMO",
+        "text": "Urea",
+        "normalized": "Urea"
+      },
+      {
+        "start": 5,
+        "end": 7,
+        "label": "CONCENTRACION",
+        "text": "20",
+        "normalized": "20"
+      },
+      {
+        "start": 7,
+        "end": 8,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 9,
+        "end": 25,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 26,
+        "end": 27,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 27,
+        "end": 28,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 29,
+        "end": 39,
+        "label": "INSUMO",
+        "text": "Mometasona",
+        "normalized": "Mometasona"
+      },
+      {
+        "start": 40,
+        "end": 43,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 43,
+        "end": 44,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 45,
+        "end": 50,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 51,
+        "end": 53,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 54,
+        "end": 55,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R21",
+    "formula_id": "R21-F01",
+    "fold_cv": 1
+  },
+  {
+    "text": "Urea 10%\nPantenol 5%\nHidrocortisona 1%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 4,
+        "label": "INSUMO",
+        "text": "Urea",
+        "normalized": "Urea"
+      },
+      {
+        "start": 5,
+        "end": 7,
+        "label": "CONCENTRACION",
+        "text": "10",
+        "normalized": "10"
+      },
+      {
+        "start": 7,
+        "end": 8,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 9,
+        "end": 17,
+        "label": "INSUMO",
+        "text": "Pantenol",
+        "normalized": "Pantenol"
+      },
+      {
+        "start": 18,
+        "end": 19,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 19,
+        "end": 20,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 21,
+        "end": 35,
+        "label": "INSUMO",
+        "text": "Hidrocortisona",
+        "normalized": "Hidrocortisona"
+      },
+      {
+        "start": 36,
+        "end": 37,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 37,
+        "end": 38,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 39,
+        "end": 44,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 45,
+        "end": 47,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 48,
+        "end": 49,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R21",
+    "formula_id": "R21-F02",
+    "fold_cv": 1
+  },
+  {
+    "text": "Metronidazol 0.75%\nIvermectina 1%\nNiacinamida 4%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 12,
+        "label": "INSUMO",
+        "text": "Metronidazol",
+        "normalized": "Metronidazol"
+      },
+      {
+        "start": 13,
+        "end": 17,
+        "label": "CONCENTRACION",
+        "text": "0.75",
+        "normalized": "0.75"
+      },
+      {
+        "start": 17,
+        "end": 18,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 19,
+        "end": 30,
+        "label": "INSUMO",
+        "text": "Ivermectina",
+        "normalized": "Ivermectina"
+      },
+      {
+        "start": 31,
+        "end": 32,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 32,
+        "end": 33,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 34,
+        "end": 45,
+        "label": "INSUMO",
+        "text": "Niacinamida",
+        "normalized": "Niacinamida"
+      },
+      {
+        "start": 46,
+        "end": 47,
+        "label": "CONCENTRACION",
+        "text": "4",
+        "normalized": "4"
+      },
+      {
+        "start": 47,
+        "end": 48,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 49,
+        "end": 54,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 55,
+        "end": 57,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 58,
+        "end": 59,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R22",
+    "formula_id": "R22-F01",
+    "fold_cv": 2
+  },
+  {
+    "text": "Ácido tricloro acético 80%\nSolución 15 mL\nTambién conocido como ATC",
+    "entities": [
+      {
+        "start": 0,
+        "end": 22,
+        "label": "INSUMO",
+        "text": "Ácido tricloro acético",
+        "normalized": "Ácido tricloro acético"
+      },
+      {
+        "start": 23,
+        "end": 25,
+        "label": "CONCENTRACION",
+        "text": "80",
+        "normalized": "80"
+      },
+      {
+        "start": 25,
+        "end": 26,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 27,
+        "end": 35,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Solución",
+        "normalized": "Solución"
+      },
+      {
+        "start": 36,
+        "end": 38,
+        "label": "CANTIDAD",
+        "text": "15",
+        "normalized": "15"
+      },
+      {
+        "start": 39,
+        "end": 41,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      },
+      {
+        "start": 64,
+        "end": 67,
+        "label": "INSUMO",
+        "text": "ATC",
+        "normalized": "Ácido tricloro acético"
+      }
+    ],
+    "recipe_id": "R23",
+    "formula_id": "R23-F01",
+    "fold_cv": 3
+  },
+  {
+    "text": "Alcohol boricado 2%\nÁcido bórico 2%\nBase alcohol 30 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 16,
+        "label": "INSUMO",
+        "text": "Alcohol boricado",
+        "normalized": "Alcohol boricado"
+      },
+      {
+        "start": 17,
+        "end": 18,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 18,
+        "end": 19,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 20,
+        "end": 32,
+        "label": "INSUMO",
+        "text": "Ácido bórico",
+        "normalized": "Ácido bórico"
+      },
+      {
+        "start": 33,
+        "end": 34,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 34,
+        "end": 35,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 36,
+        "end": 48,
+        "label": "INSUMO",
+        "text": "Base alcohol",
+        "normalized": "Base alcohol"
+      },
+      {
+        "start": 49,
+        "end": 51,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 52,
+        "end": 54,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R24",
+    "formula_id": "R24-F01",
+    "fold_cv": 4
+  },
+  {
+    "text": "Ácido salicílico 17%\nÁcido láctico 17%\nColodión 15 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 16,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 17,
+        "end": 19,
+        "label": "CONCENTRACION",
+        "text": "17",
+        "normalized": "17"
+      },
+      {
+        "start": 19,
+        "end": 20,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 21,
+        "end": 34,
+        "label": "INSUMO",
+        "text": "Ácido láctico",
+        "normalized": "Ácido láctico"
+      },
+      {
+        "start": 35,
+        "end": 37,
+        "label": "CONCENTRACION",
+        "text": "17",
+        "normalized": "17"
+      },
+      {
+        "start": 37,
+        "end": 38,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 39,
+        "end": 47,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Colodión",
+        "normalized": "Colodión"
+      },
+      {
+        "start": 48,
+        "end": 50,
+        "label": "CANTIDAD",
+        "text": "15",
+        "normalized": "15"
+      },
+      {
+        "start": 51,
+        "end": 53,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R25",
+    "formula_id": "R25-F01",
+    "fold_cv": 5
+  },
+  {
+    "text": "Isoconazol 1%\nExtracto de manzanilla 2%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Isoconazol",
+        "normalized": "Isoconazol"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 14,
+        "end": 36,
+        "label": "INSUMO",
+        "text": "Extracto de manzanilla",
+        "normalized": "Extracto de manzanilla"
+      },
+      {
+        "start": 37,
+        "end": 38,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 38,
+        "end": 39,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 40,
+        "end": 45,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 46,
+        "end": 48,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 49,
+        "end": 50,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R26",
+    "formula_id": "R26-F01",
+    "fold_cv": 1
+  },
+  {
+    "text": "Minoxidil 2.5mg\nCápsulas 30 unidad",
+    "entities": [
+      {
+        "start": 0,
+        "end": 9,
+        "label": "INSUMO",
+        "text": "Minoxidil",
+        "normalized": "Minoxidil"
+      },
+      {
+        "start": 10,
+        "end": 13,
+        "label": "CONCENTRACION",
+        "text": "2.5",
+        "normalized": "2.5"
+      },
+      {
+        "start": 13,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "mg",
+        "normalized": "mg"
+      },
+      {
+        "start": 16,
+        "end": 24,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Cápsulas",
+        "normalized": "Cápsulas"
+      },
+      {
+        "start": 25,
+        "end": 27,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 28,
+        "end": 34,
+        "label": "UNIDAD",
+        "text": "unidad",
+        "normalized": "unidad"
+      }
+    ],
+    "recipe_id": "R27",
+    "formula_id": "R27-F01",
+    "fold_cv": 2
+  },
+  {
+    "text": "Minoxidil 5%\nClobetasol 0.05%\nLoción 60 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 9,
+        "label": "INSUMO",
+        "text": "Minoxidil",
+        "normalized": "Minoxidil"
+      },
+      {
+        "start": 10,
+        "end": 11,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 13,
+        "end": 23,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 24,
+        "end": 28,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 30,
+        "end": 36,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Loción",
+        "normalized": "Loción"
+      },
+      {
+        "start": 37,
+        "end": 39,
+        "label": "CANTIDAD",
+        "text": "60",
+        "normalized": "60"
+      },
+      {
+        "start": 40,
+        "end": 42,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R27",
+    "formula_id": "R27-F02",
+    "fold_cv": 2
+  },
+  {
+    "text": "Piritionato de zinc 2%\nKetoconazol 2%\nShampoo 200 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 19,
+        "label": "INSUMO",
+        "text": "Piritionato de zinc",
+        "normalized": "Piritionato de zinc"
+      },
+      {
+        "start": 20,
+        "end": 21,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 21,
+        "end": 22,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 23,
+        "end": 34,
+        "label": "INSUMO",
+        "text": "Ketoconazol",
+        "normalized": "Ketoconazol"
+      },
+      {
+        "start": 35,
+        "end": 36,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 36,
+        "end": 37,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 38,
+        "end": 45,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Shampoo",
+        "normalized": "Shampoo"
+      },
+      {
+        "start": 46,
+        "end": 49,
+        "label": "CANTIDAD",
+        "text": "200",
+        "normalized": "200"
+      },
+      {
+        "start": 50,
+        "end": 52,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R27",
+    "formula_id": "R27-F03",
+    "fold_cv": 2
+  },
+  {
+    "text": "Ácido salicílico 17%\nÁcido láctico 17%\nColodión 15 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 16,
+        "label": "INSUMO",
+        "text": "Ácido salicílico",
+        "normalized": "Ácido salicílico"
+      },
+      {
+        "start": 17,
+        "end": 19,
+        "label": "CONCENTRACION",
+        "text": "17",
+        "normalized": "17"
+      },
+      {
+        "start": 19,
+        "end": 20,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 21,
+        "end": 34,
+        "label": "INSUMO",
+        "text": "Ácido láctico",
+        "normalized": "Ácido láctico"
+      },
+      {
+        "start": 35,
+        "end": 37,
+        "label": "CONCENTRACION",
+        "text": "17",
+        "normalized": "17"
+      },
+      {
+        "start": 37,
+        "end": 38,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 39,
+        "end": 47,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Colodión",
+        "normalized": "Colodión"
+      },
+      {
+        "start": 48,
+        "end": 50,
+        "label": "CANTIDAD",
+        "text": "15",
+        "normalized": "15"
+      },
+      {
+        "start": 51,
+        "end": 53,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R28",
+    "formula_id": "R28-F01",
+    "fold_cv": 3
+  },
+  {
+    "text": "Tacrolimus 0.1%\nDiflucortolona 0.1%\nUngüento 20 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Tacrolimus",
+        "normalized": "Tacrolimus"
+      },
+      {
+        "start": 11,
+        "end": 14,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 16,
+        "end": 30,
+        "label": "INSUMO",
+        "text": "Diflucortolona",
+        "normalized": "Diflucortolona"
+      },
+      {
+        "start": 31,
+        "end": 34,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 34,
+        "end": 35,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 36,
+        "end": 44,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Ungüento",
+        "normalized": "Ungüento"
+      },
+      {
+        "start": 45,
+        "end": 47,
+        "label": "CANTIDAD",
+        "text": "20",
+        "normalized": "20"
+      },
+      {
+        "start": 48,
+        "end": 49,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R29",
+    "formula_id": "R29-F01",
+    "fold_cv": 4
+  },
+  {
+    "text": "Esencia de Bergamota 25%\nBase alcohol 90° c.s.p. 30 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 20,
+        "label": "INSUMO",
+        "text": "Esencia de Bergamota",
+        "normalized": "Bergamota"
+      },
+      {
+        "start": 21,
+        "end": 23,
+        "label": "CONCENTRACION",
+        "text": "25",
+        "normalized": "25"
+      },
+      {
+        "start": 23,
+        "end": 24,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 25,
+        "end": 37,
+        "label": "INSUMO",
+        "text": "Base alcohol",
+        "normalized": "Base alcohol"
+      },
+      {
+        "start": 38,
+        "end": 40,
+        "label": "CONCENTRACION",
+        "text": "90",
+        "normalized": "90"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "UNIDAD",
+        "text": "°",
+        "normalized": "°"
+      },
+      {
+        "start": 49,
+        "end": 51,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 52,
+        "end": 54,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R29",
+    "formula_id": "R29-F02",
+    "fold_cv": 4
+  },
+  {
+    "text": "Clobetasol 0.05%\nUrea 20%\nMentol 1%\nAlcanfor 1%\nUngüento 90 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 11,
+        "end": 15,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 15,
+        "end": 16,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 17,
+        "end": 21,
+        "label": "INSUMO",
+        "text": "Urea",
+        "normalized": "Urea"
+      },
+      {
+        "start": 22,
+        "end": 24,
+        "label": "CONCENTRACION",
+        "text": "20",
+        "normalized": "20"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 26,
+        "end": 32,
+        "label": "INSUMO",
+        "text": "Mentol",
+        "normalized": "Mentol"
+      },
+      {
+        "start": 33,
+        "end": 34,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 34,
+        "end": 35,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 36,
+        "end": 44,
+        "label": "INSUMO",
+        "text": "Alcanfor",
+        "normalized": "Alcanfor"
+      },
+      {
+        "start": 45,
+        "end": 46,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 46,
+        "end": 47,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 48,
+        "end": 56,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Ungüento",
+        "normalized": "Ungüento"
+      },
+      {
+        "start": 57,
+        "end": 59,
+        "label": "CANTIDAD",
+        "text": "90",
+        "normalized": "90"
+      },
+      {
+        "start": 60,
+        "end": 61,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R30",
+    "formula_id": "R30-F01",
+    "fold_cv": 5
+  },
+  {
+    "text": "Tacrolimus 0.1%\nUngüento 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 10,
+        "label": "INSUMO",
+        "text": "Tacrolimus",
+        "normalized": "Tacrolimus"
+      },
+      {
+        "start": 11,
+        "end": 14,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 16,
+        "end": 24,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Ungüento",
+        "normalized": "Ungüento"
+      },
+      {
+        "start": 25,
+        "end": 27,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R31",
+    "formula_id": "R31-F01",
+    "fold_cv": 1
+  },
+  {
+    "text": "Clindamicina 1%\nPantenol 5%\nNiacinamida 4%\nAzelaico 8%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 12,
+        "label": "INSUMO",
+        "text": "Clindamicina",
+        "normalized": "Clindamicina"
+      },
+      {
+        "start": 13,
+        "end": 14,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 16,
+        "end": 24,
+        "label": "INSUMO",
+        "text": "Pantenol",
+        "normalized": "Pantenol"
+      },
+      {
+        "start": 25,
+        "end": 26,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 26,
+        "end": 27,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 28,
+        "end": 39,
+        "label": "INSUMO",
+        "text": "Niacinamida",
+        "normalized": "Niacinamida"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "CONCENTRACION",
+        "text": "4",
+        "normalized": "4"
+      },
+      {
+        "start": 41,
+        "end": 42,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 43,
+        "end": 51,
+        "label": "INSUMO",
+        "text": "Azelaico",
+        "normalized": "Ácido azelaico"
+      },
+      {
+        "start": 52,
+        "end": 53,
+        "label": "CONCENTRACION",
+        "text": "8",
+        "normalized": "8"
+      },
+      {
+        "start": 53,
+        "end": 54,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 55,
+        "end": 60,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 61,
+        "end": 63,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 64,
+        "end": 65,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R32",
+    "formula_id": "R32-F01",
+    "fold_cv": 2
+  },
+  {
+    "text": "Adapaleno 0.1%\nPeróxido de benzoilo 2.5%\nGel 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 9,
+        "label": "INSUMO",
+        "text": "Adapaleno",
+        "normalized": "Adapaleno"
+      },
+      {
+        "start": 10,
+        "end": 13,
+        "label": "CONCENTRACION",
+        "text": "0.1",
+        "normalized": "0.1"
+      },
+      {
+        "start": 13,
+        "end": 14,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 15,
+        "end": 35,
+        "label": "INSUMO",
+        "text": "Peróxido de benzoilo",
+        "normalized": "Peróxido de benzoilo"
+      },
+      {
+        "start": 36,
+        "end": 39,
+        "label": "CONCENTRACION",
+        "text": "2.5",
+        "normalized": "2.5"
+      },
+      {
+        "start": 39,
+        "end": 40,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 41,
+        "end": 44,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Gel",
+        "normalized": "Gel"
+      },
+      {
+        "start": 45,
+        "end": 47,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 48,
+        "end": 49,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R32",
+    "formula_id": "R32-F02",
+    "fold_cv": 2
+  },
+  {
+    "text": "Metronidazol 0.75%\nExtracto de manzanilla 1%\nCrema 30 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 12,
+        "label": "INSUMO",
+        "text": "Metronidazol",
+        "normalized": "Metronidazol"
+      },
+      {
+        "start": 13,
+        "end": 17,
+        "label": "CONCENTRACION",
+        "text": "0.75",
+        "normalized": "0.75"
+      },
+      {
+        "start": 17,
+        "end": 18,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 19,
+        "end": 41,
+        "label": "INSUMO",
+        "text": "Extracto de manzanilla",
+        "normalized": "Extracto de manzanilla"
+      },
+      {
+        "start": 42,
+        "end": 43,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 43,
+        "end": 44,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 45,
+        "end": 50,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 51,
+        "end": 53,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 54,
+        "end": 55,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R33",
+    "formula_id": "R33-F01",
+    "fold_cv": 3
+  },
+  {
+    "text": "Ivermectina 3%\nCeramida 2%\nCrema 120 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 11,
+        "label": "INSUMO",
+        "text": "Ivermectina",
+        "normalized": "Ivermectina"
+      },
+      {
+        "start": 12,
+        "end": 13,
+        "label": "CONCENTRACION",
+        "text": "3",
+        "normalized": "3"
+      },
+      {
+        "start": 13,
+        "end": 14,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 15,
+        "end": 23,
+        "label": "INSUMO",
+        "text": "Ceramida",
+        "normalized": "Ceramida"
+      },
+      {
+        "start": 24,
+        "end": 25,
+        "label": "CONCENTRACION",
+        "text": "2",
+        "normalized": "2"
+      },
+      {
+        "start": 25,
+        "end": 26,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 27,
+        "end": 32,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 33,
+        "end": 36,
+        "label": "CANTIDAD",
+        "text": "120",
+        "normalized": "120"
+      },
+      {
+        "start": 37,
+        "end": 38,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R34",
+    "formula_id": "R34-F01",
+    "fold_cv": 4
+  },
+  {
+    "text": "Minoxidil 2.5mg\nCápsulas 30 unidad",
+    "entities": [
+      {
+        "start": 0,
+        "end": 9,
+        "label": "INSUMO",
+        "text": "Minoxidil",
+        "normalized": "Minoxidil"
+      },
+      {
+        "start": 10,
+        "end": 13,
+        "label": "CONCENTRACION",
+        "text": "2.5",
+        "normalized": "2.5"
+      },
+      {
+        "start": 13,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "mg",
+        "normalized": "mg"
+      },
+      {
+        "start": 16,
+        "end": 24,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Cápsulas",
+        "normalized": "Cápsulas"
+      },
+      {
+        "start": 25,
+        "end": 27,
+        "label": "CANTIDAD",
+        "text": "30",
+        "normalized": "30"
+      },
+      {
+        "start": 28,
+        "end": 34,
+        "label": "UNIDAD",
+        "text": "unidad",
+        "normalized": "unidad"
+      }
+    ],
+    "recipe_id": "R35",
+    "formula_id": "R35-F01",
+    "fold_cv": 5
+  },
+  {
+    "text": "Minoxidil 4%\nClobetasol 0.05%\nLoción 60 mL",
+    "entities": [
+      {
+        "start": 0,
+        "end": 9,
+        "label": "INSUMO",
+        "text": "Minoxidil",
+        "normalized": "Minoxidil"
+      },
+      {
+        "start": 10,
+        "end": 11,
+        "label": "CONCENTRACION",
+        "text": "4",
+        "normalized": "4"
+      },
+      {
+        "start": 11,
+        "end": 12,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 13,
+        "end": 23,
+        "label": "INSUMO",
+        "text": "Clobetasol",
+        "normalized": "Clobetasol"
+      },
+      {
+        "start": 24,
+        "end": 28,
+        "label": "CONCENTRACION",
+        "text": "0.05",
+        "normalized": "0.05"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 30,
+        "end": 36,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Loción",
+        "normalized": "Loción"
+      },
+      {
+        "start": 37,
+        "end": 39,
+        "label": "CANTIDAD",
+        "text": "60",
+        "normalized": "60"
+      },
+      {
+        "start": 40,
+        "end": 42,
+        "label": "UNIDAD",
+        "text": "mL",
+        "normalized": "mL"
+      }
+    ],
+    "recipe_id": "R35",
+    "formula_id": "R35-F02",
+    "fold_cv": 5
+  },
+  {
+    "text": "Sertaconazol 1%\nTerbinafina 1%\nPantenol 5%\nCrema 120 g",
+    "entities": [
+      {
+        "start": 0,
+        "end": 12,
+        "label": "INSUMO",
+        "text": "Sertaconazol",
+        "normalized": "Sertaconazol"
+      },
+      {
+        "start": 13,
+        "end": 14,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 14,
+        "end": 15,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 16,
+        "end": 27,
+        "label": "INSUMO",
+        "text": "Terbinafina",
+        "normalized": "Terbinafina"
+      },
+      {
+        "start": 28,
+        "end": 29,
+        "label": "CONCENTRACION",
+        "text": "1",
+        "normalized": "1"
+      },
+      {
+        "start": 29,
+        "end": 30,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 31,
+        "end": 39,
+        "label": "INSUMO",
+        "text": "Pantenol",
+        "normalized": "Pantenol"
+      },
+      {
+        "start": 40,
+        "end": 41,
+        "label": "CONCENTRACION",
+        "text": "5",
+        "normalized": "5"
+      },
+      {
+        "start": 41,
+        "end": 42,
+        "label": "UNIDAD",
+        "text": "%",
+        "normalized": "%"
+      },
+      {
+        "start": 43,
+        "end": 48,
+        "label": "FORMA_FARMACEUTICA",
+        "text": "Crema",
+        "normalized": "Crema"
+      },
+      {
+        "start": 49,
+        "end": 52,
+        "label": "CANTIDAD",
+        "text": "120",
+        "normalized": "120"
+      },
+      {
+        "start": 53,
+        "end": 54,
+        "label": "UNIDAD",
+        "text": "g",
+        "normalized": "g"
+      }
+    ],
+    "recipe_id": "R36",
+    "formula_id": "R36-F01",
+    "fold_cv": 1
+  }
+]

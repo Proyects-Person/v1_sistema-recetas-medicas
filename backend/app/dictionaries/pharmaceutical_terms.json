@@ -1,0 +1,1765 @@
+{
+  "version": "2026-06-23.4",
+  "description": "Diccionario de apoyo para OCR de recetas magistrales dermatológicas. Se usa solo para sugerencias; no reemplaza validación farmacéutica. Diccionario ampliado con términos de formulación magistral dermatológica, formas farmacéuticas, excipientes, abreviaturas y variantes frecuentes de OCR manuscrito.",
+  "terms": [
+    {
+      "canonical": "Clobetasol",
+      "category": "principio_activo",
+      "priority": 109,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 9,
+      "observed_strengths": [
+        "0.05%",
+        "0.1%"
+      ]
+    },
+    {
+      "canonical": "Ácido salicílico",
+      "category": "principio_activo",
+      "priority": 109,
+      "aliases": [
+        "Salicílico"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 9,
+      "observed_strengths": [
+        "1%",
+        "17%",
+        "2%",
+        "3%",
+        "5%"
+      ]
+    },
+    {
+      "canonical": "Extracto de manzanilla",
+      "category": "extracto",
+      "priority": 107,
+      "aliases": [
+        "Manzanilla",
+        "mzn"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 7,
+      "observed_strengths": [
+        "1%",
+        "2%",
+        "3%",
+        "4%"
+      ]
+    },
+    {
+      "canonical": "Urea",
+      "category": "principio_activo",
+      "priority": 107,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 7,
+      "observed_strengths": [
+        "10%",
+        "2%",
+        "20%",
+        "5%"
+      ]
+    },
+    {
+      "canonical": "Minoxidil",
+      "category": "principio_activo",
+      "priority": 105,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 5,
+      "observed_strengths": [
+        "2.5mg",
+        "4%",
+        "5%"
+      ]
+    },
+    {
+      "canonical": "Pantenol",
+      "category": "principio_activo",
+      "priority": 105,
+      "aliases": [
+        "dexpantenol"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 5,
+      "observed_strengths": [
+        "2%",
+        "3%",
+        "5%"
+      ]
+    },
+    {
+      "canonical": "Clindamicina",
+      "category": "principio_activo",
+      "priority": 104,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 4,
+      "observed_strengths": [
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Hidrocortisona",
+      "category": "principio_activo",
+      "priority": 104,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 4,
+      "observed_strengths": [
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Peróxido de benzoilo",
+      "category": "principio_activo",
+      "priority": 104,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 4,
+      "observed_strengths": [
+        "2.5%",
+        "3%"
+      ]
+    },
+    {
+      "canonical": "Extracto de aloe vera",
+      "category": "extracto",
+      "priority": 103,
+      "aliases": [
+        "Extracto Aloe vera"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 3,
+      "observed_strengths": [
+        "2%",
+        "3%"
+      ]
+    },
+    {
+      "canonical": "Ketoconazol",
+      "category": "principio_activo",
+      "priority": 103,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 3,
+      "observed_strengths": [
+        "1%",
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Metronidazol",
+      "category": "principio_activo",
+      "priority": 103,
+      "aliases": [
+        "met"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 3,
+      "observed_strengths": [
+        "0.75%"
+      ]
+    },
+    {
+      "canonical": "Permetrina",
+      "category": "principio_activo",
+      "priority": 103,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 3,
+      "observed_strengths": [
+        "5%"
+      ]
+    },
+    {
+      "canonical": "Piritionato de zinc",
+      "category": "principio_activo",
+      "priority": 103,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 3,
+      "observed_strengths": [
+        "1%",
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Triamcinolona",
+      "category": "principio_activo",
+      "priority": 103,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 3,
+      "observed_strengths": [
+        "0.025%"
+      ]
+    },
+    {
+      "canonical": "Alfa Bisabolol",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [
+        "BSB"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "1%",
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Calamina",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "2%",
+        "8%"
+      ]
+    },
+    {
+      "canonical": "Ceramida",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [
+        "Ceramide"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Econazol",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Extracto de caléndula",
+      "category": "extracto",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "2%",
+        "3%"
+      ]
+    },
+    {
+      "canonical": "Isoconazol",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Ivermectina",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [
+        "Iv"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "1%",
+        "3%"
+      ]
+    },
+    {
+      "canonical": "Manteca de karité",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "3%"
+      ]
+    },
+    {
+      "canonical": "Mentol",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "0.5%",
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Mometasona",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "0.1%"
+      ]
+    },
+    {
+      "canonical": "Niacinamida",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [
+        "niac",
+        "niacinamide"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "4%"
+      ]
+    },
+    {
+      "canonical": "Tacrolimus",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "0.1%"
+      ]
+    },
+    {
+      "canonical": "Ácido láctico",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "17%"
+      ]
+    },
+    {
+      "canonical": "Óxido de zinc",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "4%",
+        "8%"
+      ]
+    },
+    {
+      "canonical": "Alcanfor",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Alcohol boricado",
+      "category": "principio_activo_preparado",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Bergamota",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [
+        "Esencia de Bergamota"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "25%"
+      ]
+    },
+    {
+      "canonical": "Bifonazol",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Ciclopirox",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "8%"
+      ]
+    },
+    {
+      "canonical": "Eritromicina",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "4%"
+      ]
+    },
+    {
+      "canonical": "Extracto de avena",
+      "category": "extracto",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Metilprednisolona",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "0.1%"
+      ]
+    },
+    {
+      "canonical": "Mupirocina",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "3%"
+      ]
+    },
+    {
+      "canonical": "Sertaconazol",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Terbinafina",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "1%"
+      ]
+    },
+    {
+      "canonical": "Ácido azelaico",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [
+        "Azelaico"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "8%"
+      ]
+    },
+    {
+      "canonical": "Ácido tricloro acético",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [
+        "ATC"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "80%"
+      ]
+    },
+    {
+      "canonical": "Base alcohol",
+      "category": "base",
+      "priority": 97,
+      "aliases": [],
+      "verification": "OBSERVADO_EN_NER_REVISAR_QF",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "90°"
+      ]
+    },
+    {
+      "canonical": "Adapaleno",
+      "category": "principio_activo",
+      "priority": 96,
+      "aliases": [],
+      "verification": "OBSERVADO_EN_NER_REVISAR_QF",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "0.1%"
+      ]
+    },
+    {
+      "canonical": "Diflucortolona",
+      "category": "principio_activo",
+      "priority": 96,
+      "aliases": [],
+      "verification": "OBSERVADO_EN_NER_REVISAR_QF",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "0.1%"
+      ]
+    },
+    {
+      "canonical": "Ácido bórico",
+      "category": "principio_activo",
+      "priority": 96,
+      "aliases": [],
+      "verification": "OBSERVADO_EN_NER_REVISAR_QF",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "2%"
+      ]
+    },
+    {
+      "canonical": "csp",
+      "category": "abreviatura",
+      "priority": 95,
+      "aliases": [
+        "c.s.p.",
+        "c s p",
+        "cantidad suficiente para",
+        "cantidad suficiente para preparar",
+        "cantidad suficiente"
+      ]
+    },
+    {
+      "canonical": "crema base",
+      "category": "forma_base",
+      "priority": 90,
+      "aliases": [
+        "base crema",
+        "cold cream",
+        "cr base",
+        "crema cbp",
+        "crema csp",
+        "crema magistral",
+        "crema o/w",
+        "crema ow",
+        "crema w/o",
+        "crema wo"
+      ]
+    },
+    {
+      "canonical": "crema",
+      "category": "forma_farmaceutica",
+      "priority": 86,
+      "aliases": [
+        "cr.",
+        "crem",
+        "crm"
+      ]
+    },
+    {
+      "canonical": "gel",
+      "category": "forma_farmaceutica",
+      "priority": 86,
+      "aliases": [
+        "gel tópico",
+        "gel topico"
+      ]
+    },
+    {
+      "canonical": "ungüento",
+      "category": "forma_farmaceutica",
+      "priority": 86,
+      "aliases": [
+        "ointment",
+        "pom.",
+        "pomada",
+        "ung",
+        "ung.",
+        "unguento"
+      ]
+    },
+    {
+      "canonical": "gel base",
+      "category": "forma_base",
+      "priority": 85,
+      "aliases": [
+        "base gel",
+        "gel",
+        "gel carbopol",
+        "gel celulosico",
+        "gel celulósico",
+        "gel csp",
+        "gel hidrofilico",
+        "gel hidrofílico"
+      ]
+    },
+    {
+      "canonical": "loción",
+      "category": "forma_farmaceutica",
+      "priority": 85,
+      "aliases": [
+        "loc",
+        "loc.",
+        "locion",
+        "lotion"
+      ]
+    },
+    {
+      "canonical": "solución tópica",
+      "category": "forma_farmaceutica",
+      "priority": 85,
+      "aliases": [
+        "solucion topica",
+        "solución",
+        "solucion",
+        "sol tópica",
+        "sol topica"
+      ]
+    },
+    {
+      "canonical": "champú",
+      "category": "forma_farmaceutica",
+      "priority": 84,
+      "aliases": [
+        "champu",
+        "shampoo",
+        "shampu",
+        "shampú"
+      ]
+    },
+    {
+      "canonical": "solución",
+      "category": "forma_farmaceutica",
+      "priority": 84,
+      "aliases": [
+        "solucion",
+        "sol.",
+        "sol",
+        "solution"
+      ]
+    },
+    {
+      "canonical": "tópico",
+      "category": "via_administracion",
+      "priority": 84,
+      "aliases": [
+        "topico",
+        "vía tópica",
+        "via topica",
+        "uso tópico",
+        "uso topico",
+        "aplicación tópica",
+        "aplicacion topica"
+      ]
+    },
+    {
+      "canonical": "cbp",
+      "category": "abreviatura",
+      "priority": 82,
+      "aliases": [
+        "c.b.p.",
+        "c b p",
+        "cantidad bastante para",
+        "base suficiente para"
+      ]
+    },
+    {
+      "canonical": "suspensión",
+      "category": "forma_farmaceutica",
+      "priority": 82,
+      "aliases": [
+        "suspension",
+        "susp."
+      ]
+    },
+    {
+      "canonical": "tópica",
+      "category": "via",
+      "priority": 80,
+      "aliases": [
+        "topica",
+        "uso externo",
+        "uso tópico",
+        "uso topico"
+      ]
+    },
+    {
+      "canonical": "emulsión no iónica",
+      "category": "forma_base",
+      "priority": 78,
+      "aliases": [
+        "emulsion no ionica",
+        "base no ionica",
+        "crema no ionica"
+      ]
+    },
+    {
+      "canonical": "aplicar",
+      "category": "indicacion",
+      "priority": 75,
+      "aliases": [
+        "aplic",
+        "aplic.",
+        "aplicacion",
+        "aplicación",
+        "aplicar capa",
+        "aplicar capa fina",
+        "aplicar sobre"
+      ]
+    },
+    {
+      "canonical": "c.s.p.",
+      "category": "abreviatura",
+      "priority": 75,
+      "aliases": [
+        "csp",
+        "c.s.p",
+        "c s p",
+        "cs",
+        "cantidad suficiente para"
+      ]
+    },
+    {
+      "canonical": "aa",
+      "category": "abreviatura",
+      "priority": 70,
+      "aliases": [
+        "ana partes iguales",
+        "a.a.",
+        "partes iguales"
+      ]
+    },
+    {
+      "canonical": "Aceite de ricino",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "aceite de ricino virgen"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Acetato de zinc",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Alcohol cetílico",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Alcohol etílico",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "etanol"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Almidón de maíz",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Aloe",
+      "category": "extracto",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Alumbre de potasio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Avena coloidal",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Azufre precipitado",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "azufre"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Azul de metileno",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Benjuí de Sumatra",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Benzoato de sodio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Benzocaína",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Butenafina",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Bálsamo del Perú",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Bórax",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "cada 12 horas",
+      "category": "frecuencia",
+      "priority": 70,
+      "aliases": [
+        "c 12 h",
+        "c/12 horas",
+        "c/12h",
+        "c12h",
+        "cada 12 h",
+        "cada 12h",
+        "q12h"
+      ]
+    },
+    {
+      "canonical": "cada 24 horas",
+      "category": "frecuencia",
+      "priority": 70,
+      "aliases": [
+        "c/24h",
+        "c 24 h",
+        "cada 24h",
+        "una vez al día",
+        "1 vez al día",
+        "1v/día",
+        "1 vez dia"
+      ]
+    },
+    {
+      "canonical": "cada 8 horas",
+      "category": "frecuencia",
+      "priority": 70,
+      "aliases": [
+        "c 8 h",
+        "c/8 horas",
+        "c/8h",
+        "c8h",
+        "cada 8 h",
+        "cada 8h",
+        "q8h"
+      ]
+    },
+    {
+      "canonical": "Carbonato de calcio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "carbonato de calcio precipitado"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Carbonato de magnesio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Carbonato de potasio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Carbonato de sodio anhidro",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Carbón activado",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Citrato de potasio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Citrato de sodio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Clorhexidina",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Clorhidróxido de aluminio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "diclorhidrato de aluminio"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Cloruro de potasio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Cloruro de sodio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Clotrimazol",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Colodión",
+      "category": "base",
+      "priority": 70,
+      "aliases": [
+        "Colodium",
+        "Base colodium",
+        "Base colodion",
+        "Base colodión",
+        "Base colo"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "dos veces al día",
+      "category": "frecuencia",
+      "priority": 70,
+      "aliases": [
+        "2 veces al dia",
+        "2 veces al día",
+        "b.i.d.",
+        "bid",
+        "manana y noche",
+        "mañana y noche"
+      ]
+    },
+    {
+      "canonical": "Dutasterida",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "Dutasteride"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Esencia de menta piperita",
+      "category": "extracto",
+      "priority": 70,
+      "aliases": [
+        "aceite de menta piperita",
+        "menta piperita"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Esencia de tomillo",
+      "category": "extracto",
+      "priority": 70,
+      "aliases": [
+        "aceite de tomillo"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Estearato de magnesio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Estearato de sodio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Eucalipto",
+      "category": "extracto",
+      "priority": 70,
+      "aliases": [
+        "aceite de eucalipto",
+        "cineol"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Extracto fluido de árnica",
+      "category": "extracto",
+      "priority": 70,
+      "aliases": [
+        "árnica"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Fenol",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Fluoruro de sodio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Glicerol",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "glicerina"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Glucosa anhidra",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "dextrosa anhidra"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "gramos",
+      "category": "unidad",
+      "priority": 70,
+      "aliases": [
+        "g",
+        "g.",
+        "gr",
+        "gramo",
+        "grs"
+      ]
+    },
+    {
+      "canonical": "Hidroquinona",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "hydroquinone"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Hidróxido de sodio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ioduro de potasio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "yoduro de potasio"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Lactato de calcio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Lactosa anhidra",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "lactosa"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Lanolina anhidra",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "lanolina"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Metabisulfito de sodio",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "pirosulfito de sodio"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "mililitros",
+      "category": "unidad",
+      "priority": 70,
+      "aliases": [
+        "cc",
+        "mililitro",
+        "ml",
+        "mL"
+      ]
+    },
+    {
+      "canonical": "Nitrato de plata",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Permanganato de potasio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Peróxido de hidrógeno",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "agua oxigenada"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Podofilina",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "resina de podófilo"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Propilenglicol",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "glicol propileno"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Salicilato de metilo",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Salicilato de sodio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "salicilato sódico"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Sulfato de aluminio",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Sulfato de cobre pentahidrato",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "sulfato de cobre"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Sulfato de zinc",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "síndrome piel sensible",
+      "category": "indicacion",
+      "priority": 70,
+      "aliases": [
+        "syndet piel sensible",
+        "piel sensible",
+        "sindet piel sensible"
+      ]
+    },
+    {
+      "canonical": "Talco farmacéutico",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "talco grado farmacéutico"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "tres veces al día",
+      "category": "frecuencia",
+      "priority": 70,
+      "aliases": [
+        "3 veces al día",
+        "tid",
+        "t.i.d."
+      ]
+    },
+    {
+      "canonical": "Tretinoína",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "acido retinoico"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Undecilenato de zinc",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Vaselina líquida",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "petrolato liquido"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Vaselina sólida",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [
+        "petrolato sólido"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Violeta de genciana",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "cloruro de metil rosanilina",
+        "cristal violeta"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Vitamina E",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "Vit E"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido Acetil salicílico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido aminobenzoico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "acido 4-aminobenzoico",
+        "PABA"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido benzoico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido cítrico",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido esteárico",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido glicólico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido kójico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido tranexámico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido undecilénico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "porcentaje",
+      "category": "unidad",
+      "priority": 65,
+      "aliases": [
+        "%",
+        "por ciento",
+        "porciento",
+        "x ciento"
+      ]
+    }
+  ],
+  "phrase_rules": [
+    {
+      "when_all": [
+        "alcohol"
+      ],
+      "near": [
+        "sonicado",
+        "boricado",
+        "boricad",
+        "borico",
+        "borico"
+      ],
+      "suggest": "Alcohol boricado",
+      "reason": "En recetas magistrales, el patrón 'alcohol + palabra similar a boricado' suele corresponder a alcohol boricado."
+    }
+  ],
+  "sources": [
+    "AEMPS Formulario Nacional: materias primas, principios activos y excipientes en formulación magistral.",
+    "Catálogo de fórmulas magistrales dermatológicas HUSC: urea, ácido salicílico, clobetasol, hidrocortisona, ketoconazol, vehículos y csp.",
+    "Tesis peruana 2024 sobre recetas magistrales dermatológicas: urea 10%, clobetasol 0,05% y ácido salicílico 3% como principios activos frecuentes.",
+    "Revisión de formulación magistral en medicina de familia: minoxidil, propilenglicol, etanol, agua destilada y solución hidroalcohólica."
+  ],
+  "metadata": {
+    "ingredients_source": {
+      "purpose": "Diccionario de insumos, principios activos, extractos, excipientes y bases para postprocesamiento OCR/PLN de recetas magistrales.",
+      "source_workbooks": [
+        "DICCIONARIO_FARMACEUTICO_PERU_Y_VERIFICADO (1).xlsx",
+        "NER_DATASET_FINAL_36_RECETAS(1).xlsx"
+      ],
+      "verified_source_terms": 115,
+      "ner_unique_ingredients": 46,
+      "ner_ingredient_occurrences": 118,
+      "ner_missing_added_for_review": 4,
+      "important_note": "observed_strengths sirve como referencia/auditoria; no debe usarse para rechazar concentraciones nuevas."
+    },
+    "merge_note": "Se conservaron formas/vías del diccionario previo y se actualizaron los componentes con los Excel del proyecto."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "training_examples": 52,
+  "development_examples": 8,
+  "labels": [
+    "CANTIDAD",
+    "CONCENTRACION",
+    "FORMA_FARMACEUTICA",
+    "INSUMO",
+    "UNIDAD"
+  ],
+  "epochs": 40,
+  "dev_fold": 5,
+  "train_all": false,
+  "evaluation": {
+    "ents_p": 1.0,
+    "ents_r": 1.0,
+    "ents_f": 1.0,
+    "ents_per_type": {
+      "INSUMO": {
+        "p": 1.0,
+        "r": 1.0,
+        "f": 1.0
+      },
+      "CONCENTRACION": {
+        "p": 1.0,
+        "r": 1.0,
+        "f": 1.0
+      },
+      "UNIDAD": {
+        "p": 1.0,
+        "r": 1.0,
+        "f": 1.0
+      },
+      "FORMA_FARMACEUTICA": {
+        "p": 1.0,
+        "r": 1.0,
+        "f": 1.0
+      },
+      "CANTIDAD": {
+        "p": 1.0,
+        "r": 1.0,
+        "f": 1.0
+      }
+    }
+  }
+}
