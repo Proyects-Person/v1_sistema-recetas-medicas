@@ -11,15 +11,22 @@ RUN apt-get update \
 
 COPY requirements.txt ./requirements.txt
 COPY requirements-ocr.txt ./requirements-ocr.txt
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Para imagen Docker con OCR real, construir con:
+# Actualizar herramientas necesarias para instalar dependencias Python
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Para imagen Docker con EasyOCR:
 # docker build --build-arg INSTALL_EASYOCR=true -t recetas-backend ./backend
 ARG INSTALL_EASYOCR=false
-RUN if [ "$INSTALL_EASYOCR" = "true" ]; then pip install --no-cache-dir -r requirements-ocr.txt; fi
+RUN if [ "$INSTALL_EASYOCR" = "true" ]; then \
+        pip install --no-cache-dir -r requirements-ocr.txt; \
+    fi
 
 COPY app ./app
+
 RUN mkdir -p /app/uploads /app/data
 
 EXPOSE 8000
+
 CMD sh -c "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"
