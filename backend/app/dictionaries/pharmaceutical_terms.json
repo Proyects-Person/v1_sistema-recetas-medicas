@@ -3,24 +3,16 @@
   "description": "Diccionario de apoyo para OCR de recetas magistrales dermatológicas. Se usa solo para sugerencias; no reemplaza validación farmacéutica. Diccionario ampliado con términos de formulación magistral dermatológica, formas farmacéuticas, excipientes, abreviaturas y variantes frecuentes de OCR manuscrito.",
   "terms": [
     {
-      "canonical": "Clobetasol",
-      "category": "principio_activo",
-      "priority": 109,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": true,
-      "observed_count": 9,
-      "observed_strengths": [
-        "0.05%",
-        "0.1%"
-      ]
-    },
-    {
       "canonical": "Ácido salicílico",
       "category": "principio_activo",
       "priority": 109,
       "aliases": [
-        "Salicílico"
+        "Salicílico",
+        "a. salicilico",
+        "ac salicilico",
+        "acid salicylic",
+        "salic",
+        "salicíl."
       ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
@@ -31,6 +23,28 @@
         "2%",
         "3%",
         "5%"
+      ]
+    },
+    {
+      "canonical": "Clobetasol",
+      "category": "principio_activo",
+      "priority": 109,
+      "aliases": [
+        "clobetasol propionato",
+        "clobetazol",
+        "clob",
+        "clobet",
+        "propionato de clobetasol",
+        "clobetasol prop.",
+        "clob. prop.",
+        "Clobetasoi"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 9,
+      "observed_strengths": [
+        "0.05%",
+        "0.1%"
       ]
     },
     {
@@ -55,7 +69,13 @@
       "canonical": "Urea",
       "category": "principio_activo",
       "priority": 107,
-      "aliases": [],
+      "aliases": [
+        "ure",
+        "urea pura",
+        "urea q.p.",
+        "urea qp",
+        "Unea"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 7,
@@ -67,10 +87,29 @@
       ]
     },
     {
+      "canonical": "Cetirizina",
+      "category": "principio_activo",
+      "priority": 105,
+      "aliases": [
+        "Cetirizine",
+        "Cetiricina"
+      ],
+      "verification": "PENDIENTE_VALIDACION_QF",
+      "observed_strengths": [
+        "10 mg"
+      ]
+    },
+    {
       "canonical": "Minoxidil",
       "category": "principio_activo",
       "priority": 105,
-      "aliases": [],
+      "aliases": [
+        "minox",
+        "minoxdil",
+        "minoxidil solucion",
+        "minoxidilo",
+        "Minoxidii"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 5,
@@ -85,7 +124,12 @@
       "category": "principio_activo",
       "priority": 105,
       "aliases": [
-        "dexpantenol"
+        "dexpantenol",
+        "panthenol",
+        "d pantenol",
+        "panteno",
+        "panterol",
+        "provitamina b5"
       ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
@@ -97,10 +141,28 @@
       ]
     },
     {
+      "canonical": "Sulfato ferroso",
+      "category": "principio_activo",
+      "priority": 105,
+      "aliases": [
+        "Sulfato feroso",
+        "Ferrous sulfate"
+      ],
+      "verification": "PENDIENTE_VALIDACION_QF",
+      "observed_strengths": [
+        "300 mg"
+      ]
+    },
+    {
       "canonical": "Clindamicina",
       "category": "principio_activo",
       "priority": 104,
-      "aliases": [],
+      "aliases": [
+        "clindamicin",
+        "clindamcina",
+        "clindamicina hcl",
+        "clindamicina clorhidrato"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 4,
@@ -112,7 +174,14 @@
       "canonical": "Hidrocortisona",
       "category": "principio_activo",
       "priority": 104,
-      "aliases": [],
+      "aliases": [
+        "hcto",
+        "hidrocort",
+        "hidrocortisona acetato",
+        "hidrocortizona",
+        "hidrocortsona",
+        "hydrocortisone"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 4,
@@ -124,7 +193,12 @@
       "canonical": "Peróxido de benzoilo",
       "category": "principio_activo",
       "priority": 104,
-      "aliases": [],
+      "aliases": [
+        "benzoyl peroxide",
+        "pb",
+        "pbo",
+        "perox benzoilo"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 4,
@@ -152,7 +226,15 @@
       "canonical": "Ketoconazol",
       "category": "principio_activo",
       "priority": 103,
-      "aliases": [],
+      "aliases": [
+        "keto",
+        "ketoc",
+        "ketocona",
+        "ketoconaz",
+        "ketoconazol champú",
+        "ketoconazol shampoo",
+        "ketoconazole"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 3,
@@ -166,7 +248,12 @@
       "category": "principio_activo",
       "priority": 103,
       "aliases": [
-        "met"
+        "met",
+        "metro",
+        "metrogel",
+        "metron.",
+        "metronidasol",
+        "metronidazolum"
       ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
@@ -191,7 +278,13 @@
       "canonical": "Piritionato de zinc",
       "category": "principio_activo",
       "priority": 103,
-      "aliases": [],
+      "aliases": [
+        "zinc pyrithione",
+        "piritiona zinc",
+        "Piritionato zinc",
+        "Piritionato de cinc",
+        "Zinc piritiona"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 3,
@@ -204,12 +297,31 @@
       "canonical": "Triamcinolona",
       "category": "principio_activo",
       "priority": 103,
-      "aliases": [],
+      "aliases": [
+        "triamcinolona acetónido",
+        "triancinolona",
+        "triam"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 3,
       "observed_strengths": [
         "0.025%"
+      ]
+    },
+    {
+      "canonical": "Ácido láctico",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [
+        "lactico",
+        "lactic acid"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "17%"
       ]
     },
     {
@@ -231,7 +343,9 @@
       "canonical": "Calamina",
       "category": "principio_activo",
       "priority": 102,
-      "aliases": [],
+      "aliases": [
+        "calamina loción"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 2,
@@ -258,7 +372,11 @@
       "canonical": "Econazol",
       "category": "principio_activo",
       "priority": 102,
-      "aliases": [],
+      "aliases": [
+        "econazole",
+        "econazol nitrato",
+        "econaz"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 2,
@@ -283,7 +401,12 @@
       "canonical": "Isoconazol",
       "category": "principio_activo",
       "priority": 102,
-      "aliases": [],
+      "aliases": [
+        "isoconazole",
+        "isocona",
+        "isoconazol nitrato",
+        "Isoconazoi"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 2,
@@ -310,7 +433,10 @@
       "canonical": "Manteca de karité",
       "category": "principio_activo",
       "priority": 102,
-      "aliases": [],
+      "aliases": [
+        "karite",
+        "shea butter"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 2,
@@ -322,7 +448,12 @@
       "canonical": "Mentol",
       "category": "principio_activo",
       "priority": 102,
-      "aliases": [],
+      "aliases": [
+        "menthol",
+        "mentol cristal",
+        "mentol cristales",
+        "mntol"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 2,
@@ -335,7 +466,12 @@
       "canonical": "Mometasona",
       "category": "principio_activo",
       "priority": 102,
-      "aliases": [],
+      "aliases": [
+        "mometasona furoato",
+        "mometasone",
+        "mometazona",
+        "mome"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 2,
@@ -349,7 +485,10 @@
       "priority": 102,
       "aliases": [
         "niac",
-        "niacinamide"
+        "niacinamide",
+        "nicotinamida",
+        "niacina",
+        "nia"
       ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
@@ -359,34 +498,17 @@
       ]
     },
     {
-      "canonical": "Tacrolimus",
-      "category": "principio_activo",
-      "priority": 102,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": true,
-      "observed_count": 2,
-      "observed_strengths": [
-        "0.1%"
-      ]
-    },
-    {
-      "canonical": "Ácido láctico",
-      "category": "principio_activo",
-      "priority": 102,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": true,
-      "observed_count": 2,
-      "observed_strengths": [
-        "17%"
-      ]
-    },
-    {
       "canonical": "Óxido de zinc",
       "category": "principio_activo",
       "priority": 102,
-      "aliases": [],
+      "aliases": [
+        "oxido de cinc",
+        "zinc",
+        "zinc oxide",
+        "zn",
+        "zn oxide",
+        "zno"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 2,
@@ -396,10 +518,61 @@
       ]
     },
     {
+      "canonical": "Tacrolimus",
+      "category": "principio_activo",
+      "priority": 102,
+      "aliases": [
+        "tacrolimus ungüento",
+        "tacro",
+        "tacrolimo"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 2,
+      "observed_strengths": [
+        "0.1%"
+      ]
+    },
+    {
+      "canonical": "Ácido azelaico",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [
+        "Azelaico",
+        "azelac",
+        "azelaico gel"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "8%"
+      ]
+    },
+    {
+      "canonical": "Ácido tricloro acético",
+      "category": "principio_activo",
+      "priority": 101,
+      "aliases": [
+        "ATC"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "80%"
+      ]
+    },
+    {
       "canonical": "Alcanfor",
       "category": "principio_activo",
       "priority": 101,
-      "aliases": [],
+      "aliases": [
+        "alcamfor",
+        "alcanf",
+        "alcanfor racemico",
+        "camphor"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 1,
@@ -411,7 +584,18 @@
       "canonical": "Alcohol boricado",
       "category": "principio_activo_preparado",
       "priority": 101,
-      "aliases": [],
+      "aliases": [
+        "alc boricado",
+        "alcohol boric.",
+        "alcohol boricad",
+        "alcohol borico",
+        "alcohol sonicado",
+        "boricada",
+        "boricado",
+        "borico",
+        "sonicad",
+        "sonicado"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 1,
@@ -437,7 +621,10 @@
       "canonical": "Bifonazol",
       "category": "principio_activo",
       "priority": 101,
-      "aliases": [],
+      "aliases": [
+        "bifonazole",
+        "bifona"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 1,
@@ -461,7 +648,12 @@
       "canonical": "Eritromicina",
       "category": "principio_activo",
       "priority": 101,
-      "aliases": [],
+      "aliases": [
+        "eritro",
+        "eritrom.",
+        "eritromicina base",
+        "erythromycin"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 1,
@@ -497,7 +689,12 @@
       "canonical": "Mupirocina",
       "category": "principio_activo",
       "priority": 101,
-      "aliases": [],
+      "aliases": [
+        "mupirocin",
+        "mupirocina crema",
+        "mupirocina ung",
+        "mupirocina unguento"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 1,
@@ -521,7 +718,12 @@
       "canonical": "Terbinafina",
       "category": "principio_activo",
       "priority": 101,
-      "aliases": [],
+      "aliases": [
+        "terbinafina hcl",
+        "terbinafina clorhidrato",
+        "terbina",
+        "terbin"
+      ],
       "verification": "VERIFICADO",
       "observed_in_ner": true,
       "observed_count": 1,
@@ -530,31 +732,31 @@
       ]
     },
     {
-      "canonical": "Ácido azelaico",
+      "canonical": "Pramoxina",
       "category": "principio_activo",
-      "priority": 101,
+      "priority": 100,
       "aliases": [
-        "Azelaico"
+        "Pramoxine"
       ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": true,
-      "observed_count": 1,
+      "verification": "PENDIENTE_VALIDACION_QF",
       "observed_strengths": [
-        "8%"
+        "5%"
       ]
     },
     {
-      "canonical": "Ácido tricloro acético",
+      "canonical": "Sulfuro de selenio",
       "category": "principio_activo",
-      "priority": 101,
+      "priority": 100,
       "aliases": [
-        "ATC"
+        "Sulfuro selenio",
+        "Selenio sulfuro",
+        "Sulfito de selenio",
+        "Sulfito de selemio",
+        "Selenium sulfide"
       ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": true,
-      "observed_count": 1,
+      "verification": "PENDIENTE_VALIDACION_QF",
       "observed_strengths": [
-        "80%"
+        "2.5%"
       ]
     },
     {
@@ -570,10 +772,26 @@
       ]
     },
     {
-      "canonical": "Adapaleno",
+      "canonical": "Ácido bórico",
       "category": "principio_activo",
       "priority": 96,
       "aliases": [],
+      "verification": "OBSERVADO_EN_NER_REVISAR_QF",
+      "observed_in_ner": true,
+      "observed_count": 1,
+      "observed_strengths": [
+        "2%"
+      ]
+    },
+    {
+      "canonical": "Adapaleno",
+      "category": "principio_activo",
+      "priority": 96,
+      "aliases": [
+        "adapalene",
+        "adapaleno gel",
+        "adap"
+      ],
       "verification": "OBSERVADO_EN_NER_REVISAR_QF",
       "observed_in_ner": true,
       "observed_count": 1,
@@ -594,16 +812,35 @@
       ]
     },
     {
-      "canonical": "Ácido bórico",
+      "canonical": "betametasona",
       "category": "principio_activo",
-      "priority": 96,
-      "aliases": [],
-      "verification": "OBSERVADO_EN_NER_REVISAR_QF",
-      "observed_in_ner": true,
-      "observed_count": 1,
-      "observed_strengths": [
-        "2%"
+      "priority": 95,
+      "aliases": [
+        "beta metasona",
+        "betamet.",
+        "betametasona dipropionato",
+        "betametasona valerato",
+        "betametazona",
+        "bmetasona"
       ]
+    },
+    {
+      "canonical": "Clotrimazol",
+      "category": "principio_activo",
+      "priority": 95,
+      "aliases": [
+        "clotri",
+        "clotrim.",
+        "clotrimasol",
+        "clotrimaz",
+        "clotrimazol topico",
+        "clotrimazole",
+        "clotrimazolum"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
     },
     {
       "canonical": "csp",
@@ -611,11 +848,58 @@
       "priority": 95,
       "aliases": [
         "c.s.p.",
-        "c s p",
         "cantidad suficiente para",
         "cantidad suficiente para preparar",
-        "cantidad suficiente"
-      ]
+        "cantidad suficiente",
+        "cs"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "Ácido kójico",
+      "category": "principio_activo",
+      "priority": 92,
+      "aliases": [
+        "kojico",
+        "kojic acid"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Hidroquinona",
+      "category": "principio_activo",
+      "priority": 92,
+      "aliases": [
+        "hydroquinone",
+        "hdq",
+        "hidrokinona",
+        "hidroq.",
+        "hidroquin",
+        "hidroquinona base"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido tranexámico",
+      "category": "principio_activo",
+      "priority": 90,
+      "aliases": [
+        "tranexamico",
+        "tranex"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
     },
     {
       "canonical": "crema base",
@@ -632,7 +916,109 @@
         "crema ow",
         "crema w/o",
         "crema wo"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "desonida",
+      "category": "principio_activo",
+      "priority": 90,
+      "aliases": [
+        "desonide",
+        "deson",
+        "dezonida"
       ]
+    },
+    {
+      "canonical": "fluocinolona",
+      "category": "principio_activo",
+      "priority": 90,
+      "aliases": [
+        "fluocinolona acetonido",
+        "fluocinolone",
+        "flucinolona"
+      ]
+    },
+    {
+      "canonical": "pimecrolimus",
+      "category": "principio_activo",
+      "priority": 90,
+      "aliases": [
+        "pimecrolimus crema",
+        "pimecro",
+        "pimecrolimo"
+      ]
+    },
+    {
+      "canonical": "Tretinoína",
+      "category": "principio_activo",
+      "priority": 90,
+      "aliases": [
+        "acido retinoico",
+        "retinoico",
+        "retin a",
+        "ác. retinoico"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "ácido fusídico",
+      "category": "principio_activo",
+      "priority": 88,
+      "aliases": [
+        "ac fusidico",
+        "fusidic acid",
+        "fusidico"
+      ]
+    },
+    {
+      "canonical": "Azufre precipitado",
+      "category": "principio_activo",
+      "priority": 88,
+      "aliases": [
+        "azufre",
+        "sulfur",
+        "azuf"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "miconazol",
+      "category": "principio_activo",
+      "priority": 88,
+      "aliases": [
+        "micona",
+        "miconazol nitrato",
+        "miconazole",
+        "nitrato de miconazol"
+      ]
+    },
+    {
+      "canonical": "Vaselina sólida",
+      "category": "excipiente",
+      "priority": 88,
+      "aliases": [
+        "petrolato sólido",
+        "petrolato",
+        "vaselina alba",
+        "vaselina",
+        "vaselina base",
+        "vas csp",
+        "vas."
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
     },
     {
       "canonical": "crema",
@@ -642,7 +1028,11 @@
         "cr.",
         "crem",
         "crm"
-      ]
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "gel",
@@ -650,8 +1040,32 @@
       "priority": 86,
       "aliases": [
         "gel tópico",
-        "gel topico"
-      ]
+        "base gel",
+        "gel carbopol",
+        "gel celulosico",
+        "gel csp",
+        "gel hidrofilico"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "Propilenglicol",
+      "category": "excipiente",
+      "priority": 86,
+      "aliases": [
+        "glicol propileno",
+        "pg",
+        "propilen glicol",
+        "propilenglicolum",
+        "propylene glycol"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
     },
     {
       "canonical": "ungüento",
@@ -661,24 +1075,107 @@
         "ointment",
         "pom.",
         "pomada",
-        "ung",
-        "ung.",
-        "unguento"
+        "ung"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "Ácido glicólico",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "glicolico",
+        "glycolic acid"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "ácido mandélico",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "mandelico",
+        "mandelic acid"
       ]
     },
     {
-      "canonical": "gel base",
-      "category": "forma_base",
+      "canonical": "agua destilada",
+      "category": "excipiente",
       "priority": 85,
       "aliases": [
-        "base gel",
-        "gel",
-        "gel carbopol",
-        "gel celulosico",
-        "gel celulósico",
-        "gel csp",
-        "gel hidrofilico",
-        "gel hidrofílico"
+        "agua dest",
+        "agua destil",
+        "aqua dest",
+        "agua purificada",
+        "agua bidestilada",
+        "aqua purificata",
+        "agua csp",
+        "ag. dest."
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "alantoína",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "allantoin"
+      ]
+    },
+    {
+      "canonical": "Alcohol etílico",
+      "category": "excipiente",
+      "priority": 85,
+      "aliases": [
+        "etanol",
+        "alcohol 96°",
+        "alcohol de 96",
+        "etanol 96",
+        "alcohol 70",
+        "alc. 96"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "fluconazol",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "fluconazole",
+        "flucona",
+        "fluconazol topico"
+      ]
+    },
+    {
+      "canonical": "gentamicina",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "gentamicin",
+        "genta",
+        "gentamicina sulfato"
+      ]
+    },
+    {
+      "canonical": "itraconazol",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "itraconazole",
+        "itracona",
+        "itraconazol topico"
       ]
     },
     {
@@ -687,9 +1184,31 @@
       "priority": 85,
       "aliases": [
         "loc",
-        "loc.",
-        "locion",
         "lotion"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "neomicina",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "neomycin",
+        "neo",
+        "neomicina sulfato"
+      ]
+    },
+    {
+      "canonical": "nistatina",
+      "category": "principio_activo",
+      "priority": 85,
+      "aliases": [
+        "nystatin",
+        "nistatin",
+        "nistatina crema"
       ]
     },
     {
@@ -697,33 +1216,37 @@
       "category": "forma_farmaceutica",
       "priority": 85,
       "aliases": [
-        "solucion topica",
         "solución",
-        "solucion",
         "sol tópica",
-        "sol topica"
-      ]
+        "sol.",
+        "solution"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "champú",
       "category": "forma_farmaceutica",
       "priority": 84,
       "aliases": [
-        "champu",
         "shampoo",
-        "shampu",
-        "shampú"
-      ]
+        "shampu"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
-      "canonical": "solución",
-      "category": "forma_farmaceutica",
+      "canonical": "solución hidroalcohólica",
+      "category": "base",
       "priority": 84,
       "aliases": [
-        "solucion",
-        "sol.",
-        "sol",
-        "solution"
+        "sol. hidroalcoholica",
+        "sol hidroalc",
+        "vehículo hidroalcohólico"
       ]
     },
     {
@@ -731,14 +1254,14 @@
       "category": "via_administracion",
       "priority": 84,
       "aliases": [
-        "topico",
         "vía tópica",
-        "via topica",
         "uso tópico",
-        "uso topico",
-        "aplicación tópica",
-        "aplicacion topica"
-      ]
+        "aplicación tópica"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "cbp",
@@ -746,9 +1269,51 @@
       "priority": 82,
       "aliases": [
         "c.b.p.",
-        "c b p",
         "cantidad bastante para",
         "base suficiente para"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "Glicerol",
+      "category": "excipiente",
+      "priority": 82,
+      "aliases": [
+        "glicerina",
+        "glicerina bidestilada",
+        "glic."
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Lanolina anhidra",
+      "category": "excipiente",
+      "priority": 82,
+      "aliases": [
+        "lanolina",
+        "lanoline",
+        "lanolina anh",
+        "lanolina anhid."
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "lidocaína",
+      "category": "principio_activo",
+      "priority": 82,
+      "aliases": [
+        "lidocaina clorhidrato",
+        "lido",
+        "lidoc."
       ]
     },
     {
@@ -756,8 +1321,48 @@
       "category": "forma_farmaceutica",
       "priority": 82,
       "aliases": [
-        "suspension",
         "susp."
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "Vaselina líquida",
+      "category": "excipiente",
+      "priority": 82,
+      "aliases": [
+        "petrolato liquido",
+        "parafina líquida",
+        "aceite mineral"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Aloe",
+      "category": "extracto",
+      "priority": 80,
+      "aliases": [
+        "aloe gel",
+        "aloe vera gel"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "resorcina",
+      "category": "principio_activo",
+      "priority": 80,
+      "aliases": [
+        "resorcinol",
+        "resorc",
+        "resorcina cristal"
       ]
     },
     {
@@ -765,20 +1370,57 @@
       "category": "via",
       "priority": 80,
       "aliases": [
-        "topica",
-        "uso externo",
-        "uso tópico",
-        "uso topico"
+        "uso externo"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "vitamina c",
+      "category": "principio_activo",
+      "priority": 80,
+      "aliases": [
+        "vit c",
+        "ascorbico",
+        "ácido ascórbico"
       ]
+    },
+    {
+      "canonical": "Vitamina E",
+      "category": "principio_activo",
+      "priority": 80,
+      "aliases": [
+        "Vit E",
+        "tocoferol",
+        "vitamina e acetato"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
     },
     {
       "canonical": "emulsión no iónica",
       "category": "forma_base",
       "priority": 78,
       "aliases": [
-        "emulsion no ionica",
         "base no ionica",
         "crema no ionica"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "aceite de almendras",
+      "category": "base_o_excipiente",
+      "priority": 75,
+      "aliases": [
+        "aceite almendras",
+        "almendras aceite"
       ]
     },
     {
@@ -787,25 +1429,15 @@
       "priority": 75,
       "aliases": [
         "aplic",
-        "aplic.",
         "aplicacion",
-        "aplicación",
         "aplicar capa",
         "aplicar capa fina",
         "aplicar sobre"
-      ]
-    },
-    {
-      "canonical": "c.s.p.",
-      "category": "abreviatura",
-      "priority": 75,
-      "aliases": [
-        "csp",
-        "c.s.p",
-        "c s p",
-        "cs",
-        "cantidad suficiente para"
-      ]
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "aa",
@@ -815,7 +1447,11 @@
         "ana partes iguales",
         "a.a.",
         "partes iguales"
-      ]
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "Aceite de ricino",
@@ -840,6 +1476,69 @@
       "observed_strengths": []
     },
     {
+      "canonical": "Ácido Acetil salicílico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido aminobenzoico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [
+        "acido 4-aminobenzoico",
+        "PABA"
+      ],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido benzoico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido cítrico",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido esteárico",
+      "category": "excipiente",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Ácido undecilénico",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
       "canonical": "Alcohol cetílico",
       "category": "excipiente",
       "priority": 70,
@@ -850,30 +1549,8 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Alcohol etílico",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [
-        "etanol"
-      ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
       "canonical": "Almidón de maíz",
       "category": "excipiente",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Aloe",
-      "category": "extracto",
       "priority": 70,
       "aliases": [],
       "verification": "VERIFICADO",
@@ -902,19 +1579,17 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Azufre precipitado",
+      "canonical": "Azul de metileno",
       "category": "principio_activo",
       "priority": 70,
-      "aliases": [
-        "azufre"
-      ],
+      "aliases": [],
       "verification": "VERIFICADO",
       "observed_in_ner": false,
       "observed_count": 0,
       "observed_strengths": []
     },
     {
-      "canonical": "Azul de metileno",
+      "canonical": "Bálsamo del Perú",
       "category": "principio_activo",
       "priority": 70,
       "aliases": [],
@@ -954,27 +1629,17 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Butenafina",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Bálsamo del Perú",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
       "canonical": "Bórax",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
+    },
+    {
+      "canonical": "Butenafina",
       "category": "principio_activo",
       "priority": 70,
       "aliases": [],
@@ -995,7 +1660,11 @@
         "cada 12 h",
         "cada 12h",
         "q12h"
-      ]
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "cada 24 horas",
@@ -1009,7 +1678,11 @@
         "1 vez al día",
         "1v/día",
         "1 vez dia"
-      ]
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "cada 8 horas",
@@ -1023,7 +1696,21 @@
         "cada 8 h",
         "cada 8h",
         "q8h"
-      ]
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
+    },
+    {
+      "canonical": "Carbón activado",
+      "category": "principio_activo",
+      "priority": 70,
+      "aliases": [],
+      "verification": "VERIFICADO",
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "observed_strengths": []
     },
     {
       "canonical": "Carbonato de calcio",
@@ -1060,16 +1747,6 @@
     {
       "canonical": "Carbonato de sodio anhidro",
       "category": "excipiente",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Carbón activado",
-      "category": "principio_activo",
       "priority": 70,
       "aliases": [],
       "verification": "VERIFICADO",
@@ -1140,16 +1817,6 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Clotrimazol",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
       "canonical": "Colodión",
       "category": "base",
       "priority": 70,
@@ -1157,7 +1824,6 @@
         "Colodium",
         "Base colodium",
         "Base colodion",
-        "Base colodión",
         "Base colo"
       ],
       "verification": "VERIFICADO",
@@ -1171,12 +1837,14 @@
       "priority": 70,
       "aliases": [
         "2 veces al dia",
-        "2 veces al día",
         "b.i.d.",
         "bid",
-        "manana y noche",
-        "mañana y noche"
-      ]
+        "manana y noche"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "Dutasterida",
@@ -1249,6 +1917,16 @@
       "observed_strengths": []
     },
     {
+      "canonical": "eucerin",
+      "category": "base_o_excipiente",
+      "priority": 70,
+      "aliases": [
+        "eucerina",
+        "eucerin crema",
+        "eucerin base"
+      ]
+    },
+    {
       "canonical": "Extracto fluido de árnica",
       "category": "extracto",
       "priority": 70,
@@ -1281,18 +1959,6 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Glicerol",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [
-        "glicerina"
-      ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
       "canonical": "Glucosa anhidra",
       "category": "excipiente",
       "priority": 70,
@@ -1310,23 +1976,14 @@
       "priority": 70,
       "aliases": [
         "g",
-        "g.",
         "gr",
         "gramo",
         "grs"
-      ]
-    },
-    {
-      "canonical": "Hidroquinona",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [
-        "hydroquinone"
       ],
-      "verification": "VERIFICADO",
+      "observed_strengths": [],
       "observed_in_ner": false,
       "observed_count": 0,
-      "observed_strengths": []
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "Hidróxido de sodio",
@@ -1373,18 +2030,6 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Lanolina anhidra",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [
-        "lanolina"
-      ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
       "canonical": "Metabisulfito de sodio",
       "category": "excipiente",
       "priority": 70,
@@ -1403,9 +2048,12 @@
       "aliases": [
         "cc",
         "mililitro",
-        "ml",
-        "mL"
-      ]
+        "ml"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "Nitrato de plata",
@@ -1452,18 +2100,6 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Propilenglicol",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [
-        "glicol propileno"
-      ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
       "canonical": "Salicilato de metilo",
       "category": "principio_activo",
       "priority": 70,
@@ -1484,6 +2120,20 @@
       "observed_in_ner": false,
       "observed_count": 0,
       "observed_strengths": []
+    },
+    {
+      "canonical": "síndrome piel sensible",
+      "category": "indicacion",
+      "priority": 70,
+      "aliases": [
+        "syndet piel sensible",
+        "piel sensible",
+        "sindet piel sensible"
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "Sulfato de aluminio",
@@ -1518,16 +2168,6 @@
       "observed_strengths": []
     },
     {
-      "canonical": "síndrome piel sensible",
-      "category": "indicacion",
-      "priority": 70,
-      "aliases": [
-        "syndet piel sensible",
-        "piel sensible",
-        "sindet piel sensible"
-      ]
-    },
-    {
       "canonical": "Talco farmacéutico",
       "category": "excipiente",
       "priority": 70,
@@ -1547,49 +2187,17 @@
         "3 veces al día",
         "tid",
         "t.i.d."
-      ]
-    },
-    {
-      "canonical": "Tretinoína",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [
-        "acido retinoico"
       ],
-      "verification": "VERIFICADO",
+      "observed_strengths": [],
       "observed_in_ner": false,
       "observed_count": 0,
-      "observed_strengths": []
+      "verification": "PENDIENTE_VALIDACION_QF"
     },
     {
       "canonical": "Undecilenato de zinc",
       "category": "principio_activo",
       "priority": 70,
       "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Vaselina líquida",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [
-        "petrolato liquido"
-      ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Vaselina sólida",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [
-        "petrolato sólido"
-      ],
       "verification": "VERIFICADO",
       "observed_in_ner": false,
       "observed_count": 0,
@@ -1609,111 +2217,6 @@
       "observed_strengths": []
     },
     {
-      "canonical": "Vitamina E",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [
-        "Vit E"
-      ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido Acetil salicílico",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido aminobenzoico",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [
-        "acido 4-aminobenzoico",
-        "PABA"
-      ],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido benzoico",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido cítrico",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido esteárico",
-      "category": "excipiente",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido glicólico",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido kójico",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido tranexámico",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
-      "canonical": "Ácido undecilénico",
-      "category": "principio_activo",
-      "priority": 70,
-      "aliases": [],
-      "verification": "VERIFICADO",
-      "observed_in_ner": false,
-      "observed_count": 0,
-      "observed_strengths": []
-    },
-    {
       "canonical": "porcentaje",
       "category": "unidad",
       "priority": 65,
@@ -1722,7 +2225,11 @@
         "por ciento",
         "porciento",
         "x ciento"
-      ]
+      ],
+      "observed_strengths": [],
+      "observed_in_ner": false,
+      "observed_count": 0,
+      "verification": "PENDIENTE_VALIDACION_QF"
     }
   ],
   "phrase_rules": [
@@ -1760,6 +2267,6 @@
       "ner_missing_added_for_review": 4,
       "important_note": "observed_strengths sirve como referencia/auditoria; no debe usarse para rechazar concentraciones nuevas."
     },
-    "merge_note": "Se conservaron formas/vías del diccionario previo y se actualizaron los componentes con los Excel del proyecto."
+    "merge_note": "Fusión segura para OCR/PLN: conserva términos actuales, recupera aliases del backup, incorpora términos enriquecidos y evita colisiones de aliases."
   }
 }

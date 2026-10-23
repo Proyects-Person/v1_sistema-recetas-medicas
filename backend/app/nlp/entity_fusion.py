@@ -25,10 +25,11 @@ from .regex_extractor import (
 
 
 # ============================================================
-# CATEGORÍAS QUE PUEDEN SER INSUMOS
+# CATEGORÍAS
 # ============================================================
 
 COMPONENT_CATEGORIES = {
+
     "principio_activo",
     "principio_activo_preparado",
     "excipiente",
@@ -39,80 +40,135 @@ COMPONENT_CATEGORIES = {
 
 
 BASE_CATEGORIES = {
+
     "base",
     "base_o_excipiente",
 }
 
 
 # ============================================================
-# CONTEXTO ADMINISTRATIVO
-#
-# Estas líneas no deben generar ingredientes aunque
-# el NER se equivoque.
-#
-# Rp. NO se incluye porque puede contener medicamentos.
+# TEXTO ADMINISTRATIVO
 # ============================================================
 
 ADMIN_PATTERN = re.compile(
+
     r"(?:"
-    r"policlinico|"
-    r"nueva\s+esperanza|"
-    r"teresalud|"
-    r"e\s*\.?\s*i\s*\.?\s*r\s*\.?\s*l\s*\.?|"
-    r"huaral|"
-    r"av\s*\.?\s+solar|"
-    r"avenida|"
-    r"direccion|"
-    r"www\s*\.|"
-    r"@|"
-    r"e\s*mail|"
-    r"correo|"
-    r"telefono|"
-    r"celular|"
+
+    r"\bpaciente\b|"
+    r"\bnombres?\b|"
+    r"\bapellidos?\b|"
+    r"\bedad\b|"
+    r"\bdni\b|"
+    r"\btelefono\b|"
+    r"\bcelular\b|"
+    r"\bdireccion\b|"
+    r"\bcorreo\b|"
+    r"\be\s*mail\b|"
+
+    r"\bfecha\b|"
+    r"\bdiagnostico\b|"
+    r"\bdx\b|"
+    r"\bfirma\b|"
+    r"\bsello\b|"
+
     r"\bcmp\b|"
     r"\brne\b|"
     r"\bruc\b|"
-    r"medico|"
-    r"cirujano|"
-    r"dermatologo|"
-    r"nombres?\s+y\s+apellidos?|"
-    r"proxima\s+cita|"
-    r"visitanos\s+en|"
-    r"central\s*:|"
-    r"lider\s+en"
+
+    r"\bmedico\b|"
+    r"\bcirujano\b|"
+    r"\bdermatologo\b|"
+
+    r"\bproxima\s+cita\b|"
+
+    r"\bavenida\b|"
+    r"\bav\.?\b|"
+
+    r"\bwww\.|"
+    r"@|"
+
+    r"\bcentral\s*:|"
+    r"\bvisitanos\b|"
+
+    r"\bpoliclinico\b|"
+    r"\bhospital\b|"
+    r"\bclinica\b|"
+    r"\bmunicipalidad\b"
+
     r")",
+
     flags=re.IGNORECASE,
 )
 
-
-# ============================================================
-# ENCABEZADOS QUE NO SON INGREDIENTES
-# ============================================================
 
 SECTION_HEADER_PATTERN = re.compile(
+
     r"^\s*(?:"
+
     r"dx\.?|"
-    r"diagnostico\s*:?\s*|"
-    r"limpieza\s*:?\s*|"
-    r"hidratacion\s*:?\s*|"
-    r"indicaciones?\s*:?\s*|"
-    r"fecha\s*:?\s*|"
-    r"proxima\s+cita\s*:?\s*"
-    r")$",
+
+    r"diagnostico\s*:?|"
+
+    r"indicaciones?\s*:?|"
+
+    r"fecha\s*:?|"
+
+    r"proxima\s+cita\s*:?|"
+
+    r"datos?\s+del\s+paciente\s*:?|"
+
+    r"tratamiento\s*:?|"
+
+    r"firma\s*:?"
+
+    r")\s*$",
+
     flags=re.IGNORECASE,
 )
 
 
 # ============================================================
-# C.S.P.
+# INSTRUCCIONES
+# ============================================================
+
+INSTRUCTION_PATTERN = re.compile(
+
+    r"^\s*(?:"
+
+    r"aplicar|"
+    r"usar|"
+    r"tomar|"
+    r"ingerir|"
+    r"colocar|"
+    r"administrar|"
+    r"lavar|"
+    r"enjuagar|"
+    r"evitar|"
+    r"control|"
+    r"continuar"
+
+    r")\b",
+
+    flags=re.IGNORECASE,
+)
+
+
+# ============================================================
+# CSP
 # ============================================================
 
 CSP_PATTERN = re.compile(
+
     r"\b(?:"
-    r"c\s*\.?\s*s\s*\.?\s*p\s*\.?"
-    r"|csp"
-    r"|c\s*/\s*p"
+
+    r"c\s*\.?\s*s\s*\.?\s*p\s*\.?|"
+
+    r"csp|"
+
+    r"c\s*/\s*p"
+
     r")\b",
+
     flags=re.IGNORECASE,
 )
 
@@ -158,13 +214,17 @@ def _strip_accents(
     normalized = (
         unicodedata.normalize(
             "NFD",
-            value,
+            value
+            or "",
         )
     )
 
     return "".join(
         character
-        for character in normalized
+
+        for character
+        in normalized
+
         if unicodedata.category(
             character
         )
@@ -176,20 +236,30 @@ def _simple_norm(
     value: str,
 ) -> str:
 
-    return re.sub(
-        r"\s+",
-        " ",
+    value = (
         _strip_accents(
             (
                 value
                 or ""
             ).casefold()
-        ),
+        )
+    )
+
+    value = re.sub(
+        r"[^a-z0-9%]+",
+        " ",
+        value,
+    )
+
+    return re.sub(
+        r"\s+",
+        " ",
+        value,
     ).strip()
 
 
 # ============================================================
-# LÍNEA ADMINISTRATIVA
+# FILTROS DE LÍNEA
 # ============================================================
 
 def _is_administrative(
@@ -197,8 +267,11 @@ def _is_administrative(
 ) -> bool:
 
     normalized = (
-        _simple_norm(
-            line
+        _strip_accents(
+            (
+                line
+                or ""
+            ).casefold()
         )
     )
 
@@ -214,8 +287,11 @@ def _is_section_header(
 ) -> bool:
 
     normalized = (
-        _simple_norm(
-            line
+        _strip_accents(
+            (
+                line
+                or ""
+            ).casefold()
         )
     )
 
@@ -226,41 +302,78 @@ def _is_section_header(
     )
 
 
-# ============================================================
-# BUSCAR TÉRMINO EN LÍNEA
-# ============================================================
-
-def _find_span(
+def _is_instruction(
     line: str,
-    value: str,
-) -> tuple[int, int] | None:
+) -> bool:
 
-    if not value:
-        return None
-
-
-    # --------------------------------------------------------
-    # INTENTO LITERAL
-    # --------------------------------------------------------
-
-    match = re.search(
-        re.escape(
-            value
-        ),
-        line,
-        flags=re.IGNORECASE,
+    normalized = (
+        _strip_accents(
+            (
+                line
+                or ""
+            ).casefold()
+        )
     )
 
-    if match:
-
-        return (
-            match.start(),
-            match.end(),
+    return bool(
+        INSTRUCTION_PATTERN.search(
+            normalized
         )
+    )
+
+
+# ============================================================
+# BUSCAR TODAS LAS APARICIONES
+# ============================================================
+
+def _find_all_spans(
+    line: str,
+    value: str,
+) -> list[
+    tuple[
+        int,
+        int,
+    ]
+]:
+
+    if (
+        not line
+        or not value
+    ):
+
+        return []
 
 
     # --------------------------------------------------------
-    # INTENTO IGNORANDO TILDES
+    # BÚSQUEDA LITERAL
+    # --------------------------------------------------------
+
+    literal = list(
+        re.finditer(
+            re.escape(
+                value
+            ),
+            line,
+            flags=re.IGNORECASE,
+        )
+    )
+
+    if literal:
+
+        return [
+
+            (
+                match.start(),
+                match.end(),
+            )
+
+            for match
+            in literal
+        ]
+
+
+    # --------------------------------------------------------
+    # IGNORANDO TILDES
     # --------------------------------------------------------
 
     normalized_line = (
@@ -275,23 +388,70 @@ def _find_span(
         )
     )
 
+    spans: list[
+        tuple[
+            int,
+            int,
+        ]
+    ] = []
 
-    index = (
-        normalized_line.find(
-            normalized_value
+    start = 0
+
+    while True:
+
+        index = (
+            normalized_line.find(
+                normalized_value,
+                start,
+            )
+        )
+
+        if index < 0:
+            break
+
+        spans.append(
+            (
+                index,
+                index
+                + len(
+                    normalized_value
+                ),
+            )
+        )
+
+        start = (
+            index
+            + max(
+                1,
+                len(
+                    normalized_value
+                ),
+            )
+        )
+
+    return spans
+
+
+def _find_span(
+    line: str,
+    value: str,
+) -> tuple[
+    int,
+    int,
+] | None:
+
+    spans = (
+        _find_all_spans(
+            line,
+            value,
         )
     )
 
-
-    if index >= 0:
-
-        return (
-            index,
-            index + len(value),
-        )
-
-
-    return None
+    return (
+        spans[0]
+        if spans
+        else None
+    )
 
 
 # ============================================================
@@ -310,24 +470,24 @@ def _line_spans(
 
     spans = []
 
-
     for match in re.finditer(
         r"[^\r\n]+",
-        text,
+        text
+        or "",
     ):
 
         raw = (
-            match.group(0)
+            match.group(
+                0
+            )
         )
 
         clean = (
             raw.strip()
         )
 
-
         if not clean:
             continue
-
 
         leading = (
             len(raw)
@@ -336,18 +496,17 @@ def _line_spans(
             )
         )
 
-
         start = (
             match.start()
             + leading
         )
 
-
         end = (
             start
-            + len(clean)
+            + len(
+                clean
+            )
         )
-
 
         spans.append(
             (
@@ -356,7 +515,6 @@ def _line_spans(
                 clean,
             )
         )
-
 
     return spans
 
@@ -375,52 +533,553 @@ def _entities_for_line(
     dict[str, Any]
 ]:
 
-    result = []
+    result: list[
+        dict[str, Any]
+    ] = []
 
+    for entity in entities:
+
+        start = int(
+            entity.get(
+                "start"
+            )
+            or 0
+        )
+
+        end = int(
+            entity.get(
+                "end"
+            )
+            or 0
+        )
+
+        if (
+            start
+            < line_start
+
+            or end
+            > line_end
+        ):
+
+            continue
+
+        copied = dict(
+            entity
+        )
+
+        copied[
+            "start"
+        ] = (
+            start
+            - line_start
+        )
+
+        copied[
+            "end"
+        ] = (
+            end
+            - line_start
+        )
+
+        result.append(
+            copied
+        )
+
+    return result
+
+
+# ============================================================
+# DICCIONARIO
+# ============================================================
+
+def _dictionary_candidates(
+    line: str,
+    ocr_confidence: float,
+) -> list[
+    Candidate
+]:
+
+    result = (
+        analyze_ocr_text(
+            line,
+            ocr_confidence,
+        )
+    )
+
+    recognized = [
+
+        item
+
+        for item
+        in result.get(
+            "recognized_terms",
+            [],
+        )
+
+        if item.get(
+            "category"
+        )
+        in COMPONENT_CATEGORIES
+    ]
+
+    candidates: list[
+        Candidate
+    ] = []
+
+    for item in recognized:
+
+        mode = str(
+            item.get(
+                "mode"
+            )
+            or ""
+        )
+
+        confidence = float(
+            item.get(
+                "confidence"
+            )
+            or 0.0
+        )
+
+        if (
+            mode
+            == "fuzzy"
+
+            and confidence
+            < 0.88
+        ):
+
+            continue
+
+        match_text = str(
+            item.get(
+                "match"
+            )
+            or item.get(
+                "term"
+            )
+            or ""
+        ).strip()
+
+        canonical = str(
+            item.get(
+                "term"
+            )
+            or match_text
+        ).strip()
+
+        spans = (
+            _find_all_spans(
+                line,
+                match_text,
+            )
+        )
+
+        if (
+            not spans
+            and canonical
+            != match_text
+        ):
+
+            spans = (
+                _find_all_spans(
+                    line,
+                    canonical,
+                )
+            )
+
+        for (
+            start,
+            end,
+        ) in spans:
+
+            candidates.append(
+
+                Candidate(
+
+                    name=
+                        canonical,
+
+                    start=
+                        start,
+
+                    end=
+                        end,
+
+                    category=
+                        str(
+                            item.get(
+                                "category"
+                            )
+                            or ""
+                        )
+                        or None,
+
+                    dictionary_confidence=
+                        confidence,
+
+                    dictionary_mode=
+                        mode
+                        or None,
+
+                    sources={
+                        "dictionary"
+                    },
+                )
+            )
+
+    return candidates
+
+
+# ============================================================
+# PROMOCIONAR NER CON DICCIONARIO
+# ============================================================
+
+def _promote_ner_candidate(
+    candidate: Candidate,
+    surface_text: str,
+) -> None:
+
+    result = (
+        analyze_ocr_text(
+            surface_text,
+            1.0,
+        )
+    )
+
+    possible = [
+
+        item
+
+        for item
+        in result.get(
+            "recognized_terms",
+            [],
+        )
+
+        if item.get(
+            "category"
+        )
+        in COMPONENT_CATEGORIES
+    ]
+
+    if not possible:
+        return
+
+    best = max(
+
+        possible,
+
+        key=lambda item:
+            float(
+                item.get(
+                    "confidence"
+                )
+                or 0.0
+            ),
+    )
+
+    confidence = float(
+        best.get(
+            "confidence"
+        )
+        or 0.0
+    )
+
+    mode = str(
+        best.get(
+            "mode"
+        )
+        or ""
+    )
+
+    if (
+        mode
+        == "fuzzy"
+
+        and confidence
+        < 0.90
+    ):
+
+        return
+
+    candidate.name = str(
+        best.get(
+            "term"
+        )
+        or candidate.name
+    )
+
+    candidate.category = (
+        str(
+            best.get(
+                "category"
+            )
+            or candidate.category
+            or ""
+        )
+        or None
+    )
+
+    candidate.dictionary_confidence = max(
+        candidate.dictionary_confidence,
+        confidence,
+    )
+
+    candidate.dictionary_mode = (
+        mode
+        or candidate.dictionary_mode
+    )
+
+    candidate.sources.add(
+        "dictionary"
+    )
+
+
+# ============================================================
+# CANDIDATOS NER
+# ============================================================
+
+def _ner_candidates(
+    line: str,
+    entities: list[
+        dict[str, Any]
+    ],
+) -> list[
+    Candidate
+]:
+
+    candidates: list[
+        Candidate
+    ] = []
 
     for entity in entities:
 
         if (
-            entity["start"]
-            < line_end
-
-            and entity["end"]
-            > line_start
+            entity.get(
+                "label"
+            )
+            != "INSUMO"
         ):
 
-            copy = dict(
-                entity
+            continue
+
+        start = int(
+            entity.get(
+                "start"
             )
+            or 0
+        )
 
+        end = int(
+            entity.get(
+                "end"
+            )
+            or 0
+        )
 
-            copy[
-                "line_start"
-            ] = max(
-                0,
-                int(
-                    entity["start"]
+        if end <= start:
+            continue
+
+        source = str(
+            entity.get(
+                "source"
+            )
+            or "statistical_ner"
+        )
+
+        surface = (
+
+            line[
+                start:
+                end
+            ].strip()
+
+            or str(
+                entity.get(
+                    "text"
                 )
-                - line_start,
+                or ""
+            ).strip()
+        )
+
+        canonical = str(
+            entity.get(
+                "canonical"
             )
+            or ""
+        ).strip()
 
 
-            copy[
-                "line_end"
-            ] = max(
-                0,
-                int(
-                    entity["end"]
+        # ----------------------------------------------------
+        # DESCARTAR BASURA DEL NER
+        #
+        # Ejemplos detectados en pruebas:
+        #
+        # +
+        # %
+        # números
+        #
+        # Esos elementos no pueden competir con ingredientes.
+        # ----------------------------------------------------
+
+        surface_norm = (
+            _simple_norm(
+                surface
+            )
+        )
+
+        if not re.search(
+            (
+                r"["
+                r"A-Za-z"
+                r"ÁÉÍÓÚÜÑ"
+                r"áéíóúüñ"
+                r"]"
+            ),
+            surface,
+        ):
+
+            continue
+
+        if len(
+            surface_norm.replace(
+                " ",
+                "",
+            )
+        ) < 3:
+
+            continue
+
+
+        candidate = Candidate(
+
+            name=
+                canonical
+                or surface,
+
+            start=
+                start,
+
+            end=
+                end,
+
+            statistical_ner=
+                (
+                    source
+                    == "statistical_ner"
+                ),
+
+            dictionary_ruler=
+                (
+                    source
+                    == "dictionary_ruler"
+                ),
+
+            dictionary_confidence=
+                (
+                    1.0
+                    if source
+                    == "dictionary_ruler"
+                    else 0.0
+                ),
+
+            dictionary_mode=
+                (
+                    "exact"
+                    if source
+                    == "dictionary_ruler"
+                    else None
+                ),
+
+            sources={
+                (
+                    "dictionary_ruler"
+                    if source
+                    == "dictionary_ruler"
+                    else "ner"
                 )
-                - line_start,
+            },
+        )
+
+        if (
+            source
+            == "dictionary_ruler"
+        ):
+
+            candidate.category = (
+                "principio_activo"
             )
 
+        else:
 
-            result.append(
-                copy
+            _promote_ner_candidate(
+                candidate,
+                surface,
             )
 
+        candidates.append(
+            candidate
+        )
 
-    return result
+    return candidates
+
+
+# ============================================================
+# OVERLAP
+# ============================================================
+
+def _overlap(
+    left: Candidate,
+    right: Candidate,
+) -> bool:
+
+    return (
+
+        left.start
+        < right.end
+
+        and left.end
+        > right.start
+    )
+
+
+# ============================================================
+# CALIDAD DEL CANDIDATO
+# ============================================================
+
+def _candidate_quality(
+    candidate: Candidate,
+) -> tuple[
+    int,
+    float,
+    int,
+    int,
+]:
+
+    return (
+
+        (
+            1
+            if candidate.dictionary_ruler
+            else 0
+        ),
+
+        float(
+            candidate.dictionary_confidence
+        ),
+
+        (
+            1
+            if candidate.dictionary_mode
+            == "exact"
+            else 0
+        ),
+
+        candidate.end
+        - candidate.start,
+    )
 
 
 # ============================================================
@@ -439,9 +1098,9 @@ def _merge_candidates(
         Candidate
     ] = []
 
-
     for candidate in sorted(
         candidates,
+
         key=lambda item: (
             item.start,
             item.end,
@@ -450,40 +1109,52 @@ def _merge_candidates(
 
         target: Candidate | None = None
 
-
         for existing in merged:
 
-            overlaps = (
-                candidate.start
-                < existing.end
-
-                and candidate.end
-                > existing.start
-            )
-
-
             same_name = (
+
                 _simple_norm(
                     candidate.name
                 )
+
                 ==
+
                 _simple_norm(
                     existing.name
                 )
             )
 
+            same_occurrence = (
 
-            if (
-                overlaps
-                or same_name
-            ):
+                _overlap(
+                    candidate,
+                    existing,
+                )
+
+                or (
+                    same_name
+
+                    and abs(
+                        candidate.start
+                        - existing.start
+                    )
+                    <= 2
+
+                    and abs(
+                        candidate.end
+                        - existing.end
+                    )
+                    <= 2
+                )
+            )
+
+            if same_occurrence:
 
                 target = (
                     existing
                 )
 
                 break
-
 
         if target is None:
 
@@ -493,14 +1164,16 @@ def _merge_candidates(
 
             continue
 
-
-        # ----------------------------------------------------
-        # DAR PRIORIDAD AL DICCIONARIO
-        # ----------------------------------------------------
-
         if (
-            candidate.dictionary_confidence
-            > target.dictionary_confidence
+            _candidate_quality(
+                candidate
+            )
+
+            >
+
+            _candidate_quality(
+                target
+            )
         ):
 
             target.name = (
@@ -516,19 +1189,27 @@ def _merge_candidates(
             )
 
             target.category = (
+
                 candidate.category
+
+                or target.category
             )
 
-            target.dictionary_confidence = (
-                candidate.dictionary_confidence
+            target.dictionary_confidence = max(
+
+                target.dictionary_confidence,
+
+                candidate.dictionary_confidence,
             )
 
             target.dictionary_mode = (
+
                 candidate.dictionary_mode
+
+                or target.dictionary_mode
             )
 
-
-        if (
+        elif (
             not target.category
             and candidate.category
         ):
@@ -537,41 +1218,29 @@ def _merge_candidates(
                 candidate.category
             )
 
-
         target.statistical_ner = (
+
             target.statistical_ner
+
             or candidate.statistical_ner
         )
 
-
         target.dictionary_ruler = (
+
             target.dictionary_ruler
+
             or candidate.dictionary_ruler
         )
-
 
         target.sources.update(
             candidate.sources
         )
-
 
     return merged
 
 
 # ============================================================
 # EMPAREJAR INSUMO + CONCENTRACIÓN
-#
-# IMPORTANTE:
-# SOLO UTILIZA CONCENTRACIONES DEL REGEX.
-#
-# No utiliza CONCENTRACION del NER.
-#
-# De esta manera:
-#
-# E.I.R.L
-# N°
-#
-# nunca pueden convertirse en concentración.
 # ============================================================
 
 def _pair_concentrations(
@@ -591,85 +1260,340 @@ def _pair_concentrations(
         return
 
 
-    available = set(
-        range(
-            len(
-                concentrations
-            )
-        )
+    ordered_candidates = sorted(
+
+        candidates,
+
+        key=lambda item: (
+            item.start,
+            item.end,
+        ),
     )
 
 
-    for candidate in sorted(
-        candidates,
-        key=lambda item:
-            item.start,
-    ):
+    ordered_concentrations = sorted(
 
-        if not available:
-            break
+        concentrations,
 
+        key=lambda item: (
 
-        best_index = min(
-            available,
-            key=lambda index: (
+            int(
+                item[
+                    "start"
+                ]
+            ),
 
-                0
-                if (
-                    int(
-                        concentrations[
-                            index
-                        ][
-                            "start"
-                        ]
-                    )
-                    - candidate.end
-                )
-                >= -1
-                else 1,
-
-                abs(
-                    int(
-                        concentrations[
-                            index
-                        ][
-                            "start"
-                        ]
-                    )
-                    - candidate.end
-                ),
-            )
-        )
+            int(
+                item[
+                    "end"
+                ]
+            ),
+        ),
+    )
 
 
-        selected = (
-            concentrations[
-                best_index
+    def assign(
+        candidate: Candidate,
+        concentration: dict[str, Any],
+    ) -> None:
+
+        candidate.concentration = str(
+            concentration[
+                "normalized"
             ]
         )
-
-
-        candidate.concentration = (
-            str(
-                selected[
-                    "normalized"
-                ]
-            )
-        )
-
 
         candidate.sources.add(
             "regex"
         )
 
 
+    # ========================================================
+    # CASO:
+    #
+    # Ivermectina + Mometasona 1% + 0.1%
+    #
+    # Todos los insumos aparecen antes de las concentraciones.
+    #
+    # Debe quedar:
+    #
+    # Ivermectina -> 1%
+    # Mometasona -> 0.1%
+    # ========================================================
+
+    if (
+
+        len(
+            ordered_candidates
+        )
+
+        ==
+
+        len(
+            ordered_concentrations
+        )
+
+        and max(
+            candidate.end
+
+            for candidate
+            in ordered_candidates
+        )
+
+        <=
+
+        min(
+            int(
+                concentration[
+                    "start"
+                ]
+            )
+
+            for concentration
+            in ordered_concentrations
+        )
+    ):
+
+        for (
+            candidate,
+            concentration,
+        ) in zip(
+            ordered_candidates,
+            ordered_concentrations,
+        ):
+
+            assign(
+                candidate,
+                concentration,
+            )
+
+        return
+
+
+    # ========================================================
+    # CASO INVERSO
+    # ========================================================
+
+    if (
+
+        len(
+            ordered_candidates
+        )
+
+        ==
+
+        len(
+            ordered_concentrations
+        )
+
+        and max(
+            int(
+                concentration[
+                    "end"
+                ]
+            )
+
+            for concentration
+            in ordered_concentrations
+        )
+
+        <=
+
+        min(
+            candidate.start
+
+            for candidate
+            in ordered_candidates
+        )
+    ):
+
+        for (
+            candidate,
+            concentration,
+        ) in zip(
+            ordered_candidates,
+            ordered_concentrations,
+        ):
+
+            assign(
+                candidate,
+                concentration,
+            )
+
+        return
+
+
+    # ========================================================
+    # CASO NORMAL
+    #
+    # Clindamicina 1% + Niacinamida 4% + Pantenol 5%
+    # ========================================================
+
+    available = set(
+        range(
+            len(
+                ordered_concentrations
+            )
+        )
+    )
+
+
+    for (
+        index,
+        candidate,
+    ) in enumerate(
+        ordered_candidates
+    ):
+
+        next_start = (
+
+            ordered_candidates[
+                index + 1
+            ].start
+
+            if (
+                index + 1
+                <
+                len(
+                    ordered_candidates
+                )
+            )
+
+            else None
+        )
+
+        local: list[int] = []
+
+        for concentration_index in available:
+
+            concentration = (
+                ordered_concentrations[
+                    concentration_index
+                ]
+            )
+
+            concentration_start = int(
+                concentration[
+                    "start"
+                ]
+            )
+
+            if (
+                concentration_start
+                <
+                candidate.end
+                - 1
+            ):
+
+                continue
+
+            if (
+                next_start is not None
+
+                and concentration_start
+                >= next_start
+            ):
+
+                continue
+
+            local.append(
+                concentration_index
+            )
+
+        if not local:
+            continue
+
+        best_index = min(
+
+            local,
+
+            key=lambda position:
+                int(
+                    ordered_concentrations[
+                        position
+                    ][
+                        "start"
+                    ]
+                ),
+        )
+
+        assign(
+            candidate,
+            ordered_concentrations[
+                best_index
+            ],
+        )
+
         available.remove(
             best_index
         )
 
 
+    pending_candidates = [
+
+        candidate
+
+        for candidate
+        in ordered_candidates
+
+        if not candidate.concentration
+    ]
+
+
+    pending_concentrations = [
+
+        ordered_concentrations[
+            position
+        ]
+
+        for position
+        in sorted(
+
+            available,
+
+            key=lambda index:
+                int(
+                    ordered_concentrations[
+                        index
+                    ][
+                        "start"
+                    ]
+                ),
+        )
+    ]
+
+
+    if (
+
+        pending_candidates
+
+        and len(
+            pending_candidates
+        )
+
+        ==
+
+        len(
+            pending_concentrations
+        )
+    ):
+
+        for (
+            candidate,
+            concentration,
+        ) in zip(
+            pending_candidates,
+            pending_concentrations,
+        ):
+
+            assign(
+                candidate,
+                concentration,
+            )
+
+
 # ============================================================
-# CONFIANZA FINAL
+# CONFIANZA
 # ============================================================
 
 def _confidence(
@@ -678,14 +1602,12 @@ def _confidence(
 
     score = 0.0
 
-
     if (
         candidate.dictionary_mode
         == "exact"
     ):
 
         score += 0.55
-
 
     elif (
         candidate.dictionary_mode
@@ -694,332 +1616,28 @@ def _confidence(
 
         score += 0.35
 
-
-    if (
-        candidate.dictionary_ruler
-    ):
+    if candidate.dictionary_ruler:
 
         score += 0.20
 
+    if candidate.statistical_ner:
 
-    if (
-        candidate.statistical_ner
-    ):
+        score += 0.10
 
-        score += 0.20
-
-
-    if (
-        candidate.concentration
-    ):
+    if candidate.concentration:
 
         score += 0.25
 
-
-    return max(
-        0.0,
+    return round(
         min(
             1.0,
-            round(
+            max(
+                0.0,
                 score,
-                2,
             )
-        )
+        ),
+        2,
     )
-
-
-# ============================================================
-# CANDIDATOS DEL DICCIONARIO
-# ============================================================
-
-def _dictionary_candidates(
-    line: str,
-    ocr_confidence: float,
-) -> list[
-    Candidate
-]:
-
-    result = (
-        analyze_ocr_text(
-            line,
-            ocr_confidence,
-        )
-    )
-
-
-    recognized = [
-
-        item
-
-        for item
-        in result.get(
-            "recognized_terms",
-            []
-        )
-
-        if (
-            item.get(
-                "category"
-            )
-            in COMPONENT_CATEGORIES
-        )
-    ]
-
-
-    # ========================================================
-    # SI EXISTEN COINCIDENCIAS EXACTAS,
-    # USARLAS ANTES QUE FUZZY.
-    #
-    # Esto evita:
-    #
-    # ACIDO SALICILICO
-    # -> Ácido Acetil salicílico
-    #
-    # cuando ya existe:
-    #
-    # Ácido salicílico
-    # ========================================================
-
-    exact_items = [
-
-        item
-
-        for item
-        in recognized
-
-        if (
-            item.get(
-                "mode"
-            )
-            == "exact"
-        )
-    ]
-
-
-    if exact_items:
-
-        selected_items = (
-            exact_items
-        )
-
-    else:
-
-        selected_items = [
-
-            item
-
-            for item
-            in recognized
-
-            if (
-                item.get(
-                    "mode"
-                )
-                != "fuzzy"
-
-                or float(
-                    item.get(
-                        "confidence"
-                    )
-                    or 0
-                )
-                >= 0.88
-            )
-        ]
-
-
-    candidates = []
-
-
-    for item in selected_items:
-
-        match_text = str(
-            item.get(
-                "match"
-            )
-            or item.get(
-                "term"
-            )
-            or ""
-        ).strip()
-
-
-        span = (
-            _find_span(
-                line,
-                match_text,
-            )
-        )
-
-
-        if span is None:
-
-            span = (
-                _find_span(
-                    line,
-                    str(
-                        item.get(
-                            "term"
-                        )
-                        or ""
-                    ),
-                )
-            )
-
-
-        if span is None:
-            continue
-
-
-        candidates.append(
-
-            Candidate(
-
-                name=str(
-                    item.get(
-                        "term"
-                    )
-                    or match_text
-                ),
-
-                start=
-                    span[0],
-
-                end=
-                    span[1],
-
-                category=str(
-                    item.get(
-                        "category"
-                    )
-                    or ""
-                )
-                or None,
-
-                dictionary_confidence=
-                    float(
-                        item.get(
-                            "confidence"
-                        )
-                        or 0
-                    ),
-
-                dictionary_mode=
-                    str(
-                        item.get(
-                            "mode"
-                        )
-                        or ""
-                    ),
-
-                sources={
-                    "dictionary"
-                },
-            )
-        )
-
-
-    return candidates
-
-
-# ============================================================
-# CANDIDATOS NER
-#
-# El NER puede proponer un ingrediente,
-# pero para aceptarlo después deberá tener
-# concentración REAL del regex.
-# ============================================================
-
-def _ner_candidates(
-    entities: list[
-        dict[str, Any]
-    ],
-) -> list[
-    Candidate
-]:
-
-    candidates = []
-
-
-    for entity in entities:
-
-        if (
-            entity.get(
-                "label"
-            )
-            != "INSUMO"
-        ):
-
-            continue
-
-
-        source = str(
-            entity.get(
-                "source"
-            )
-            or "statistical_ner"
-        )
-
-
-        name = str(
-            entity.get(
-                "canonical"
-            )
-            or entity.get(
-                "text"
-            )
-            or ""
-        ).strip()
-
-
-        if not name:
-            continue
-
-
-        candidates.append(
-
-            Candidate(
-
-                name=
-                    name,
-
-                start=int(
-                    entity[
-                        "line_start"
-                    ]
-                ),
-
-                end=int(
-                    entity[
-                        "line_end"
-                    ]
-                ),
-
-                statistical_ner=(
-                    source
-                    == "statistical_ner"
-                ),
-
-                dictionary_ruler=(
-                    source
-                    == "dictionary_ruler"
-                ),
-
-                sources={
-                    (
-                        "ner"
-
-                        if source
-                        == "statistical_ner"
-
-                        else "dictionary_ruler"
-                    )
-                },
-            )
-        )
-
-
-    return candidates
 
 
 # ============================================================
@@ -1032,34 +1650,39 @@ def fuse_ingredient_entities(
 ) -> dict[str, Any]:
 
     """
-    Fusión híbrida:
+    Pipeline híbrido:
 
-    OCR
-        +
-    Diccionario
-        +
-    NER
-        +
-    Regex
+        OCR
+         +
+        Diccionario
+         +
+        NER
+         +
+        Regex
 
-    SALIDA VISIBLE:
+    Salida visible:
 
         INSUMO
         CONCENTRACIÓN
 
-    Reglas:
+    Reglas principales:
 
-    1. Diccionario exacto + concentración -> aceptar.
+    1. El NER puede proponer candidatos.
 
-    2. Fuzzy >= 88% + concentración -> aceptar.
+    2. Un candidato visible debe tener respaldo
+       del diccionario farmacéutico.
 
-    3. NER + concentración NUMÉRICA del regex -> aceptar.
+    3. Debe existir una concentración real
+       reconocida por regex.
 
-    4. Base exacta + c.s.p. -> aceptar sin concentración.
+    4. Un NER estadístico por sí solo NO puede
+       crear ingredientes visibles.
 
-    5. Líneas administrativas -> rechazar.
+    5. Las bases c.s.p. se conservan como contexto
+       pero no contaminan la salida visible si no
+       poseen concentración.
 
-    6. Nunca utilizar concentraciones inventadas por el NER.
+    6. Texto administrativo e indicaciones se ignoran.
     """
 
     text = (
@@ -1078,16 +1701,17 @@ def fuse_ingredient_entities(
         )
     )
 
-
-    ner_entities = (
+    ner_entities = list(
         ner_result.get(
-            "entities",
-            []
+            "entities"
         )
+        or []
     )
 
 
-    line_records = []
+    line_records: list[
+        dict[str, Any]
+    ] = []
 
 
     # ========================================================
@@ -1109,24 +1733,17 @@ def fuse_ingredient_entities(
     ):
 
         administrative = (
+
             _is_administrative(
                 line
             )
-        )
 
-
-        section_header = (
-            _is_section_header(
+            or _is_section_header(
                 line
             )
-        )
 
-
-        line_entities = (
-            _entities_for_line(
-                ner_entities,
-                line_start,
-                line_end,
+            or _is_instruction(
+                line
             )
         )
 
@@ -1167,20 +1784,16 @@ def fuse_ingredient_entities(
             for item
             in regex_result.get(
                 "concentrations",
-                []
+                [],
             )
         ]
 
 
         # ----------------------------------------------------
-        # SI ES ADMINISTRATIVO:
-        # NO GENERAR CANDIDATOS.
+        # LÍNEA ADMINISTRATIVA
         # ----------------------------------------------------
 
-        if (
-            administrative
-            or section_header
-        ):
+        if administrative:
 
             line_records.append(
 
@@ -1218,18 +1831,28 @@ def fuse_ingredient_entities(
 
 
         # ----------------------------------------------------
-        # NER
+        # NER DE LA LÍNEA
         # ----------------------------------------------------
+
+        line_entities = (
+            _entities_for_line(
+                ner_entities,
+                line_start,
+                line_end,
+            )
+        )
+
 
         ner_candidates = (
             _ner_candidates(
-                line_entities
+                line,
+                line_entities,
             )
         )
 
 
         # ----------------------------------------------------
-        # FUSIONAR
+        # FUSIÓN
         # ----------------------------------------------------
 
         candidates = (
@@ -1243,7 +1866,7 @@ def fuse_ingredient_entities(
 
 
         # ----------------------------------------------------
-        # ASIGNAR CONCENTRACIONES
+        # INSUMO -> CONCENTRACIÓN
         # ----------------------------------------------------
 
         _pair_concentrations(
@@ -1274,16 +1897,19 @@ def fuse_ingredient_entities(
 
 
     # ========================================================
-    # CASO:
+    # CASO MULTILÍNEA
     #
     # Minoxidil
     # 5%
-    #
-    # Solo usamos concentración regex real.
     # ========================================================
 
-    for index, record in enumerate(
-        line_records[:-1]
+    for (
+        index,
+        record,
+    ) in enumerate(
+        line_records[
+            :-1
+        ]
     ):
 
         next_record = (
@@ -1292,18 +1918,17 @@ def fuse_ingredient_entities(
             ]
         )
 
-
         if (
             record[
                 "administrative"
             ]
+
             or next_record[
                 "administrative"
             ]
         ):
 
             continue
-
 
         if (
             len(
@@ -1316,24 +1941,11 @@ def fuse_ingredient_entities(
 
             continue
 
-
-        candidate = (
-            record[
-                "candidates"
-            ][0]
-        )
-
-
-        if candidate.concentration:
-            continue
-
-
         if next_record[
             "candidates"
         ]:
 
             continue
-
 
         if (
             len(
@@ -1346,6 +1958,14 @@ def fuse_ingredient_entities(
 
             continue
 
+        candidate: Candidate = (
+            record[
+                "candidates"
+            ][0]
+        )
+
+        if candidate.concentration:
+            continue
 
         candidate.concentration = str(
             next_record[
@@ -1354,7 +1974,6 @@ def fuse_ingredient_entities(
                 "normalized"
             ]
         )
-
 
         candidate.sources.add(
             "regex_next_line"
@@ -1365,18 +1984,20 @@ def fuse_ingredient_entities(
     # DECISIÓN FINAL
     # ========================================================
 
-    ingredients = []
+    ingredients: list[
+        dict[str, Any]
+    ] = []
 
-    rejected = []
+    rejected: list[
+        dict[str, Any]
+    ] = []
 
 
     for record in line_records:
 
-        for candidate in (
-            record[
-                "candidates"
-            ]
-        ):
+        for candidate in record[
+            "candidates"
+        ]:
 
             # ------------------------------------------------
             # DICCIONARIO EXACTO
@@ -1414,7 +2035,7 @@ def fuse_ingredient_entities(
 
 
             # ------------------------------------------------
-            # CONCENTRACIÓN REAL
+            # CONCENTRACIÓN
             # ------------------------------------------------
 
             has_concentration = bool(
@@ -1423,61 +2044,75 @@ def fuse_ingredient_entities(
 
 
             # ------------------------------------------------
-            # BASE + CSP
-            # ------------------------------------------------
-
-            base_with_csp = (
-
-                candidate.category
-                in BASE_CATEGORIES
-
-                and exact_dictionary
-
-                and bool(
-                    CSP_PATTERN.search(
-                        record[
-                            "line"
-                        ]
-                    )
-                )
-            )
-
-
-            # ------------------------------------------------
-            # REGLAS DE ACEPTACIÓN
+            # SALIDA VISIBLE
+            #
+            # No basta con que NER diga que algo es un INSUMO.
+            #
+            # Debe existir:
+            #
+            # diccionario + concentración real.
             # ------------------------------------------------
 
             accepted = (
 
-                # Diccionario confiable + concentración
-                (
-                    dictionary_signal
-                    and has_concentration
-                )
+                dictionary_signal
 
-                # NER estadístico + concentración regex real
-                or (
+                and has_concentration
+            )
+
+
+            reason = (
+                "accepted"
+            )
+
+
+            if not accepted:
+
+                if (
+                    candidate.category
+                    in BASE_CATEGORIES
+
+                    and CSP_PATTERN.search(
+                        record[
+                            "line"
+                        ]
+                    )
+                ):
+
+                    reason = (
+                        "base_csp_without_"
+                        "explicit_concentration"
+                    )
+
+                    candidate.sources.add(
+                        "csp_context"
+                    )
+
+                elif (
                     candidate.statistical_ner
-                    and has_concentration
-                )
+                    and not dictionary_signal
+                ):
 
-                # Base exacta + c.s.p.
-                or base_with_csp
-            )
+                    reason = (
+                        "ner_without_"
+                        "dictionary_support"
+                    )
 
+                elif (
+                    dictionary_signal
+                    and not has_concentration
+                ):
 
-            if base_with_csp:
+                    reason = (
+                        "ingredient_without_"
+                        "concentration"
+                    )
 
-                candidate.sources.add(
-                    "csp_context"
-                )
+                else:
 
-
-            confidence = (
-                _confidence(
-                    candidate
-                )
-            )
+                    reason = (
+                        "insufficient_evidence"
+                    )
 
 
             payload = {
@@ -1489,7 +2124,9 @@ def fuse_ingredient_entities(
                     candidate.concentration,
 
                 "confidence":
-                    confidence,
+                    _confidence(
+                        candidate
+                    ),
 
                 "sources":
                     sorted(
@@ -1516,24 +2153,33 @@ def fuse_ingredient_entities(
 
             else:
 
-                rejected.append(
+                rejected_payload = dict(
                     payload
+                )
+
+                rejected_payload[
+                    "reason"
+                ] = reason
+
+                rejected.append(
+                    rejected_payload
                 )
 
 
     # ========================================================
-    # DEDUPLICACIÓN
-    #
-    # NO fusionamos:
+    # DEDUPLICAR SOLO MISMO PAR
     #
     # Minoxidil 2.5 mg
     # Minoxidil 5%
     #
-    # porque son dos registros diferentes.
+    # deben seguir siendo DOS registros.
     # ========================================================
 
     unique: dict[
-        tuple[str, str],
+        tuple[
+            str,
+            str,
+        ],
         dict[str, Any],
     ] = {}
 
@@ -1576,7 +2222,10 @@ def fuse_ingredient_entities(
                     "confidence"
                 ]
             )
-            > float(
+
+            >
+
+            float(
                 current[
                     "confidence"
                 ]
@@ -1592,14 +2241,26 @@ def fuse_ingredient_entities(
 
         unique.values(),
 
-        key=lambda item:
+        key=lambda item: (
+
             int(
                 item[
                     "line_number"
                 ]
-            )
+            ),
+
+            str(
+                item[
+                    "ingredient"
+                ]
+            ),
+        ),
     )
 
+
+    # ========================================================
+    # RESULTADO
+    # ========================================================
 
     return {
 
